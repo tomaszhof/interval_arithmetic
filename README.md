@@ -1,2 +1,2 @@
-ianterval_arithmetic
+interval_arithmetic
 ==================
