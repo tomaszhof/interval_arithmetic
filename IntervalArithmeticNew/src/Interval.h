@@ -228,7 +228,6 @@ inline Interval<T> Interval<T>::IntRead(const string& sa) {
 	Interval<T> r;
 		mpfr_t rop;
 		mpfr_init2(rop, precision);
-		//mpfr_
 		mpfr_set_str(rop, sa.c_str(), 10, MPFR_RNDD);
 		T le = 0.0;
 		if (strcmp(typeid(T).name(), typeid(long double).name()) == 0)
