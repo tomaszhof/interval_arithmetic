@@ -7,22 +7,18 @@
 
 #include "Tester.h"
 
-namespace intervalarth
-{
+namespace intervalarth {
 
-Tester::Tester()
-{
+Tester::Tester() {
 	// TODO Auto-generated constructor stub
 
 }
 
-Tester::~Tester()
-{
+Tester::~Tester() {
 	// TODO Auto-generated destructor stub
 }
 
-void Tester::PrintBinary(long double x)
-{
+void Tester::PrintBinary(long double x) {
 	//string sa = "0.1";
 //	mpfr_t rop, op;
 //	mpfr_init2(rop, 80);
@@ -45,8 +41,7 @@ void Tester::PrintBinary(long double x)
 
 }
 
-void Tester::IEndsToStrings(interval i, string& left, string& right)
-{
+void Tester::IEndsToStrings(interval i, string& left, string& right) {
 	stringstream ss;
 	int prec = std::numeric_limits<long double>::digits10;
 	ss.setf(std::ios_base::scientific);
@@ -59,276 +54,275 @@ void Tester::IEndsToStrings(interval i, string& left, string& right)
 	ss.clear();
 }
 
-void Tester::ArithmeticTest()
-{
-		string x1, x2, y1, y2, z1, z2;
-		interval x, y, z;
+void Tester::ArithmeticTest() {
+	string x1, x2, y1, y2, z1, z2;
+	interval x, y, z;
 
-		IntervalArithmetic ia;
-		string xa, xb;
-		x = ia.IntRead("3.14");
-		interval three = {3,3};
-		x = ia.IDiv(x, three);
-		ia.IEndsToStrings(x,xa,xb);
-		cout << xa << " ; " << xb;
+	IntervalArithmetic ia;
+	string xa, xb;
+	x = ia.IntRead("3.14");
+	interval three = { 3, 3 };
+	x = ia.IDiv(x, three);
+	ia.IEndsToStrings(x, xa, xb);
+	cout << xa << " ; " << xb;
 
-		cout << endl;
-		cout << "Test for real numbers:" << endl;
-		cout << "x = ";
-		cin >> x1;
-		cout << endl;
-		x = ia.IntRead(x1);
-		ia.IEndsToStrings(x, z1, z2);
-		cout << "x converted" << endl;
-		cout << "to machine interval X = [" << z1 << "," << z2 << "]" << endl;
-		cout << "Internal representation of X:" << endl << "X.a =" << endl;
-		PrintBinary(x.a);
-		cout << "X.b =" << endl;
-		PrintBinary(x.b);
+	cout << endl;
+	cout << "Test for real numbers:" << endl;
+	cout << "x = ";
+	cin >> x1;
+	cout << endl;
+	x = ia.IntRead(x1);
+	ia.IEndsToStrings(x, z1, z2);
+	cout << "x converted" << endl;
+	cout << "to machine interval X = [" << z1 << "," << z2 << "]" << endl;
+	cout << "Internal representation of X:" << endl << "X.a =" << endl;
+	PrintBinary(x.a);
+	cout << "X.b =" << endl;
+	PrintBinary(x.b);
 
-		cout << "y = ";
-		cin >> y1;
-		cout << endl;
-		y = ia.IntRead(y1);
-		ia.IEndsToStrings(y, z1, z2);
-		cout << "y converted" << endl;
-		cout << "to machine interval Y = [" << z1 << "," << z2 << "]" << endl;
-		cout << endl;
+	cout << "y = ";
+	cin >> y1;
+	cout << endl;
+	y = ia.IntRead(y1);
+	ia.IEndsToStrings(y, z1, z2);
+	cout << "y converted" << endl;
+	cout << "to machine interval Y = [" << z1 << "," << z2 << "]" << endl;
+	cout << endl;
 
-		cout << "Internal representation of Y:" << endl << "Y.a =" << endl;
-		PrintBinary(y.a);
-		cout << "Y.b =" << endl;
-		PrintBinary(y.b);
+	cout << "Internal representation of Y:" << endl << "Y.a =" << endl;
+	PrintBinary(y.a);
+	cout << "Y.b =" << endl;
+	PrintBinary(y.b);
 
-		z = ia.IAdd(x, y);
-		ia.IEndsToStrings(z, z1, z2);
-		cout << x1 << " + " << y1 << " = [" << z1 << "," << z2 << "]" << endl;
-		cout << "Internal representation of Z:" << endl << "Z.a =" << endl;
-		PrintBinary(z.a);
-		cout << "Z.b =" << endl;
-		PrintBinary(z.b);
+	z = ia.IAdd(x, y);
+	ia.IEndsToStrings(z, z1, z2);
+	cout << x1 << " + " << y1 << " = [" << z1 << "," << z2 << "]" << endl;
+	cout << "Internal representation of Z:" << endl << "Z.a =" << endl;
+	PrintBinary(z.a);
+	cout << "Z.b =" << endl;
+	PrintBinary(z.b);
 
-		z = ia.ISub(x, y);
-		ia.IEndsToStrings(z, z1, z2);
-		cout << x1 << " - " << y1 << " = [" << z1 << "," << z2 << "]" << endl;
-		cout << "Internal representation of Z:" << endl << "Z.a =" << endl;
-		PrintBinary(z.a);
-		cout << "Z.b =" << endl;
-		PrintBinary(z.b);
+	z = ia.ISub(x, y);
+	ia.IEndsToStrings(z, z1, z2);
+	cout << x1 << " - " << y1 << " = [" << z1 << "," << z2 << "]" << endl;
+	cout << "Internal representation of Z:" << endl << "Z.a =" << endl;
+	PrintBinary(z.a);
+	cout << "Z.b =" << endl;
+	PrintBinary(z.b);
 
-		z = ia.IMul(x, y);
-		ia.IEndsToStrings(z, z1, z2);
-		cout << x1 << " * " << y1 << " = [" << z1 << "," << z2 << "]" << endl;
-		cout << "Internal representation of Z:" << endl << "Z.a =" << endl;
-		PrintBinary(z.a);
-		cout << "Z.b =" << endl;
-		PrintBinary(z.b);
+	z = ia.IMul(x, y);
+	ia.IEndsToStrings(z, z1, z2);
+	cout << x1 << " * " << y1 << " = [" << z1 << "," << z2 << "]" << endl;
+	cout << "Internal representation of Z:" << endl << "Z.a =" << endl;
+	PrintBinary(z.a);
+	cout << "Z.b =" << endl;
+	PrintBinary(z.b);
 
-		z = ia.IDiv(x, y);
-		ia.IEndsToStrings(z, z1, z2);
-		cout << x1 << " - " << y1 << " = [" << z1 << "," << z2 << "]" << endl;
-		cout << "Internal representation of Z:" << endl << "Z.a =" << endl;
-		PrintBinary(z.a);
-		cout << "Z.b =" << endl;
-		PrintBinary(z.b);
-		cout << endl;
+	z = ia.IDiv(x, y);
+	ia.IEndsToStrings(z, z1, z2);
+	cout << x1 << " - " << y1 << " = [" << z1 << "," << z2 << "]" << endl;
+	cout << "Internal representation of Z:" << endl << "Z.a =" << endl;
+	PrintBinary(z.a);
+	cout << "Z.b =" << endl;
+	PrintBinary(z.b);
+	cout << endl;
 
-		cout << "Test for proper intervals:" << endl;
-		cout << "X.a = ";
-		cin >> x1;
-		x.a = ia.LeftRead(x1);
-		cout << "X.b (X.b>=X.a) = ";
-		cin >> x2;
-		x.b = ia.RightRead(x2);
-		ia.IEndsToStrings(x, z1, z2);
-		cout << "X converted" << endl;
-		cout << "to machine interval X = [" << z1 << "," << z2 << "]" << endl;
-		cout << "Internal representation of X:" << endl << "X.a =" << endl;
-		PrintBinary(x.a);
-		cout << "X.b =" << endl;
-		PrintBinary(x.b);
+	cout << "Test for proper intervals:" << endl;
+	cout << "X.a = ";
+	cin >> x1;
+	x.a = ia.LeftRead(x1);
+	cout << "X.b (X.b>=X.a) = ";
+	cin >> x2;
+	x.b = ia.RightRead(x2);
+	ia.IEndsToStrings(x, z1, z2);
+	cout << "X converted" << endl;
+	cout << "to machine interval X = [" << z1 << "," << z2 << "]" << endl;
+	cout << "Internal representation of X:" << endl << "X.a =" << endl;
+	PrintBinary(x.a);
+	cout << "X.b =" << endl;
+	PrintBinary(x.b);
 
-		cout << "Y.a = ";
-		cin >> y1;
-		y.a = ia.LeftRead(y1);
-		cout << "Y.b (Y.b>=Y.a) = " << endl;
-		cin >> y2;
-		y.b = ia.RightRead(y2);
-		ia.IEndsToStrings(y, z1, z2);
-		cout << "Y converted" << endl;
-		cout << "to machine interval Y = [" << z1 << "," << z2 << "]" << endl;
-		cout << "Internal representation of Y:" << endl << "Y.a =" << endl;
-		PrintBinary(y.a);
-		cout << "Y.b =" << endl;
-		PrintBinary(y.b);
+	cout << "Y.a = ";
+	cin >> y1;
+	y.a = ia.LeftRead(y1);
+	cout << "Y.b (Y.b>=Y.a) = " << endl;
+	cin >> y2;
+	y.b = ia.RightRead(y2);
+	ia.IEndsToStrings(y, z1, z2);
+	cout << "Y converted" << endl;
+	cout << "to machine interval Y = [" << z1 << "," << z2 << "]" << endl;
+	cout << "Internal representation of Y:" << endl << "Y.a =" << endl;
+	PrintBinary(y.a);
+	cout << "Y.b =" << endl;
+	PrintBinary(y.b);
 
-		cout << endl;
-		z = ia.IAdd(x, y);
-		ia.IEndsToStrings(z, z1, z2);
-		cout << "X + Y = [" << z1 << "," << z2 << "]" << endl;
-		cout << "Internal representation of Z:" << endl << "Z.a =" << endl;
-		PrintBinary(z.a);
-		cout << "Z.b =" << endl;
-		PrintBinary(z.b);
+	cout << endl;
+	z = ia.IAdd(x, y);
+	ia.IEndsToStrings(z, z1, z2);
+	cout << "X + Y = [" << z1 << "," << z2 << "]" << endl;
+	cout << "Internal representation of Z:" << endl << "Z.a =" << endl;
+	PrintBinary(z.a);
+	cout << "Z.b =" << endl;
+	PrintBinary(z.b);
 
-		z = ia.ISub(x, y);
-		ia.IEndsToStrings(z, z1, z2);
-		cout << "X - Y = [" << z1 << "," << z2 << "]" << endl;
-		cout << "Internal representation of Z:" << endl << "Z.a =" << endl;
-		PrintBinary(z.a);
-		cout << "Z.b =" << endl;
-		PrintBinary(z.b);
-		z = ia.IMul(x, y);
-		ia.IEndsToStrings(z, z1, z2);
-		cout << "X * Y = [" << z1 << "," << z2 << "]" << endl;
-		cout << "Internal representation of Z:" << endl << "Z.a =" << endl;
-		PrintBinary(z.a);
-		cout << "Z.b =" << endl;
-		PrintBinary(z.b);
-		z = ia.IDiv(x, y);
-		ia.IEndsToStrings(z, z1, z2);
-		cout << "X / Y = [" << z1 << "," << z2 << "]" << endl;
-		cout << "Internal representation of Z:" << endl << "Z.a =" << endl;
-		PrintBinary(z.a);
-		cout << "Z.b =" << endl;
-		PrintBinary(z.b);
+	z = ia.ISub(x, y);
+	ia.IEndsToStrings(z, z1, z2);
+	cout << "X - Y = [" << z1 << "," << z2 << "]" << endl;
+	cout << "Internal representation of Z:" << endl << "Z.a =" << endl;
+	PrintBinary(z.a);
+	cout << "Z.b =" << endl;
+	PrintBinary(z.b);
+	z = ia.IMul(x, y);
+	ia.IEndsToStrings(z, z1, z2);
+	cout << "X * Y = [" << z1 << "," << z2 << "]" << endl;
+	cout << "Internal representation of Z:" << endl << "Z.a =" << endl;
+	PrintBinary(z.a);
+	cout << "Z.b =" << endl;
+	PrintBinary(z.b);
+	z = ia.IDiv(x, y);
+	ia.IEndsToStrings(z, z1, z2);
+	cout << "X / Y = [" << z1 << "," << z2 << "]" << endl;
+	cout << "Internal representation of Z:" << endl << "Z.a =" << endl;
+	PrintBinary(z.a);
+	cout << "Z.b =" << endl;
+	PrintBinary(z.b);
 }
 
-void Tester::ArithmeticTestNew()
-{
-		string x1, x2, y1, y2, z1, z2;
-		Interval<long double> x, y, z;
-		string xa, xb;
-		x = x.IntRead("3.14");
-		Interval<long double> three (3,3);
-		x = x / three;
+void Tester::ArithmeticTestNew() {
+	Interval<long double>::Initialize();
 
-		x.IEndsToStrings(xa,xb);
-		cout << xa << " ; " << xb;
+	string x1, x2, y1, y2, z1, z2;
+	Interval<long double> x, y, z;
+	string xa, xb;
+	x = x.IntRead("3.14");
+	Interval<long double> three(3, 3);
+	x = x / three;
 
-		cout << endl;
-		cout << "Test for real numbers:" << endl;
-		cout << "x = ";
-		cin >> x1;
-		cout << endl;
-		x = x.IntRead(x1);
-		x.IEndsToStrings(z1, z2);
-		cout << "x converted" << endl;
-		cout << "to machine interval X = [" << z1 << "," << z2 << "]" << endl;
-		cout << "Internal representation of X:" << endl << "X.a =" << endl;
-		PrintBinary(x.a);
-		cout << "X.b =" << endl;
-		PrintBinary(x.b);
+	x.IEndsToStrings(xa, xb);
+	cout << xa << " ; " << xb;
 
-		cout << "y = ";
-		cin >> y1;
-		cout << endl;
-		y = y.IntRead(y1);
-		y.IEndsToStrings(z1, z2);
-		cout << "y converted" << endl;
-		cout << "to machine interval Y = [" << z1 << "," << z2 << "]" << endl;
-		cout << endl;
+	cout << endl;
+	cout << "Test for real numbers:" << endl;
+	cout << "x = ";
+	cin >> x1;
+	cout << endl;
+	x = x.IntRead(x1);
+	x.IEndsToStrings(z1, z2);
+	cout << "x converted" << endl;
+	cout << "to machine interval X = [" << z1 << "," << z2 << "]" << endl;
+	cout << "Internal representation of X:" << endl << "X.a =" << endl;
+	PrintBinary(x.a);
+	cout << "X.b =" << endl;
+	PrintBinary(x.b);
 
-		cout << "Internal representation of Y:" << endl << "Y.a =" << endl;
-		PrintBinary(y.a);
-		cout << "Y.b =" << endl;
-		PrintBinary(y.b);
+	cout << "y = ";
+	cin >> y1;
+	cout << endl;
+	y = y.IntRead(y1);
+	y.IEndsToStrings(z1, z2);
+	cout << "y converted" << endl;
+	cout << "to machine interval Y = [" << z1 << "," << z2 << "]" << endl;
+	cout << endl;
 
-		z = x + y;
-		z.IEndsToStrings(z1, z2);
-		cout << x1 << " + " << y1 << " = [" << z1 << "," << z2 << "]" << endl;
-		cout << "Internal representation of Z:" << endl << "Z.a =" << endl;
-		PrintBinary(z.a);
-		cout << "Z.b =" << endl;
-		PrintBinary(z.b);
+	cout << "Internal representation of Y:" << endl << "Y.a =" << endl;
+	PrintBinary(y.a);
+	cout << "Y.b =" << endl;
+	PrintBinary(y.b);
 
-		z = x - y;
-		z.IEndsToStrings(z1, z2);
-		cout << x1 << " - " << y1 << " = [" << z1 << "," << z2 << "]" << endl;
-		cout << "Internal representation of Z:" << endl << "Z.a =" << endl;
-		PrintBinary(z.a);
-		cout << "Z.b =" << endl;
-		PrintBinary(z.b);
+	z = x + y;
+	z.IEndsToStrings(z1, z2);
+	cout << x1 << " + " << y1 << " = [" << z1 << "," << z2 << "]" << endl;
+	cout << "Internal representation of Z:" << endl << "Z.a =" << endl;
+	PrintBinary(z.a);
+	cout << "Z.b =" << endl;
+	PrintBinary(z.b);
 
-		z = x * y;
-		z.IEndsToStrings(z1, z2);
-		cout << x1 << " * " << y1 << " = [" << z1 << "," << z2 << "]" << endl;
-		cout << "Internal representation of Z:" << endl << "Z.a =" << endl;
-		PrintBinary(z.a);
-		cout << "Z.b =" << endl;
-		PrintBinary(z.b);
+	z = x - y;
+	z.IEndsToStrings(z1, z2);
+	cout << x1 << " - " << y1 << " = [" << z1 << "," << z2 << "]" << endl;
+	cout << "Internal representation of Z:" << endl << "Z.a =" << endl;
+	PrintBinary(z.a);
+	cout << "Z.b =" << endl;
+	PrintBinary(z.b);
 
-		z = x / y;
-		z.IEndsToStrings(z1, z2);
-		cout << x1 << " - " << y1 << " = [" << z1 << "," << z2 << "]" << endl;
-		cout << "Internal representation of Z:" << endl << "Z.a =" << endl;
-		PrintBinary(z.a);
-		cout << "Z.b =" << endl;
-		PrintBinary(z.b);
-		cout << endl;
+	z = x * y;
+	z.IEndsToStrings(z1, z2);
+	cout << x1 << " * " << y1 << " = [" << z1 << "," << z2 << "]" << endl;
+	cout << "Internal representation of Z:" << endl << "Z.a =" << endl;
+	PrintBinary(z.a);
+	cout << "Z.b =" << endl;
+	PrintBinary(z.b);
 
-		cout << "Test for proper intervals:" << endl;
-		cout << "X.a = ";
-		cin >> x1;
-		x.a = x.LeftRead(x1);
-		cout << "X.b (X.b>=X.a) = ";
-		cin >> x2;
-		x.b = x.RightRead(x2);
-		x.IEndsToStrings(z1, z2);
-		cout << "X converted" << endl;
-		cout << "to machine interval X = [" << z1 << "," << z2 << "]" << endl;
-		cout << "Internal representation of X:" << endl << "X.a =" << endl;
-		PrintBinary(x.a);
-		cout << "X.b =" << endl;
-		PrintBinary(x.b);
+	z = x / y;
+	z.IEndsToStrings(z1, z2);
+	cout << x1 << " - " << y1 << " = [" << z1 << "," << z2 << "]" << endl;
+	cout << "Internal representation of Z:" << endl << "Z.a =" << endl;
+	PrintBinary(z.a);
+	cout << "Z.b =" << endl;
+	PrintBinary(z.b);
+	cout << endl;
 
-		cout << "Y.a = ";
-		cin >> y1;
-		y.a = y.LeftRead(y1);
-		cout << "Y.b (Y.b>=Y.a) = " << endl;
-		cin >> y2;
-		y.b = y.RightRead(y2);
-		y.IEndsToStrings(z1, z2);
-		cout << "Y converted" << endl;
-		cout << "to machine interval Y = [" << z1 << "," << z2 << "]" << endl;
-		cout << "Internal representation of Y:" << endl << "Y.a =" << endl;
-		PrintBinary(y.a);
-		cout << "Y.b =" << endl;
-		PrintBinary(y.b);
+	cout << "Test for proper intervals:" << endl;
+	cout << "X.a = ";
+	cin >> x1;
+	x.a = x.LeftRead(x1);
+	cout << "X.b (X.b>=X.a) = ";
+	cin >> x2;
+	x.b = x.RightRead(x2);
+	x.IEndsToStrings(z1, z2);
+	cout << "X converted" << endl;
+	cout << "to machine interval X = [" << z1 << "," << z2 << "]" << endl;
+	cout << "Internal representation of X:" << endl << "X.a =" << endl;
+	PrintBinary(x.a);
+	cout << "X.b =" << endl;
+	PrintBinary(x.b);
 
-		cout << endl;
-		z = x + y;
-		z.IEndsToStrings(z1, z2);
-		cout << "X + Y = [" << z1 << "," << z2 << "]" << endl;
-		cout << "Internal representation of Z:" << endl << "Z.a =" << endl;
-		PrintBinary(z.a);
-		cout << "Z.b =" << endl;
-		PrintBinary(z.b);
+	cout << "Y.a = ";
+	cin >> y1;
+	y.a = y.LeftRead(y1);
+	cout << "Y.b (Y.b>=Y.a) = " << endl;
+	cin >> y2;
+	y.b = y.RightRead(y2);
+	y.IEndsToStrings(z1, z2);
+	cout << "Y converted" << endl;
+	cout << "to machine interval Y = [" << z1 << "," << z2 << "]" << endl;
+	cout << "Internal representation of Y:" << endl << "Y.a =" << endl;
+	PrintBinary(y.a);
+	cout << "Y.b =" << endl;
+	PrintBinary(y.b);
 
-		z = x - y;
-		z.IEndsToStrings(z1, z2);
-		cout << "X - Y = [" << z1 << "," << z2 << "]" << endl;
-		cout << "Internal representation of Z:" << endl << "Z.a =" << endl;
-		PrintBinary(z.a);
-		cout << "Z.b =" << endl;
-		PrintBinary(z.b);
-		z = x * y;
-		z.IEndsToStrings(z1, z2);
-		cout << "X * Y = [" << z1 << "," << z2 << "]" << endl;
-		cout << "Internal representation of Z:" << endl << "Z.a =" << endl;
-		PrintBinary(z.a);
-		cout << "Z.b =" << endl;
-		PrintBinary(z.b);
-		z = x / y;
-		z.IEndsToStrings(z1, z2);
-		cout << "X / Y = [" << z1 << "," << z2 << "]" << endl;
-		cout << "Internal representation of Z:" << endl << "Z.a =" << endl;
-		PrintBinary(z.a);
-		cout << "Z.b =" << endl;
-		PrintBinary(z.b);
+	cout << endl;
+	z = x + y;
+	z.IEndsToStrings(z1, z2);
+	cout << "X + Y = [" << z1 << "," << z2 << "]" << endl;
+	cout << "Internal representation of Z:" << endl << "Z.a =" << endl;
+	PrintBinary(z.a);
+	cout << "Z.b =" << endl;
+	PrintBinary(z.b);
+
+	z = x - y;
+	z.IEndsToStrings(z1, z2);
+	cout << "X - Y = [" << z1 << "," << z2 << "]" << endl;
+	cout << "Internal representation of Z:" << endl << "Z.a =" << endl;
+	PrintBinary(z.a);
+	cout << "Z.b =" << endl;
+	PrintBinary(z.b);
+	z = x * y;
+	z.IEndsToStrings(z1, z2);
+	cout << "X * Y = [" << z1 << "," << z2 << "]" << endl;
+	cout << "Internal representation of Z:" << endl << "Z.a =" << endl;
+	PrintBinary(z.a);
+	cout << "Z.b =" << endl;
+	PrintBinary(z.b);
+	z = x / y;
+	z.IEndsToStrings(z1, z2);
+	cout << "X / Y = [" << z1 << "," << z2 << "]" << endl;
+	cout << "Internal representation of Z:" << endl << "Z.a =" << endl;
+	PrintBinary(z.a);
+	cout << "Z.b =" << endl;
+	PrintBinary(z.b);
 }
-void Tester::StuffTest()
-{
+void Tester::StuffTest() {
 	//
 	//		string sa = "0.1";
 	//		mpfr_t rop, op;
