@@ -12,12 +12,13 @@
 
 using namespace std;
 
-namespace intervalarth
+namespace interval_arithmetic
 {
 enum IAMode {DINT_MODE, PINT_MODE};
 enum ExperimentMode {CONST_M_EXP, CLASSICAL_EXP, INTERVAL_EXP};
 enum Solvers {GPDE_SOLVER};
 
+template<typename T>
 struct Parameters
 {
 public:
@@ -27,11 +28,11 @@ public:
 	int m;
 	int n;
 	int example_id;
-	long double alpha;
-	long double beta;
-	long double gamma;
-	long double delta;
-	long double eps;
+	T alpha;
+	T beta;
+	T gamma;
+	T delta;
+	T eps;
 	string file_name;
 };
 }
