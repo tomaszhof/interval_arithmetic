@@ -37,7 +37,7 @@ void THashMap<T>::ToMap(int ij, Interval<T> v) {
 	if (map.find(ij) != map.end()) {
 		map[ij] = v;
 	} else
-		map.insert(std::map<int, Interval<T>>::value_type(ij, v));
+		map.insert(std::map<int, Interval<T> >::value_type(ij, v));
 }
 
 template<typename T>

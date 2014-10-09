@@ -24,6 +24,14 @@ namespace interval_arithmetic
 template<typename T>
 class GPDESolver: public Solver<T>
 {
+using Solver<T>::bc;
+using Solver<T>::params;
+using Solver<T>::u;
+using Solver<T>::X;
+using Solver<T>::maxM;
+using Solver<T>::maxN;
+using Solver<T>::_initparams;
+
 public:
 	GPDESolver();
 	virtual ~GPDESolver();

@@ -20,7 +20,7 @@ template<typename T>
 class THashMap
 {
 private:
-	std::map<int, Interval<T>> map;
+	std::map<int, Interval<T> > map;
 public:
 	THashMap();
 	virtual ~THashMap();
