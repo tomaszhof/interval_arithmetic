@@ -34,6 +34,7 @@
 							<tool id="cdt.managedbuild.tool.gnu.cpp.linker.exe.debug.625039029" name="GCC C++ Linker" superClass="cdt.managedbuild.tool.gnu.cpp.linker.exe.debug">
 								<option id="gnu.cpp.link.option.libs.947065641" name="Libraries (-l)" superClass="gnu.cpp.link.option.libs" valueType="libs">
 									<listOptionValue builtIn="false" value="gmp"/>
+									<listOptionValue builtIn="false" value="boost_system"/>
 									<listOptionValue builtIn="false" value="mpfr"/>
 								</option>
 								<option id="gnu.cpp.link.option.paths.1942655128" name="Library search path (-L)" superClass="gnu.cpp.link.option.paths" valueType="libPaths">

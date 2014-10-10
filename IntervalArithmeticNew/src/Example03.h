@@ -5,7 +5,7 @@
  *      Author: thof
  */
 
-#ifndef EXAMPle03_H_
+#ifndef EXAMPLE03_H_
 #define EXAMPLE03_H_
 
 #include "Utils.h"
