@@ -56,7 +56,9 @@ public:
 	void Initialize();
 	void SetParameters(Parameters<T> p);
 	void Execute();
+	static void SetMode(IAMode m);
 };
+
 
 }
 

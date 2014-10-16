@@ -11,14 +11,12 @@
 #include <string>
 #include <ieee754.h>
 #include <bitset>
-
-#include "IntervalArithmetic.h"
 #include "Interval.h"
 
 using namespace std;
 using namespace interval_arithmetic;
 
-namespace intervalarth
+namespace interval_arithmetic
 {
 
 class Tester
@@ -27,8 +25,6 @@ public:
 	Tester();
 	virtual ~Tester();
 	void PrintBinary(long double x);
-	void IEndsToStrings(interval i, string& left, string& right);
-	void ArithmeticTest();
 	void ArithmeticTestNew();
 	void StuffTest();
 };

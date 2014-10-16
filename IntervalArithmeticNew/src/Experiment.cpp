@@ -846,6 +846,8 @@ void Experiment<T>::DoConstMExperiment(int eid)
 template<typename T>
 Experiment<T>::Experiment(int ac, char* av[])
 {
+	_example = NULL;
+	solver = NULL;
 	_param_initialized = false;
 	_solver_initialized = false;
 	ConfigReader<T>* cf = new ConfigReader<T>(ac, av);
@@ -904,5 +906,8 @@ void Experiment<T>::Execute()
 		solver->WriteResults();
 	}
 }
+
+//The explicit instantiation part
+template class Experiment<long double>;
 }
 

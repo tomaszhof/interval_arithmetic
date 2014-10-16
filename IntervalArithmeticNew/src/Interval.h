@@ -43,10 +43,11 @@ enum IAOutDigits {
 
 template<typename T> class Interval {
 private:
-	static IAMode mode;
 	static IAPrecision precision;
 	static IAOutDigits outdigits;
+
 public:
+	static IAMode mode;
 	T a;
 	T b;
 	Interval();
@@ -77,6 +78,15 @@ public:
 	T RightRead(const string& sa);
 };
 
+template<typename T> IAMode Interval<T>::mode = PINT_MODE;
+template<typename T> IAPrecision Interval<T>::precision = LONGDOUBLE_PREC;
+template<typename T> IAOutDigits Interval<T>::outdigits = LONGDOUBLE_DIGITS;
+
+template<typename T>
+void Interval<T>::SetMode(IAMode m) {
+	mode = m;
+}
+
 template<typename T>
 inline Interval<T>::~Interval() {
 }
@@ -92,15 +102,6 @@ inline Interval<T>::Interval(T a, T b) {
 	this->a = a;
 	this->b = b;
 }
-
-template<typename T>
-inline void Interval<T>::SetMode(IAMode m) {
-	Interval<T>::mode = m;
-}
-
-template<typename T> IAMode Interval<T>::mode = PINT_MODE;
-template<typename T> IAPrecision Interval<T>::precision = LONGDOUBLE_PREC;
-template<typename T> IAOutDigits Interval<T>::outdigits = LONGDOUBLE_DIGITS;
 
 template<typename T>
 inline IAMode Interval<T>::GetMode(IAMode m) {

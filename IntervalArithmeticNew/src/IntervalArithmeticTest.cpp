@@ -8,20 +8,26 @@
 
 #include <iostream>
 #include "Tester.h"
+#include "Experiment.h"
 
 using namespace std;
-using namespace intervalarth;
+using namespace interval_arithmetic;
 
-int main() {
+int main(int ac, char *av[]) {
 	cout << "IntervalArtithmetic CPP test project" << endl;
 
-	Tester* tester = new Tester();
-	tester->ArithmeticTest();
 	cout << "\n \n ------------------------------------------------------- \n \n";
 	cout << "\n \n -----------------NEW IMPLEMENTATION-------------------- \n \n";
 	cout << "\n \n ------------------------------------------------------- \n \n";
+
+	Tester* tester = new Tester();
 	tester->ArithmeticTestNew();
 	delete tester;
+
+	Experiment<long double>* exper = new Experiment<long double>(ac, av);
+	exper->Initialize();
+	exper->Execute();
+	delete exper;
 
 	return 0;
 }
