@@ -37,7 +37,7 @@ void THashMap<T>::ToMap(int ij, Interval<T> v) {
 	if (map.find(ij) != map.end()) {
 		map[ij] = v;
 	} else
-		map.insert(std::map<int, Interval<T> >::value_type(ij, v));
+		map.insert(typename std::map<int, Interval<T> >::value_type(ij, v));
 }
 
 template<typename T>
@@ -49,4 +49,7 @@ template<typename T>
 void THashMap<T>::Erase(int ij) {
 	map.erase(ij);
 }
+
+//The explicit instantiation part
+template class THashMap<long double>;
 }

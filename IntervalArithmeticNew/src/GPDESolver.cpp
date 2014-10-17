@@ -1162,5 +1162,9 @@ int GPDESolver<T>::SolveDIA()
 	}
 	return 0;
 }
+
+//The explicit instantiation part
+template class GPDESolver<long double>;
+
 }
 /* namespace intervalarth */

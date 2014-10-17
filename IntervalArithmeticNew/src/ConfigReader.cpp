@@ -576,5 +576,8 @@ void ConfigReader<T>::SetDefaultParameters()
 	this->file_name = "results.txt";
 }
 
+//The explicit instantiation part
+template class ConfigReader<long double>;
+
 }
 /* namespace intervalarth */

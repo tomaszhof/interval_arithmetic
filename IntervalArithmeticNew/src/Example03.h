@@ -45,7 +45,7 @@ public:
 	long double ExactSol(long double x, long double y);
 	long double GetConstM();
 	long double GetConstN();
-	void SetArithmeticMode(int mode);
+	void SetArithmeticMode(IAMode mode);
 };
 
 template<typename T>
@@ -645,7 +645,7 @@ long double Example03<T>::GetConstN()
 }
 
 template<typename T>
-void Example03<T>::SetArithmeticMode(int mode)
+void Example03<T>::SetArithmeticMode(IAMode mode)
 {
 	Interval<T>::SetMode(mode);
 }

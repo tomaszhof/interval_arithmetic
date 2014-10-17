@@ -66,26 +66,21 @@ public:
 	static Interval<T> ISqr2();
 	static Interval<T> ISqr3();
 	static Interval<T> IPi();
-	static void SetMode(IAMode m);
-	static IAMode GetMode(IAMode m);
+	static void SetMode(IAMode m) {mode = m; }
+	static IAMode GetMode();
 	static void SetPrecision(IAPrecision p);
 	static IAPrecision GetPrecision(IAPrecision p);
 	static void SetOutDigits(IAOutDigits o);
 	static IAOutDigits GetOutDigits(IAOutDigits o);
 	static Interval<T> IntRead(const string & sa);
 	void IEndsToStrings(string & left, string & right);
-	T LeftRead(const string& sa);
-	T RightRead(const string& sa);
+	static T LeftRead(const string& sa);
+	static T RightRead(const string& sa);
 };
 
 template<typename T> IAMode Interval<T>::mode = PINT_MODE;
 template<typename T> IAPrecision Interval<T>::precision = LONGDOUBLE_PREC;
 template<typename T> IAOutDigits Interval<T>::outdigits = LONGDOUBLE_DIGITS;
-
-template<typename T>
-void Interval<T>::SetMode(IAMode m) {
-	mode = m;
-}
 
 template<typename T>
 inline Interval<T>::~Interval() {
@@ -104,7 +99,7 @@ inline Interval<T>::Interval(T a, T b) {
 }
 
 template<typename T>
-inline IAMode Interval<T>::GetMode(IAMode m) {
+inline IAMode Interval<T>::GetMode() {
 	return Interval<T>::mode;
 }
 
@@ -120,6 +115,18 @@ template<typename T>
 inline Interval<T> Interval<T>::operator +(const Interval<T>& y) {
 	Interval<T> x(this->a, this->b);
 	switch (mode) {
+	case PINT_MODE:
+		return IAdd(x, y);
+	case DINT_MODE:
+		return DIAdd(x, y);
+	default:
+		return IAdd(x, y);
+	}
+}
+
+template<typename T>
+inline Interval<T> operator +(Interval<T> x, const Interval<T>& y) {
+	switch (Interval<T>::mode) {
 	case PINT_MODE:
 		return IAdd(x, y);
 	case DINT_MODE:
@@ -156,6 +163,18 @@ inline Interval<T> Interval<T>::operator *(const Interval<T>& y) {
 }
 
 template<typename T>
+inline Interval<T> operator *(Interval<T> x, const Interval<T>& y) {
+	switch (Interval<T>::mode) {
+	case PINT_MODE:
+		return IMul(x, y);
+	case DINT_MODE:
+		return DIMul(x, y);
+	default:
+		return IMul(x, y);
+	}
+}
+
+template<typename T>
 inline Interval<T> Interval<T>::operator /(const Interval<T>& y) {
 	Interval<T> x(this->a, this->b);
 	switch (mode) {
@@ -169,6 +188,17 @@ inline Interval<T> Interval<T>::operator /(const Interval<T>& y) {
 }
 
 template<typename T>
+inline Interval<T> operator /(Interval<T> x, const Interval<T>& y) {
+	switch (Interval<T>::mode) {
+	case PINT_MODE:
+		return IDiv(x, y);
+	case DINT_MODE:
+		return DIDiv(x, y);
+	default:
+		return IDiv(x, y);
+	}
+}
+template<typename T>
 inline void Interval<T>::SetPrecision(IAPrecision p) {
 	Interval<T>::precision = p;
 }
@@ -180,7 +210,7 @@ inline IAPrecision Interval<T>::GetPrecision(IAPrecision p) {
 
 template<typename T>
 inline void Interval<T>::SetOutDigits(IAOutDigits o) {
-	Interval<T>::outdigits = 0;
+	Interval<T>::outdigits = LONGDOUBLE_DIGITS;
 }
 
 template<typename T>
@@ -583,7 +613,7 @@ Interval<T> IExp(const Interval<T>& x) {
 		if (!finished)
 			st = 2;
 	}
-	Interval<T>& r;
+	Interval<T> r;
 	r.a = 0;
 	r.b = 0;
 	return r;
@@ -1206,6 +1236,9 @@ Interval<T> DISqr(const Interval<T>& x) {
 	}
 	return r;
 }
+
+//The explicit instantiation part
+template class Interval<long double>;
 
 } /* namespace interval_arithmetic */
 

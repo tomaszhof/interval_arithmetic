@@ -415,5 +415,8 @@ long double Solver<T>::GetMaxN()
 	return this->maxN;
 }
 
+//The explicit instantiation part
+template class Solver<long double>;
+
 }
 /* namespace intervalarth */
