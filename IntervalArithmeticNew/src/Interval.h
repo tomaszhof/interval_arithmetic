@@ -116,21 +116,26 @@ inline Interval<T> Interval<T>::operator +(const Interval<T>& y) {
 	Interval<T> x(this->a, this->b);
 	switch (mode) {
 	case PINT_MODE:
-		return IAdd(x, y);
+		*this = IAdd(x, y);
+		break;
 	case DINT_MODE:
-		return DIAdd(x, y);
+		*this = DIAdd(x, y);
+		break;
 	default:
-		return IAdd(x, y);
+		*this = IAdd(x, y);
+		break;
 	}
+
+	return *this;
 }
 
 template<typename T>
 inline Interval<T> operator +(Interval<T> x, const Interval<T>& y) {
 	switch (Interval<T>::mode) {
 	case PINT_MODE:
-		return IAdd(x, y);
+		return  IAdd(x, y);
 	case DINT_MODE:
-		return DIAdd(x, y);
+		return  DIAdd(x, y);
 	default:
 		return IAdd(x, y);
 	}
@@ -141,12 +146,17 @@ inline Interval<T> Interval<T>::operator -(const Interval<T>& y) {
 	Interval<T> x(this->a, this->b);
 	switch (mode) {
 	case PINT_MODE:
-		return ISub(x, y);
+		*this = ISub(x, y);
+		break;
 	case DINT_MODE:
-		return DISub(x, y);
+		*this = DISub(x, y);
+		break;
 	default:
-		return ISub(x, y);
+		*this = ISub(x, y);
+		break;
 	}
+
+	return *this;
 }
 
 template<typename T>
@@ -154,12 +164,17 @@ inline Interval<T> Interval<T>::operator *(const Interval<T>& y) {
 	Interval<T> x(this->a, this->b);
 	switch (mode) {
 	case PINT_MODE:
-		return IMul(x, y);
+		*this = IMul(x, y);
+		break;
 	case DINT_MODE:
-		return DIMul(x, y);
+		*this = DIMul(x, y);
+		break;
 	default:
-		return IMul(x, y);
+		*this = IMul(x, y);
+		break;
 	}
+
+	return *this;
 }
 
 template<typename T>
@@ -179,12 +194,17 @@ inline Interval<T> Interval<T>::operator /(const Interval<T>& y) {
 	Interval<T> x(this->a, this->b);
 	switch (mode) {
 	case PINT_MODE:
-		return IDiv(x, y);
+		*this = IDiv(x, y);
+		break;
 	case DINT_MODE:
-		return DIDiv(x, y);
+		*this = DIDiv(x, y);
+		break;
 	default:
-		return IDiv(x, y);
+		*this = IDiv(x, y);
+		break;
 	}
+
+	return *this;
 }
 
 template<typename T>

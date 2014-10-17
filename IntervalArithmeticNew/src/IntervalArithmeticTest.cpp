@@ -20,9 +20,9 @@ int main(int ac, char *av[]) {
 	cout << "\n \n -----------------NEW IMPLEMENTATION-------------------- \n \n";
 	cout << "\n \n ------------------------------------------------------- \n \n";
 
-	Tester* tester = new Tester();
-	tester->ArithmeticTestNew();
-	delete tester;
+//	Tester* tester = new Tester();
+//	tester->ArithmeticTestNew();
+//	delete tester;
 
 	Experiment<long double>* exper = new Experiment<long double>(ac, av);
 	exper->Initialize();
