@@ -61,6 +61,160 @@ int ConfigReader<T>::GetN()
 	return this->n;
 }
 
+
+
+template<typename T>
+ExperimentMode ConfigReader<T>::SetExperimentMode(ExperimentMode mode)
+{
+	this->exp_mode = mode;
+	return this->exp_mode;
+}
+
+template<typename T>
+IAMode ConfigReader<T>::SetArithmeticMode(IAMode mode)
+{
+	this->arth_mode = mode;
+	return this->arth_mode;
+}
+
+template<typename T>
+int ConfigReader<T>::SetM(int m)
+{
+	this->m = m;
+	return this->m;
+}
+
+template<typename T>
+int ConfigReader<T>::SetN(int n)
+{
+	this->n = n;
+	return this->n;
+}
+
+template<typename T>
+int ConfigReader<T>::SetExampleId(int e)
+{
+	this->e = e;
+	return this->e;
+}
+
+template<typename T>
+int ConfigReader<T>::GetExampleId()
+{
+	return this->e;
+}
+
+template<typename T>
+void ConfigReader<T>::readConfigFile(string fileName)
+{
+	if (!boost::filesystem::exists(fileName.c_str()))
+	{
+		std::cout << "Can't find config file!" << std::endl;
+		return;
+	}
+
+	//default values of config's parameters
+	int m, exId;
+	T alpha1, alpha2, beta1, beta2;
+	string ia_mode, exp_mode, solver_name, output_file;
+
+	//setup options
+	po::options_description desc("Program options");
+	desc.add_options()("arithmetic.mode", po::value<string>(&ia_mode),
+			"interval arithmetic mode")("experiment.mode",
+			po::value<string>(&exp_mode), "experiment mode")("experiment.m",
+			po::value<int>(&m), "grid size m")("experiment.exId",
+			po::value<int>(&exId), "example ID")("experiment.alpha1",
+			po::value<T>(&alpha1))("experiment.alpha2",
+			po::value<T>(&alpha2))("experiment.beta1",
+			po::value<T>(&beta1))("experiment.beta2",
+			po::value<T>(&beta2))("solver.name",
+			po::value<string>(&output_file))("solver.output",
+			po::value<string>(&output_file));
+	po::variables_map vm;
+
+	std::ifstream settings_file(fileName.c_str());
+
+	//clear the map.
+	vm = po::variables_map();
+
+	po::store(po::parse_config_file(settings_file, desc), vm);
+	po::notify(vm);
+
+	//setting parameters values
+	if (ia_mode == "dint")
+		this->SetArithmeticMode(DINT_MODE);
+	else
+		this->SetArithmeticMode(PINT_MODE);
+
+	if (exp_mode == "interval_exp")
+		this->SetExperimentMode(INTERVAL_EXP);
+	else if (exp_mode == "cont_m_exp")
+		this->SetExperimentMode(CONST_M_EXP);
+	else
+		this->SetExperimentMode(CLASSICAL_EXP);
+	this->SetExampleId(exId);
+
+	if (solver_name == "gpde")
+		this->SetSolverId(GPDE_SOLVER);
+
+	this->SetFileName(output_file);
+	this->SetAlpha1(alpha1);
+	this->SetAlpha2(alpha2);
+	this->SetBeta1(beta1);
+	this->SetBeta2(beta2);
+	this->SetM(m);
+	this->SetN(m);
+}
+
+template<typename T>
+T ConfigReader<T>::SetAlpha1(T alpha1)
+{
+	return this->alpha1 = alpha1;
+}
+
+template<typename T>
+T ConfigReader<T>::SetAlpha2(T alpha2)
+{
+	return this->alpha2 = alpha2;
+}
+
+template<typename T>
+T ConfigReader<T>::SetBeta1(T beta1)
+{
+	return this->beta1 = beta1;
+}
+
+template<typename T>
+T ConfigReader<T>::SetBeta2(T beta2)
+{
+	return this->beta2 = beta2;
+}
+
+template<typename T>
+T ConfigReader<T>::GetAlpha1()
+{
+	return this->alpha1;
+}
+
+template<typename T>
+T ConfigReader<T>::GetAlpha2()
+{
+	return this->alpha2;
+}
+
+template<typename T>
+T ConfigReader<T>::GetBeta1()
+{
+	return this->beta1;
+}
+
+template<typename T>
+T ConfigReader<T>::GetBeta2()
+{
+	return this->beta2;
+}
+
 template<typename T>
 void ConfigReader<T>::parseCommandArgs(int ac, char* av[])
 {
@@ -224,167 +378,15 @@ void ConfigReader<T>::parseCommandArgs(int ac, char* av[])
 }
 
 template<typename T>
-ExperimentMode ConfigReader<T>::SetExperimentMode(ExperimentMode mode)
-{
-	this->exp_mode = mode;
-	return this->exp_mode;
-}
-
-template<typename T>
-IAMode ConfigReader<T>::SetArithmeticMode(IAMode mode)
-{
-	this->arth_mode = mode;
-	return this->arth_mode;
-}
-
-template<typename T>
-int ConfigReader<T>::SetM(int m)
-{
-	this->m = m;
-	return this->m;
-}
-
-template<typename T>
-int ConfigReader<T>::SetN(int n)
-{
-	this->n = n;
-	return this->n;
-}
-
-template<typename T>
-int ConfigReader<T>::SetExampleId(int e)
-{
-	this->e = e;
-	return this->e;
-}
-
-template<typename T>
-int ConfigReader<T>::GetExampleId()
-{
-	return this->e;
-}
-
-template<typename T>
-void ConfigReader<T>::readConfigFile(string fileName)
-{
-	if (!boost::filesystem::exists(fileName.c_str()))
-	{
-		std::cout << "Can't find config file!" << std::endl;
-		return;
-	}
-
-	//default values of config's parameters
-	int m, exId;
-	T alpha1, alpha2, beta1, beta2;
-	string ia_mode, exp_mode, solver_name, output_file;
-
-	//setup options
-	po::options_description desc("Program options");
-	desc.add_options()("arithmetic.mode", po::value<string>(&ia_mode),
-			"interval arithmetic mode")("experiment.mode",
-			po::value<string>(&exp_mode), "experiment mode")("experiment.m",
-			po::value<int>(&m), "grid size m")("experiment.exId",
-			po::value<int>(&exId), "example ID")("experiment.alpha1",
-			po::value<T>(&alpha1))("experiment.alpha2",
-			po::value<T>(&alpha2))("experiment.beta1",
-			po::value<T>(&beta1))("experiment.beta2",
-			po::value<T>(&beta2))("solver.name",
-			po::value<string>(&output_file))("solver.output",
-			po::value<string>(&output_file));
-	po::variables_map vm;
-
-	std::ifstream settings_file(fileName.c_str());
-
-	//clear the map.
-	vm = po::variables_map();
-
-	po::store(po::parse_config_file(settings_file, desc), vm);
-	po::notify(vm);
-
-	//setting parameters values
-	if (ia_mode == "dint")
-		this->SetArithmeticMode(DINT_MODE);
-	else
-		this->SetArithmeticMode(PINT_MODE);
-
-	if (exp_mode == "interval_exp")
-		this->SetExperimentMode(INTERVAL_EXP);
-	else if (exp_mode == "cont_m_exp")
-		this->SetExperimentMode(CONST_M_EXP);
-	else
-		this->SetExperimentMode(CLASSICAL_EXP);
-	this->SetExampleId(exId);
-
-	if (solver_name == "gpde")
-		this->SetSolverId(GPDE_SOLVER);
-
-	this->SetFileName(output_file);
-	this->SetAlpha1(alpha1);
-	this->SetAlpha2(alpha2);
-	this->SetBeta1(beta1);
-	this->SetBeta2(beta2);
-	this->SetM(m);
-	this->SetN(m);
-}
-
-template<typename T>
-T ConfigReader<T>::SetAlpha1(T alpha1)
-{
-	return this->alpha1 = alpha1;
-}
-
-template<typename T>
-T ConfigReader<T>::SetAlpha2(T alpha2)
-{
-	return this->alpha2 = alpha2;
-}
-
-template<typename T>
-T ConfigReader<T>::SetBeta1(T beta1)
-{
-	return this->beta1 = beta1;
-}
-
-template<typename T>
-T ConfigReader<T>::SetBeta2(T beta2)
-{
-	return this->beta2 = beta2;
-}
-
-template<typename T>
-T ConfigReader<T>::GetAlpha1()
-{
-	return this->alpha1;
-}
-
-template<typename T>
-T ConfigReader<T>::GetAlpha2()
-{
-	return this->alpha2;
-}
-
-template<typename T>
-T ConfigReader<T>::GetBeta1()
-{
-	return this->beta1;
-}
-
-template<typename T>
-T ConfigReader<T>::GetBeta2()
-{
-	return this->beta2;
-}
-
-template<typename T>
 void ConfigReader<T>::readParametersFromConsole()
 {
 	bool OK, OK1, dint_mode;
 	char z, z1;
 
 	cout
-			<< "SOLVING THE GENERALIZED POISSON EQUATION WITH GIVEN BOUNDARY CONDITIONS"
+			<< "CONFIG READER"
 			<< endl;
-	cout << "Insert data" << endl;
+	cout << "Please insert necessary parameters." << endl;
 
 	//read arithmetic mode
 	do
@@ -564,15 +566,15 @@ template<typename T>
 void ConfigReader<T>::SetDefaultParameters()
 {
 	//default configuration
-	this->exp_mode = CLASSICAL_EXP; //classic experiment mode
+	this->exp_mode = INTERVAL_EXP; //classic experiment mode
 	this->arth_mode = PINT_MODE;
 	this->m = 20; //default grid size m=n=20
 	this->n = 20;
-	this->e = 1; //default example_id = 1
-	this->alpha1 = 0;
-	this->alpha2 = 1;
-	this->beta1 = 0;
-	this->beta2 = 1;
+	this->e = 3; //default example_id = 1
+	this->alpha1 = 1;
+	this->alpha2 = 2;
+	this->beta1 = 1;
+	this->beta2 = 2;
 	this->file_name = "results.txt";
 }
 

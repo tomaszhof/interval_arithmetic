@@ -34,7 +34,7 @@ Solver<T>::~Solver()
 template<typename T>
 void Solver<T>::WriteFPResultsToFile()
 {
-	int i, imod, j, jmod, l, st, ui, uj, nmin, nmax, mmax, step;
+	int i, imod, j, jmod, l, ui, uj, nmin, nmax, mmax, step;
 	long double exact, h, k, w;
 	bool OK, OK1;
 	long double sol;
@@ -48,6 +48,7 @@ void Solver<T>::WriteFPResultsToFile()
 	if (!_initparams)
 		throw runtime_error("Parameters not initialized!");
 
+	int st = 0;
 	int m = params.m;
 	int n = params.n;
 	T alpha = params.alpha;
