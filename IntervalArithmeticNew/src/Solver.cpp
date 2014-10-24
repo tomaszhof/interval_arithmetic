@@ -289,6 +289,16 @@ void Solver<T>::WriteResults()
 }
 
 template<typename T>
+void Solver<T>::InitializeX(int m, int n)
+{
+	Interval<T> izero = {0 , 0};
+	int n3 = (n * m - n - m + 4) * (n * m - n - m + 4) / 4;
+			X = new Interval<T>[n3];
+			for (int i = 1; i <= n3; i++)
+				X[i - 1] = izero;
+}
+
+template<typename T>
 int Solver<T>::ConstMExperiment()
 {
 	this->SetEstimateMN(true);

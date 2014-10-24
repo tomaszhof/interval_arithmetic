@@ -114,19 +114,20 @@ inline Interval<T> Interval<T>::operator =(const Interval<T>& i) {
 template<typename T>
 inline Interval<T> Interval<T>::operator +(const Interval<T>& y) {
 	Interval<T> x(this->a, this->b);
+	Interval<T> r = {0, 0};
 	switch (mode) {
 	case PINT_MODE:
-		*this = IAdd(x, y);
+		r = IAdd(x, y);
 		break;
 	case DINT_MODE:
-		*this = DIAdd(x, y);
+		r = DIAdd(x, y);
 		break;
 	default:
-		*this = IAdd(x, y);
+		r = IAdd(x, y);
 		break;
 	}
 
-	return *this;
+	return r;
 }
 
 template<typename T>
@@ -144,37 +145,39 @@ inline Interval<T> operator +(Interval<T> x, const Interval<T>& y) {
 template<typename T>
 inline Interval<T> Interval<T>::operator -(const Interval<T>& y) {
 	Interval<T> x(this->a, this->b);
+	Interval<T> r = {0, 0};
 	switch (mode) {
 	case PINT_MODE:
-		*this = ISub(x, y);
+		r = ISub(x, y);
 		break;
 	case DINT_MODE:
-		*this = DISub(x, y);
+		r = DISub(x, y);
 		break;
 	default:
-		*this = ISub(x, y);
+		r = ISub(x, y);
 		break;
 	}
 
-	return *this;
+	return r;
 }
 
 template<typename T>
 inline Interval<T> Interval<T>::operator *(const Interval<T>& y) {
 	Interval<T> x(this->a, this->b);
+	Interval<T> r = {0, 0};
 	switch (mode) {
 	case PINT_MODE:
-		*this = IMul(x, y);
+		r = IMul(x, y);
 		break;
 	case DINT_MODE:
-		*this = DIMul(x, y);
+		r = DIMul(x, y);
 		break;
 	default:
-		*this = IMul(x, y);
+		r = IMul(x, y);
 		break;
 	}
 
-	return *this;
+	return r;
 }
 
 template<typename T>
@@ -192,19 +195,20 @@ inline Interval<T> operator *(Interval<T> x, const Interval<T>& y) {
 template<typename T>
 inline Interval<T> Interval<T>::operator /(const Interval<T>& y) {
 	Interval<T> x(this->a, this->b);
+	Interval<T> r = {0, 0};
 	switch (mode) {
 	case PINT_MODE:
-		*this = IDiv(x, y);
+		r = IDiv(x, y);
 		break;
 	case DINT_MODE:
-		*this = DIDiv(x, y);
+		r = DIDiv(x, y);
 		break;
 	default:
-		*this = IDiv(x, y);
+		r = IDiv(x, y);
 		break;
 	}
 
-	return *this;
+	return r;
 }
 
 template<typename T>
@@ -683,9 +687,9 @@ template<typename T>
 Interval<T> ISub(const Interval<T>& x, const Interval<T>& y) {
 	Interval<T> r;
 	fesetround(FE_DOWNWARD);
-	r.a = x.a - y.a;
+	r.a = x.a - y.b;
 	fesetround(FE_UPWARD);
-	r.b = x.b - y.b;
+	r.b = x.b - y.a;
 	fesetround(FE_TONEAREST);
 	return r;
 }

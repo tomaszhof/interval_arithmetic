@@ -312,6 +312,10 @@ int GPDESolver<T>::SolveFP()
 template<typename T>
 int GPDESolver<T>::SolvePIA()
 {
+	fstream filestr;
+	string fname = "tmpLog.txt";
+	filestr.open(fname.c_str(), fstream::out);
+
 	if (!_initparams)
 		throw runtime_error("Parameters not initialized!");
 
@@ -447,9 +451,10 @@ int GPDESolver<T>::SolvePIA()
 		k = 0;
 		j = 0;
 		n3 = (n * m - n - m + 4) * (n * m - n - m + 4) / 4;
-		X = new Interval<T>[n3];
+
+		this->X = new Interval<T>[n3];
 		for (i = 1; i <= n3; i++)
-			X[i - 1] = izero;
+			this->X[i - 1] = izero;
 		num = 1;
 
 		do
@@ -497,6 +502,7 @@ int GPDESolver<T>::SolvePIA()
 			}
 
 			S = H1POW2K1POW2 * bc->F(HH1, KK1, st);
+			filestr << k << " B: S= [" << S.a << " ; " << S.b << "]" << endl;
 			if (st == 0)
 			{
 				//S1 = ia.IMul(H1, H1);
@@ -601,6 +607,7 @@ int GPDESolver<T>::SolvePIA()
 				}
 			}
 
+			filestr << k << " E: S= [" << S.a << " ; " << S.b << "]" << endl;
 			if (st == 0)
 			{
 				bm.ToMap(n2 - 1, S);
@@ -631,9 +638,9 @@ int GPDESolver<T>::SolvePIA()
 						for (int i = 1; i <= kh; i++)
 						{
 							if ((k > 1) && (i == k - 1))
-								S = S - (BB1 * X[q - 1]);
+								S = S - (BB1 * this->X[q - 1]);
 							if ((k > m - 1) && (i - 1 == k - m))
-								S = S - (BB0 * X[q - 1]);
+								S = S - (BB0 * this->X[q - 1]);
 							q = q + p;
 						}
 						if (!((S.a == 0) && (S.b == 0)))
@@ -660,6 +667,7 @@ int GPDESolver<T>::SolvePIA()
 						}
 					}
 				}
+				//cout << "MAX= [" << MAX.a << " ; " << MAX.b << "]" << endl;
 				if ((MAX.a == 0) && (MAX.b == 0))
 					st = 5;
 				else
@@ -680,13 +688,13 @@ int GPDESolver<T>::SolvePIA()
 					q = 0;
 					for (j1 = 1; j1 <= kh; j1++)
 					{
-						S = X[q + lh - 1];
+						S = this->X[q + lh - 1];
 						for (int i = 1; i <= p; i++)
 							if (i != lh)
 							{
 								jh = jh + 1;
 								S1 = bm.FromMap(i - 1);
-								X[jh - 1] = X[q + i - 1] -
+								this->X[jh - 1] = this->X[q + i - 1] -
 										(S * S1);
 							}
 						q = q + p;
@@ -697,7 +705,8 @@ int GPDESolver<T>::SolvePIA()
 						{
 							jh = jh + 1;
 							tmpi = bm.FromMap(i - 1);
-							X[jh - 1] = tmpi;
+							this->X[jh - 1] = tmpi;
+							//filestr << jh-1 << ": X= [" << this->X[jh - 1].a << " ; " << this->X[jh - 1].b << "]" << endl;
 						}
 					}
 					p = p - 1;
@@ -720,23 +729,23 @@ int GPDESolver<T>::SolvePIA()
 				rh = r[k - 1];
 				if (rh != k)
 				{
-					S = X[k - 1];
-					X[k - 1] = X[rh - 1];
+					S = this->X[k - 1];
+					this->X[k - 1] = this->X[rh - 1];
 					i = r[rh - 1];
 					while (i != k)
 					{
-						X[rh - 1] = X[i - 1];
+						this->X[rh - 1] = this->X[i - 1];
 						r[rh - 1] = rh;
 						rh = i;
 						i = r[rh - 1];
 					}
-					X[rh - 1] = S;
+					this->X[rh - 1] = S;
 					r[rh - 1] = rh;
 				}
 			}
 		}
 	}
-
+	filestr.close();
 	return 0;
 }
 
@@ -873,9 +882,10 @@ int GPDESolver<T>::SolveDIA()
 		k = 0;
 		j = 0;
 		n3 = (n * m - n - m + 4) * (n * m - n - m + 4) / 4;
-		X = new Interval<T>[n3];
+
+		this->X = new Interval<T>[n3];
 		for (i = 1; i <= n3; i++)
-			X[i - 1] = izero;
+			this->X[i - 1] = izero;
 		num = 1;
 
 		do
@@ -1055,9 +1065,9 @@ int GPDESolver<T>::SolveDIA()
 						for (int i = 1; i <= kh; i++)
 						{
 							if ((k > 1) && (i == k - 1))
-								S = S - (BB1 * X[q - 1]);
+								S = S - (BB1 * this->X[q - 1]);
 							if ((k > m - 1) && (i - 1 == k - m))
-								S = S - (BB0 * X[q - 1]);
+								S = S - (BB0 * this->X[q - 1]);
 							q = q + p;
 						}
 						if (!((S.a == 0) && (S.b == 0)))
@@ -1104,14 +1114,14 @@ int GPDESolver<T>::SolveDIA()
 					q = 0;
 					for (j1 = 1; j1 <= kh; j1++)
 					{
-						S = X[q + lh - 1];
+						S = this->X[q + lh - 1];
 						for (int i = 1; i <= p; i++)
 							if (i != lh)
 							{
 								jh = jh + 1;
 								S1 = bm.FromMap(i - 1);
 								;
-								X[jh - 1] = X[q + i - 1] - (S * S1);
+								this->X[jh - 1] = this->X[q + i - 1] - (S * S1);
 							}
 						q = q + p;
 					}
@@ -1121,7 +1131,7 @@ int GPDESolver<T>::SolveDIA()
 						{
 							jh = jh + 1;
 							tmpi = bm.FromMap(i - 1);
-							X[jh - 1] = tmpi;
+							this->X[jh - 1] = tmpi;
 						}
 					}
 					p = p - 1;
@@ -1144,17 +1154,17 @@ int GPDESolver<T>::SolveDIA()
 				rh = r[k - 1];
 				if (rh != k)
 				{
-					S = X[k - 1];
-					X[k - 1] = X[rh - 1];
+					S = this->X[k - 1];
+					this->X[k - 1] = this->X[rh - 1];
 					i = r[rh - 1];
 					while (i != k)
 					{
-						X[rh - 1] = X[i - 1];
+						this->X[rh - 1] = this->X[i - 1];
 						r[rh - 1] = rh;
 						rh = i;
 						i = r[rh - 1];
 					}
-					X[rh - 1] = S;
+					this->X[rh - 1] = S;
 					r[rh - 1] = rh;
 				}
 			}

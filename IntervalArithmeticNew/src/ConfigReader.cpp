@@ -566,7 +566,7 @@ template<typename T>
 void ConfigReader<T>::SetDefaultParameters()
 {
 	//default configuration
-	this->exp_mode = INTERVAL_EXP; //classic experiment mode
+	this->exp_mode =  INTERVAL_EXP; //INTERVAL_EXP; //CLASSICAL_EXP; //classic experiment mode
 	this->arth_mode = PINT_MODE;
 	this->m = 20; //default grid size m=n=20
 	this->n = 20;
@@ -575,7 +575,7 @@ void ConfigReader<T>::SetDefaultParameters()
 	this->alpha2 = 2;
 	this->beta1 = 1;
 	this->beta2 = 2;
-	this->file_name = "results.txt";
+	this->file_name = "resultsdint.txt";
 }
 
 //The explicit instantiation part

@@ -31,7 +31,6 @@ protected:
 	bool _initparams;
 	bool _estimateMN;
 	Parameters<T> params;
-	Interval<T>* X;
 	BoundaryConditions<T>* bc;
 	long double** u;
 	long double maxM;
@@ -39,6 +38,7 @@ protected:
 	vector<long double> vecConstM;
 	vector<long double> vecConstN;
 public:
+	Interval<T>* X;
 	Solver();
 	virtual ~Solver();
 	void SetParameters(Parameters<T>& p);
@@ -46,6 +46,7 @@ public:
 	void WriteIntervalResultsToFile();
 	void WriteConstMResults();
 	void WriteResults();
+	void InitializeX(int m, int n);
 	void Execute();
 	int ConstMExperiment();
 	int SolveInterval();
