@@ -570,12 +570,12 @@ void ConfigReader<T>::SetDefaultParameters()
 	this->arth_mode = PINT_MODE;
 	this->m = 20; //default grid size m=n=20
 	this->n = 20;
-	this->e = 3; //default example_id = 1
+	this->e = 4; //default example_id = 1
 	this->alpha1 = 1;
 	this->alpha2 = 2;
 	this->beta1 = 1;
 	this->beta2 = 2;
-	this->file_name = "resultsdint.txt";
+	this->file_name = "resultspint.txt";
 }
 
 //The explicit instantiation part

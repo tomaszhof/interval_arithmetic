@@ -14,7 +14,7 @@
 //#include "Example01.h"
 //#include "Example02.h"
 #include "Example03.h"
-//#include "Example04.h"
+#include "Example04.h"
 
 using namespace interval_arithmetic;
 

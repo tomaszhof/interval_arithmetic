@@ -302,7 +302,7 @@ template<typename T>
 int Solver<T>::ConstMExperiment()
 {
 	this->SetEstimateMN(true);
-	for (int i = 1; i < 10; ++i) {
+	for (int i = 1; i < 4; ++i) {
 		this->params.m = (i + 1) * 10;
 		this->params.n = this->params.m;
 		this->SolveFP();

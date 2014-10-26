@@ -72,7 +72,7 @@ void Experiment<T>::SetExample(int eid, int arth_mode)
 		_example = new Example03<T>();
 		break;
 	case 4:
-		//_example = new Example04();
+		_example = new Example04<T>();
 		break;
 	default:
 		_example = NULL;

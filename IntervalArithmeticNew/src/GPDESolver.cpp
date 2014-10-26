@@ -38,7 +38,7 @@ int GPDESolver<T>::SetExample(int eid)
 		bc = new Example03<T>();
 		break;
 	case 4:
-		//bc = new Example04();
+		bc = new Example04<T>();
 		break;
 	default:
 		bc = NULL;

@@ -14,16 +14,16 @@ using namespace std;
 using namespace interval_arithmetic;
 
 int main(int ac, char *av[]) {
-	cout << "IntervalArtithmetic CPP test project" << endl;
-
 	cout << "\n \n ------------------------------------------------------- \n \n";
-	cout << "\n \n -----------------NEW IMPLEMENTATION-------------------- \n \n";
+	cout << "\n \n ------TEST IMPLEMENTATION OF INTERVAL ARITHMETIC------- \n \n";
 	cout << "\n \n ------------------------------------------------------- \n \n";
 
+	//simple tester for basic interval operations
 //	Tester* tester = new Tester();
 //	tester->ArithmeticTestNew();
 //	delete tester;
 
+	//experiment for the Generalized Poisson Equation
 	Experiment<long double>* exper = new Experiment<long double>(ac, av);
 	exper->Initialize();
 	exper->Execute();
