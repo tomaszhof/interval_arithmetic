@@ -45,11 +45,6 @@ public:
 	Experiment();
 	Experiment(int ac, char *av[]);
 	virtual ~Experiment();
-	void DoExperiment(int eid);
-	void DoClassicallExperiment(int eid);
-	void DoConstMExperiment(int eid);
-	void IEndsToStrings(Interval<T> i, string& left, string& right);
-	string FloatToString(long double f);
 	void SetExample(int eid, int arth_mode);
 	void SetSolver(Parameters<T> p);
 	void SetExampleForSolver(int eid);
