@@ -40,6 +40,12 @@ int GPDESolver<T>::SetExample(int eid)
 	case 4:
 		bc = new Example04<T>();
 		break;
+	case 5:
+		bc = new Example05<T>();
+		break;
+	case 6:
+		bc = new Example06<T>();
+		break;
 	default:
 		bc = NULL;
 		break;
@@ -70,7 +76,7 @@ int GPDESolver<T>::SolveFP()
 	st = 0;
 	if ((n < 2) || (m < 2))
 		st = 1;
-	else if ((alpha <= 0) || (beta <= 0))
+	else if ((alpha < 0) || (beta < 0))
 		st = 2;
 	if (st == 0)
 	{

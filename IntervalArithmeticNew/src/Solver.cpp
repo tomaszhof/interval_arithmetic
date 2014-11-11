@@ -368,7 +368,7 @@ void Solver<T>::SetParameters(Parameters<T>& p)
 template<typename T>
 void Solver<T>::Execute()
 {
-	switch (params.exp_mode)
+    switch (params.exp_mode)
 	{
 	case CONST_M_EXP:
 		this->ConstMExperiment();
