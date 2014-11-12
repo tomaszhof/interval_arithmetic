@@ -94,61 +94,38 @@ long double Example06<T>::phi4(const long double& x)
 template<typename T>
 long double Example06<T>::a(const long double& x, const long double& y)
 {
-	return y * exp((pow(x, 2) + pow(y, 2)) / 2);
+	return (sin(y*M_PI/2) + cos(x*M_PI/2)) * exp(pow(x, 2)/ 2);
 }
 
 template<typename T>
 long double Example06<T>::c(const long double& x, const long double& y)
 {
-	return x * exp((pow(x, 2) + pow(y, 2)) / 2);
+	return exp((pow(x, 2) + pow(y, 2)) / 2);
 }
 
 template<typename T>
 Interval<T> Example06<T>::F(const Interval<T>& ix, const Interval<T>& iy, int& st)
 {
-	//f(x,y)=x*y*(x+y)*(x*y-3)
+	//f(x,y)=x * y * (y*pow(x, 2) - 3 * x + x*pow(y, 2) - 3 * y);
 
-	Interval<T> r, xy, xpy, xym3, i3y;
+	Interval<T> r, xy, xpy, xym3, i3y, xpow2, ypow2;
 	r.a = 0;
 	r.b = 0;
 	st = 0;
 
 	Interval<T> ithree (3,3);
+	xpow2 = ix * ix;
+	ypow2 = iy * iy;
 
-	if (Interval<T>::GetMode() == PINT_MODE)
-	{
-		xy = (ix * iy);
-		xpy = (ix + iy);
-		xym3 = (xy - ithree);
-		i3y = (ithree * iy);
-		r = (xy * xpy);
-		r = (r * xym3);
-	}
-	else
-	{
-//		f:=isub(imul(ix,iy),ithree);
-//		f:=imul(iadd(ix,iy),f);
-//		st:=0;
-//		Result:=imul(imul(ix,iy),f);
-		r = ((ix * iy) - ithree);
-		r = ((ix + iy) * r);
-		r =((ix * iy) * r);
-
-
-//		xy = ia.DIMul(ix, iy);
-//		xpy = ia.DIAdd(ix,iy);
-//		xym3 = ia.DISub(xy,ithree);
-//		i3y = ia.DIMul(ithree, iy);
-//		r = ia.DIMul(xy, xpy);
-//		r = ia.DIMul(r, xym3);
-	}
+	st=0;
+	r = ix * iy * (iy*xpow2 - ithree*ix + ix*ypow2 - ithree*iy);
 	return r;
 }
 
 template<typename T>
 Interval<T> Example06<T>::PHI1(const Interval<T>& iy, int& st)
 {
-	//phi1(y) = y*exp(-(1+pow(y,2))/2);
+	//phi1(y) = (1-y*cos(y*(M_PI / 2)))*pow((M_PI),y);
 
 	Interval<T> powy2, iexp, tmp;
 	Interval<T> r =
@@ -159,54 +136,9 @@ Interval<T> Example06<T>::PHI1(const Interval<T>& iy, int& st)
 	{ 1, 1 };
 	Interval<T> itwo =
 	{ 2, 2 };
-	int status = 0;
 
-	if (Interval<T>::GetMode() == PINT_MODE)
-	{
-		powy2 = iy * iy;
-		tmp = ione + powy2;
-		tmp = tmp / itwo;
-		tmp = izero - tmp;
-		iexp = IExp(tmp);
-		if (status == 0)
-		{
-			st = 0;
-			r = iy * iexp;
-			return r;
-		}
-		else
-		{
-			st = 3;
-			return r;
-		}
-	}
-	else
-	{
-//		phi1:=iadd(imul(iy,iy),ione);
-//		phi1:=iexp(idiv(phi1,itwo),st);
-//		Result:=idiv(iy,phi1);
-
-		r = (iy * iy) + ione;
-		r = IExp((r / itwo));
-		r = iy / r;
-
-//		powy2 = ia.DIMul(iy, iy);
-//		tmp = ia.DIAdd(ione, powy2);
-//		tmp = ia.DIDiv(tmp, itwo);
-//		tmp = ia.DISub(izero, tmp);
-//		iexp = ia.DIExp(tmp, status);
-//		if (status == 0)
-//		{
-//			st = 0;
-//			r = ia.DIMul(iy, iexp);
-//			return r;
-//		}
-//		else
-//		{
-//			st = 3;
-//			return r;
-//		}
-	}
+	st=0;
+	//r = (ione - iy*ICos(iy*Interval<T>::IPi()/2))*IPow(Interval<T>::IPi(), iy);
 
 	return r;
 }
@@ -214,7 +146,37 @@ Interval<T> Example06<T>::PHI1(const Interval<T>& iy, int& st)
 template<typename T>
 Interval<T> Example06<T>::PHI2(const Interval<T>& ix, int& st)
 {
-	//phi2(x) = x*exp(-(1+pow(x,2))/2);
+	//phi2(x) = pow(M_PI,x);
+
+	Interval<T> powx2, iexp, tmp;
+	Interval<T> r =
+	{ 0, 0 };
+
+	st=0;
+	//r = IPow(Interval<T>::IPi(),ix);
+
+	return r;
+}
+
+template<typename T>
+Interval<T> Example06<T>::PHI3(const Interval<T>& iy, int& st)
+{
+	//phi3(y) = pow(M_PI,(1-y))*exp(y);
+	Interval<T> powy2, iexp, tmp;
+	Interval<T> r =
+	{ 0, 0 };
+	Interval<T> ione =
+	{ 1, 1 };
+
+	st=0;
+	//r = Interval<T>::IPow(Interval<T>::IPi(), (ione - iy)) * Interval<T>::IExp(iy);
+	return r;
+}
+
+template<typename T>
+Interval<T> Example06<T>::PHI4(const Interval<T>& ix, int& st)
+{
+	//phi4(x) = pow(M_PI,(1-x))*exp(sin(x*M_PI/2));
 
 	Interval<T> powx2, iexp, tmp;
 	Interval<T> r =
@@ -225,187 +187,9 @@ Interval<T> Example06<T>::PHI2(const Interval<T>& ix, int& st)
 	{ 1, 1 };
 	Interval<T> itwo =
 	{ 2, 2 };
-	int status = 0;
 
-	if (Interval<T>::GetMode() == PINT_MODE)
-	{
-		powx2 = ix * ix;
-		tmp = ione + powx2;
-		tmp = tmp / itwo;
-		tmp = izero - tmp;
-		iexp = IExp(tmp);
-		if (status == 0)
-		{
-			st = 0;
-			r = ix * iexp;
-			return r;
-		}
-		else
-		{
-			st = 3;
-			return r;
-		}
-	}
-	else
-	{
-//		phi2:=iadd(imul(ix,ix),ione);
-//		phi2:=iexp(idiv(phi2,itwo),st);
-//		Result:=idiv(ix,phi2);
-		r = (ix * ix) + ione;
-		r = IExp((r / itwo));
-		r = ix / r;
-
-//		powx2 = ia.DIMul(ix, ix);
-//		tmp = ia.DIAdd(ione, powx2);
-//		tmp = ia.DIDiv(tmp, itwo);
-//		tmp = ia.DISub(izero, tmp);
-//		iexp = ia.DIExp(tmp, status);
-//		if (status == 0)
-//		{
-//			st = 0;
-//			r = ia.DIMul(ix, iexp);
-//			return r;
-//		}
-//		else
-//		{
-//			st = 3;
-//			return r;
-//		}
-	}
-	return r;
-}
-
-template<typename T>
-Interval<T> Example06<T>::PHI3(const Interval<T>& iy, int& st)
-{
-	//phi3(y) = 2 * y * exp(-(4 + pow(y, 2)) / 2);
-	Interval<T> powy2, iexp, tmp;
-	Interval<T> r =
-	{ 0, 0 };
-	Interval<T> izero =
-	{ 0, 0 };
-	Interval<T> itwo =
-	{ 2, 2 };
-	Interval<T> ifour =
-	{ 4, 4 };
-	int status = 0;
-
-	if (Interval<T>::GetMode() == PINT_MODE)
-	{
-		powy2 = (iy * iy);
-		tmp = ifour + powy2;
-		tmp = tmp / itwo;
-		tmp = izero - tmp;
-		iexp = IExp(tmp);
-		if (status == 0)
-		{
-			st = 0;
-			tmp = itwo * iy;
-			r = tmp * iexp;
-			return r;
-		}
-		else
-		{
-			st = 3;
-			return r;
-		}
-	}
-	else
-	{
-//		phi3:=iadd(dimul(iy,iy),ifour);
-//		phi3:=iexp(idiv(phi3,itwo),st);
-//		Result:=imul(itwo,idiv(iy,phi3));
-		r = (iy * iy) + ifour;
-		r = IExp((r / itwo));
-		r = itwo * (iy / r);
-
-//		powy2 = ia.DIMul(iy, iy);
-//		tmp = ia.DIAdd(ifour, powy2);
-//		tmp = ia.DIDiv(tmp, itwo);
-//		tmp = ia.DISub(izero, tmp);
-//		iexp = ia.DIExp(tmp, status);
-//		if (status == 0)
-//		{
-//			st = 0;
-//			tmp = ia.DIMul(itwo, iy);
-//			r = ia.DIMul(tmp, iexp);
-//			return r;
-//		}
-//		else
-//		{
-//			st = 3;
-//			return r;
-//		}
-	}
-
-	return r;
-}
-
-template<typename T>
-Interval<T> Example06<T>::PHI4(const Interval<T>& ix, int& st)
-{
-	//phi4(x) = 2 * x * exp(-(4 + pow(x, 2)) / 2);
-
-	Interval<T> powx2, iexp, tmp;
-	Interval<T> r =
-	{ 0, 0 };
-	Interval<T> izero =
-	{ 0, 0 };
-	Interval<T> itwo =
-	{ 2, 2 };
-	Interval<T> ifour =
-	{ 4, 4 };
-	int status = 0;
-
-	if (Interval<T>::GetMode() == PINT_MODE)
-	{
-		powx2 = (ix * ix);
-		tmp = (ifour + powx2);
-		tmp = (tmp / itwo);
-		tmp = (izero - tmp);
-		iexp = IExp(tmp);
-		if (status == 0)
-		{
-			st = 0;
-			tmp = (itwo * ix);
-			r = (tmp * iexp);
-			return r;
-		}
-		else
-		{
-			st = 3;
-			return r;
-		}
-	}
-	else
-	{
-
-//		phi4:=iadd(imul(ix,ix),ifour);
-//		phi4:=iexp(idiv(phi4,itwo),st);
-//		Result:=imul(itwo,idiv(ix,phi4));
-		r = ((ix * ix) + ifour);
-		r = IExp((r / itwo));
-		r = itwo * (ix / r);
-
-//		powx2 = ia.DIMul(ix, ix);
-//		tmp = ia.DIAdd(ifour, powx2);
-//		tmp = ia.DIDiv(tmp, itwo);
-//		tmp = ia.DISub(izero, tmp);
-//		iexp = ia.DIExp(tmp, status);
-//		if (status == 0)
-//		{
-//			st = 0;
-//			tmp = ia.DIMul(itwo, ix);
-//			r = ia.DIMul(tmp, iexp);
-//			return r;
-//		}
-//		else
-//		{
-//			st = 3;
-//			return r;
-//		}
-	}
-
+	st=0;
+	//r = IPow(Interval<T>::IPi(), (ione - ix))*IExp(ISin(ix*Interval<T>::IPi()/itwo));
 	return r;
 }
 
@@ -493,65 +277,18 @@ Interval<T> Example06<T>::OMEGA(const Interval<T>& ix, const Interval<T>& iy, in
 template<typename T>
 Interval<T> Example06<T>::A(const Interval<T>& ix, const Interval<T>& iy, int& st)
 {
-	// a(x,y) = y * exp((pow(x, 2) + pow(y, 2)) / 2);
-//
-//	a:=iadd(imul(ix,ix),imul(iy,iy));
-//	a:=iexp(idiv(a,itwo),st);
-//	Result:=imul(iy,a)
+	// a(x,y) = (sin(y*M_PI/2) + cos(x*M_PI/2)) * exp(pow(x, 2)/ 2);
 
 	Interval<T> powx2, powy2, iexp, tmp;
 	Interval<T> r =
 	{ 0, 0 };
 	Interval<T> itwo =
 	{ 2, 2 };
-	int status = 0;
-	int mode = Interval<T>::GetMode();
 
-	if (mode == PINT_MODE)
-	{
-		powy2 = (iy * iy);
-		powx2 = (ix * ix);
-		tmp = (powx2 + powy2);
-		tmp = (tmp / itwo);
-		iexp = IExp(tmp);
-		if (status == 0)
-		{
-			st = 0;
-			r = (iy * iexp);
-			return r;
-		}
-		else
-		{
-			st = 3;
-			return r;
-		}
-	}
-	else
-	{
-		//	a:=iadd(imul(ix,ix),imul(iy,iy));
-		//	a:=iexp(idiv(a,itwo),st);
-		//	Result:=imul(iy,a)
-		r = ((ix * ix)+ (iy* iy));
-		r = IExp((r / itwo));
-		r = (iy * r);
+	st = 0;
+	Interval<T> xpow2 = ix * ix;
 
-//		powy2 = ia.DIMul(iy, iy);
-//		powx2 = ia.DIMul(ix, ix);
-//		tmp = ia.DIAdd(powx2, powy2);
-//		tmp = ia.DIDiv(tmp, itwo);
-//		iexp = ia.DIExp(tmp, status);
-//		if (status == 0)
-//		{
-//			st = 0;
-//			r = ia.DIMul(iy, iexp);
-//			return r;
-//		}
-//		else
-//		{
-//			st = 3;
-//			return r;
-//		}
-	}
+	r = (ISin(iy*(Interval<T>::IPi()/itwo)) + ICos(ix*(Interval<T>::IPi()/itwo)))*IExp(xpow2/itwo);
 
 	return r;
 }
@@ -559,7 +296,7 @@ Interval<T> Example06<T>::A(const Interval<T>& ix, const Interval<T>& iy, int& s
 template<typename T>
 Interval<T> Example06<T>::C(const Interval<T>& ix, const Interval<T>& iy, int& st)
 {
-	//c(x,y) = x*exp((pow(x,2)+pow(y,2))/2);
+	//c(x,y) = exp((pow(x,2)+pow(y,2))/2);
 	Interval<T> powx2, powy2, iexp, tmp;
 	Interval<T> r =
 	{ 0, 0 };
@@ -582,7 +319,7 @@ Interval<T> Example06<T>::C(const Interval<T>& ix, const Interval<T>& iy, int& s
 		if (status == 0)
 		{
 			st = 0;
-			r = (ix * iexp);
+			//r = (ix * iexp);
 			return r;
 		}
 		else
@@ -598,7 +335,7 @@ Interval<T> Example06<T>::C(const Interval<T>& ix, const Interval<T>& iy, int& s
 		//Result:=imul(ix,b)
 		r = ((ix * ix) + (iy *iy));
 		r = IExp((r / itwo));
-		r = (ix * r);
+		//r = (ix * r);
 
 //		powy2 = ia.DIMul(iy, iy);
 //		powx2 = ia.DIMul(ix, ix);

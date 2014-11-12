@@ -73,8 +73,8 @@ void Solver<T>::WriteFPResultsToFile()
 	if (st != 0)
 		return;
 
-	h = alpha / n;
-	k = beta / m;
+	h = (delta-alpha) / n;
+	k = (gamma-beta) / m;
 	l = 0;
 	imod = n / 10;
 	jmod = m / 10;
