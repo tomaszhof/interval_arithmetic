@@ -162,6 +162,19 @@ inline Interval<T> Interval<T>::operator -(const Interval<T>& y) {
 }
 
 template<typename T>
+inline Interval<T> operator -(Interval<T> x, const Interval<T>& y) {
+	switch (Interval<T>::mode) {
+	case PINT_MODE:
+		return  ISub(x, y);
+	case DINT_MODE:
+		return  DISub(x, y);
+	default:
+		return ISub(x, y);
+	}
+}
+
+
+template<typename T>
 inline Interval<T> Interval<T>::operator *(const Interval<T>& y) {
 	Interval<T> x(this->a, this->b);
 	Interval<T> r = {0, 0};
@@ -516,6 +529,12 @@ Interval<T> ISin(const Interval<T>& x) {
 				w = w1;
 				k = k + 2;
 				is_even = !is_even;
+				if ((w.a <= 0.0)&&(w.b >=0.0))
+				{
+					finished = true;
+					w = {0,0};
+					return w;
+				}
 			}
 		} while (!(finished || (k > INT_MAX / 2)));
 	}
