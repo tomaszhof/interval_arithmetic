@@ -44,6 +44,8 @@ public:
 	void SetParameters(Parameters<T>& p);
 	void WriteFPResultsToFile();
 	void WriteIntervalResultsToFile();
+	void WriteFPResultsToCsv();
+	void WriteIntervalResultsToCsv();
 	void WriteConstMResults();
 	void WriteResults();
 	void InitializeX(int m, int n);
@@ -61,4 +63,7 @@ public:
 };
 
 } /* namespace intervalarth */
+
+
+
 #endif /* SOLVER_H_ */

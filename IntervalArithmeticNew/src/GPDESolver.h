@@ -18,6 +18,7 @@
 #include "Example05.h"
 #include "Example06.h"
 #include "Example07.h"
+#include "Example08.h"
 
 using namespace interval_arithmetic;
 
@@ -42,7 +43,18 @@ public:
 	int SolvePIA();
 	int SolveDIA();
 	int SetExample(int eid);
+	void WriteFPResultsToCsv();
+	void WriteIntervalResultsToCsv();
 };
 
 } /* namespace intervalarth */
+
+template<typename T>
+inline void interval_arithmetic::GPDESolver<T>::WriteFPResultsToCsv() {
+}
+
+template<typename T>
+inline void interval_arithmetic::GPDESolver<T>::WriteIntervalResultsToCsv() {
+}
+
 #endif /* GPDESOLVER_H_ */

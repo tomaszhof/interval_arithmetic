@@ -27,6 +27,7 @@ public:
 	void PrintBinary(long double x);
 	void ArithmeticTestNew();
 	void StuffTest();
+	void TestISin();
 };
 
 } /* namespace intervalarth */

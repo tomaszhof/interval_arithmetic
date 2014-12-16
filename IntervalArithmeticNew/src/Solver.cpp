@@ -10,12 +10,10 @@
 using namespace interval_arithmetic;
 using namespace std;
 
-namespace interval_arithmetic
-{
+namespace interval_arithmetic {
 
 template<typename T>
-Solver<T>::Solver()
-{
+Solver<T>::Solver() {
 	this->_initparams = false;
 	this->_estimateMN = false;
 	this->maxM = 0;
@@ -26,14 +24,12 @@ Solver<T>::Solver()
 }
 
 template<typename T>
-Solver<T>::~Solver()
-{
+Solver<T>::~Solver() {
 	// TODO Auto-generated destructor stub
 }
 
 template<typename T>
-void Solver<T>::WriteFPResultsToFile()
-{
+void Solver<T>::WriteFPResultsToFile() {
 	int i, imod, j, jmod, l, ui, uj, nmin, nmax, mmax, step;
 	long double exact, h, k, w;
 	bool OK, OK1;
@@ -73,8 +69,8 @@ void Solver<T>::WriteFPResultsToFile()
 	if (st != 0)
 		return;
 
-	h = (delta-alpha) / n;
-	k = (gamma-beta) / m;
+	h = (delta - alpha) / n;
+	k = (gamma - beta) / m;
 	l = 0;
 	imod = n / 10;
 	jmod = m / 10;
@@ -83,15 +79,12 @@ void Solver<T>::WriteFPResultsToFile()
 
 	filestr << endl;
 
-	for (j = 0; j <= m; j++)
-	{
-		if (j % jmod == 0)
-		{
+	for (j = 0; j <= m; j++) {
+		if (j % jmod == 0) {
 			exact = bc->ExactSol(alpha + ui * h, beta + j * k); // exact solution
 			if ((j != 0) && (j != m))
 				sol = u[ui][j];
-			else
-			{
+			else {
 				if (j == 0)
 					sol = bc->phi2(alpha + ui * h);
 				else
@@ -108,15 +101,12 @@ void Solver<T>::WriteFPResultsToFile()
 					<< exact << endl;
 		}
 	}
-	for (int i = 0; i <= n; i++)
-	{
-		if (i % imod == 0)
-		{
+	for (int i = 0; i <= n; i++) {
+		if (i % imod == 0) {
 			exact = bc->ExactSol(alpha + i * h, beta + uj * k); // exact solution
 			if ((i != 0) && (i != n))
 				sol = u[i][uj];
-			else
-			{
+			else {
 				if (i == 0)
 					sol = bc->phi1(beta + uj * k);
 				else
@@ -139,8 +129,7 @@ void Solver<T>::WriteFPResultsToFile()
 }
 
 template<typename T>
-void Solver<T>::WriteIntervalResultsToFile()
-{
+void Solver<T>::WriteIntervalResultsToFile() {
 	int i, imod, j, jmod, l, ui, uj;
 	long double exact, h, k, w;
 	bool OK, OK1, dint_mode;
@@ -163,14 +152,10 @@ void Solver<T>::WriteIntervalResultsToFile()
 	T beta = params.beta;
 	T delta = params.delta;
 	T gamma = params.gamma;
-	Interval<T> intalpha =
-	{ params.alpha, params.alpha };
-	Interval<T> intbeta =
-	{ params.beta, params.beta };
-	Interval<T> GAMMA =
-	{ params.gamma, params.gamma };
-	Interval<T> DELTA =
-	{ params.delta, params.delta };
+	Interval<T> intalpha = { params.alpha, params.alpha };
+	Interval<T> intbeta = { params.beta, params.beta };
+	Interval<T> GAMMA = { params.gamma, params.gamma };
+	Interval<T> DELTA = { params.delta, params.delta };
 	T eps = params.eps;
 	NN.a = n;
 	NN.b = n;
@@ -210,15 +195,12 @@ void Solver<T>::WriteIntervalResultsToFile()
 	UJJ.a = uj;
 	UJJ.b = uj;
 	filestr << endl;
-	for (j = 0; j <= m; j++)
-	{
-		if (j % jmod == 0)
-		{
+	for (j = 0; j <= m; j++) {
+		if (j % jmod == 0) {
 			exact = bc->ExactSol(alpha + ui * h, beta + j * k); // exact solution
 			if ((j != 0) && (j != m))
 				sol = X[(ui - 1) * (m - 1) + j - 1];
-			else
-			{
+			else {
 				UIH = intalpha + (UII * HH);
 				if (j == 0)
 					sol = bc->PHI2(UIH, st);
@@ -239,15 +221,12 @@ void Solver<T>::WriteIntervalResultsToFile()
 					<< exact << endl;
 		}
 	}
-	for (int i = 0; i <= n; i++)
-	{
-		if (i % imod == 0)
-		{
+	for (int i = 0; i <= n; i++) {
+		if (i % imod == 0) {
 			exact = bc->ExactSol(alpha + i * h, beta + uj * k); // exact solution
 			if ((i != 0) && (i != n))
 				sol = X[(i - 1) * (m - 1) + uj - 1];
-			else
-			{
+			else {
 				UJK = intbeta + (UJJ * KK);
 				if (i == 0)
 					sol = bc->PHI1(UJK, st);
@@ -272,15 +251,14 @@ void Solver<T>::WriteIntervalResultsToFile()
 }
 
 template<typename T>
-void Solver<T>::WriteResults()
-{
-	switch (params.exp_mode)
-	{
+void Solver<T>::WriteResults() {
+	switch (params.exp_mode) {
 	case CONST_M_EXP:
 		this->WriteConstMResults();
 		break;
 	case CLASSICAL_EXP:
 		this->WriteFPResultsToFile();
+		this->WriteFPResultsToCsv();
 		break;
 	case INTERVAL_EXP:
 		this->WriteIntervalResultsToFile();
@@ -289,20 +267,18 @@ void Solver<T>::WriteResults()
 }
 
 template<typename T>
-void Solver<T>::InitializeX(int m, int n)
-{
-	Interval<T> izero = {0 , 0};
+void Solver<T>::InitializeX(int m, int n) {
+	Interval<T> izero = { 0, 0 };
 	int n3 = (n * m - n - m + 4) * (n * m - n - m + 4) / 4;
-			X = new Interval<T>[n3];
-			for (int i = 1; i <= n3; i++)
-				X[i - 1] = izero;
+	X = new Interval<T> [n3];
+	for (int i = 1; i <= n3; i++)
+		X[i - 1] = izero;
 }
 
 template<typename T>
-int Solver<T>::ConstMExperiment()
-{
+int Solver<T>::ConstMExperiment() {
 	this->SetEstimateMN(true);
-	for (int i = 1; i < 4; ++i) {
+	for (int i = 2; i < 6; ++i) {
 		this->params.m = (i + 1) * 10;
 		this->params.n = this->params.m;
 		this->SolveFP();
@@ -313,63 +289,53 @@ int Solver<T>::ConstMExperiment()
 }
 
 template<typename T>
-void Solver<T>::WriteConstMResults()
-{
+void Solver<T>::WriteConstMResults() {
 	fstream filestr;
 	filestr.open(params.file_name.c_str(), fstream::out);
-	filestr
-			<< "CONST M EXPERIMENT RESULTS"
-			<< endl;
+	filestr << "CONST M EXPERIMENT RESULTS" << endl;
 	if (vecConstM.size() != vecConstN.size())
 		return;
 
 	long double constM = 0;
 	long double constN = 0;
 	for (int i = 0; i < vecConstM.size(); ++i) {
-			constM = this->vecConstM.at(i);
-			constN = this->vecConstN.at(i);
-			filestr << constM << ";" << constN << endl;
-		}
+		constM = this->vecConstM.at(i);
+		constN = this->vecConstN.at(i);
+		filestr << constM << ";" << constN << endl;
+	}
 	filestr.close();
 }
 
 template<typename T>
-int Solver<T>::SetExample(int eid)
-{
+int Solver<T>::SetExample(int eid) {
 	return -1;
 }
 
 template<typename T>
-int Solver<T>::SolveFP()
-{
+int Solver<T>::SolveFP() {
 	return 0;
 }
 
 template<typename T>
-int Solver<T>::SolvePIA()
-{
+int Solver<T>::SolvePIA() {
 	return 0;
 }
 
 template<typename T>
-int Solver<T>::SolveDIA()
-{
+int Solver<T>::SolveDIA() {
 	return 0;
 }
 
 template<typename T>
-void Solver<T>::SetParameters(Parameters<T>& p)
-{
+void Solver<T>::SetParameters(Parameters<T>& p) {
 	this->params = p;
 	this->SetExample(p.example_id);
 	_initparams = true;
 }
 
 template<typename T>
-void Solver<T>::Execute()
-{
-    switch (params.exp_mode)
-	{
+void Solver<T>::Execute() {
+	switch (params.exp_mode) {
 	case CONST_M_EXP:
 		this->ConstMExperiment();
 		break;
@@ -383,11 +349,9 @@ void Solver<T>::Execute()
 }
 
 template<typename T>
-int Solver<T>::SolveInterval()
-{
+int Solver<T>::SolveInterval() {
 	int result = -1;
-	switch (params.ia_mode)
-	{
+	switch (params.ia_mode) {
 	case DINT_MODE:
 		result = this->SolveDIA();
 		break;
@@ -402,32 +366,102 @@ int Solver<T>::SolveInterval()
 }
 
 template<typename T>
-bool Solver<T>::SetEstimateMN(bool b)
-{
+bool Solver<T>::SetEstimateMN(bool b) {
 	this->_estimateMN = b;
 	return this->_estimateMN;
 }
 
 template<typename T>
-bool Solver<T>::GetEstimateMN()
-{
+bool Solver<T>::GetEstimateMN() {
 	return this->_estimateMN;
 }
 
 template<typename T>
-long double Solver<T>::GetMaxM()
-{
+long double Solver<T>::GetMaxM() {
 	return this->maxM;
 }
 
 template<typename T>
-long double Solver<T>::GetMaxN()
-{
+long double Solver<T>::GetMaxN() {
 	return this->maxN;
 }
 
+template<typename T>
+inline void Solver<T>::WriteFPResultsToCsv() {
+	int i, imod, j, jmod, l, ui, uj, nmin, nmax, mmax, step;
+	long double exact, h, k, w;
+	bool OK, OK1;
+	long double sol;
+	char z, z1;
+	string file_name, left, right, time;
+	fstream fp_filestr, exact_filestr;
+	clock_t time1, time2;
+	double time_diff;
+	long double Mconst = 0;
+
+	if (!_initparams)
+		throw runtime_error("Parameters not initialized!");
+
+	int st = 0;
+	int m = params.m;
+	int n = params.n;
+	T alpha = params.alpha;
+	T beta = params.beta;
+	T delta = params.delta;
+	T gamma = params.gamma;
+	T eps = params.eps;
+
+	int dprec = std::numeric_limits<T>::digits10;
+	std::setprecision(dprec);
+	cout.setf(std::ios_base::scientific);
+	fp_filestr.open("res_fp.csv", fstream::out);
+	exact_filestr.open("res_exact.csv", fstream::out);
+
+	if (st != 0)
+		return;
+
+	h = (delta - alpha) / n;
+	k = (gamma - beta) / m;
+	l = 0;
+	imod = n / 10;
+	jmod = m / 10;
+	ui = n / 2;
+	uj = m / 2;
+
+	fp_filestr << endl;
+
+	for (int i = 0; i <= n; i++) {
+		for (j = 0; j <= m; j++) {
+			exact = bc->ExactSol(alpha + i * h, beta + j * k); // exact solution
+			if ((j != 0) && (j != m) && (i != 0) && (i != n))
+				sol = u[i][j];
+			else {
+				if (j == 0)
+					sol = bc->phi2(alpha + i * h);
+				else if (j == m)
+					sol = bc->phi4(alpha + i * h);
+				else if (i == 0)
+					sol = bc->phi1(beta + j * k);
+				else
+					sol = bc->phi3(beta + j * k);
+			}
+			fp_filestr << std::setprecision(dprec) << sol << ";";
+			exact_filestr << std::setprecision(dprec) << exact << ";";
+		}
+		fp_filestr << std::setprecision(dprec) << endl;
+		exact_filestr << endl;
+	}
+	fp_filestr.close();
+	exact_filestr.close();
+}
+
+template<typename T>
+inline void Solver<T>::WriteIntervalResultsToCsv() {
+
+}
+
 //The explicit instantiation part
-template class Solver<long double>;
+template class Solver<long double> ;
 
 }
 /* namespace intervalarth */

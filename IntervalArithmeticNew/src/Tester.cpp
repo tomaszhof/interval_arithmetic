@@ -277,4 +277,18 @@ void Tester::StuffTest() {
 	 cout << "numeric_limits(double)=" <<  std::numeric_limits<double>::digits10 << endl;
 	 */
 }
+
+void interval_arithmetic::Tester::TestISin() {
+	int max = 20;
+	long double startPoint = 1.0;
+	long double endPoint = 2.0;
+	long double step = (endPoint - startPoint) /max;
+	Interval<long double> ix = {0, 0};
+	for (int i = 0; i < max; ++i) {
+		long double x = startPoint + step;
+		//ix.a = a
+	}
+}
 } /* namespace intervalarth */
+
+

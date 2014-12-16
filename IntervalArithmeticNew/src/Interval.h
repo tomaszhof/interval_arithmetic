@@ -494,22 +494,22 @@ Interval<T> ISin(const Interval<T>& x) {
 			else
 				w1 = IAdd(w, s);
 			if ((w.a != 0) && (w.b != 0)) {
-				if ((abs(w.a - w1.a) / abs(w.a) < 1e-18)
-						&& (abs(w.b - w1.b) / abs(w.b) < 1e-18))
+				if ((abs(w.a - w1.a) / abs(w.a) < 1e-16)
+						&& (abs(w.b - w1.b) / abs(w.b) < 1e-16))
 					finished = true;
 				else
 					;
 			} else if ((w.a == 0) && (w.b != 0)) {
-				if ((abs(w.a - w1.a) < 1e-18)
-						&& (abs(w.b - w1.b) / abs(w.b) < 1e-18))
+				if ((abs(w.a - w1.a) < 1e-16)
+						&& (abs(w.b - w1.b) / abs(w.b) < 1e-16))
 					finished = true;
 				else
 					;
 			} else if (w.a != 0) {
-				if ((abs(w.a - w1.a) / abs(w.a) < 1e-18)
-						& (abs(w.b - w1.b) < 1e-18))
+				if ((abs(w.a - w1.a) / abs(w.a) < 1e-16)
+						& (abs(w.b - w1.b) < 1e-16))
 					finished = true;
-				else if ((abs(w.a - w1.a) < 1e-18) & (abs(w.b - w1.b) < 1e-18))
+				else if ((abs(w.a - w1.a) < 1e-16) & (abs(w.b - w1.b) < 1e-16))
 					finished = true;
 			}
 
@@ -529,12 +529,12 @@ Interval<T> ISin(const Interval<T>& x) {
 				w = w1;
 				k = k + 2;
 				is_even = !is_even;
-				if ((w.a <= 0.0)&&(w.b >=0.0))
-				{
-					finished = true;
-					w = {0,0};
-					return w;
-				}
+//				if ((w.a <= 0.0)&&(w.b >=0.0))
+//				{
+//					finished = true;
+//					w = {0,0};
+//					return w;
+//				}
 			}
 		} while (!(finished || (k > INT_MAX / 2)));
 	}

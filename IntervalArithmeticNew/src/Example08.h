@@ -1,12 +1,12 @@
 /*
- * Example07.h
+ * Example08.h
  *
  *  Created on: 11-11-2014
  *      Author: thof
  */
 
-#ifndef EXAMPLE07_H_
-#define EXAMPLE07_H_
+#ifndef EXAMPLE08_H_
+#define EXAMPLE08_H_
 
 #include "Utils.h"
 #include "Interval.h"
@@ -17,10 +17,10 @@ using namespace interval_arithmetic;
 namespace interval_arithmetic {
 
 template<typename T>
-class Example07 : public BoundaryConditions<T> {
+class Example08 : public BoundaryConditions<T> {
 public:
-	Example07();
-	virtual ~Example07();
+	Example08();
+	virtual ~Example08();
 	Interval<T> F(const Interval<T>& ix, const Interval<T>& iy, int& st);
 	Interval<T> PHI1(const Interval<T>& iy, int& st);
 	Interval<T> PHI2(const Interval<T>& ix, int& st);
@@ -49,33 +49,33 @@ public:
 };
 
 template<typename T>
-Example07<T>::Example07()
+Example08<T>::Example08()
 {
 	// TODO Auto-generated constructor stub
 
 }
 
 template<typename T>
-Example07<T>::~Example07()
+Example08<T>::~Example08()
 {
 	// TODO Auto-generated destructor stub
 }
 
 template<typename T>
-long double Example07<T>::f(const long double& x, const long double& y)
+long double Example08<T>::f(const long double& x, const long double& y)
 {
-	return pow(x, 2) + pow(y, 2);
+	return pow(x,2)*pow(y,3)-pow(x,3)*pow(y,2);//x*pow(y,2)/(pow(x,2) + pow(y,4));
 }
 
 template<typename T>
-long double Example07<T>::phi1(const long double& y)
+long double Example08<T>::phi1(const long double& y)
 {
-	long double pi = 4*atan(1.0);
-	return exp(cos(pi*(2-y)/2.0));
+	//long double pi = 4*atan(1.0);
+	return exp(y-1);
 }
 
 template<typename T>
-long double Example07<T>::phi2(const long double& x)
+long double Example08<T>::phi2(const long double& x)
 {
 	//long double pi = 4*atan(1.0);
 	//return exp(sin((x-1)*(pi/2.0)));
@@ -83,31 +83,31 @@ long double Example07<T>::phi2(const long double& x)
 }
 
 template<typename T>
-long double Example07<T>::phi3(const long double& y)
+long double Example08<T>::phi3(const long double& y)
 {
-	return exp(y);
+	return exp(2-y);
 }
 
 template<typename T>
-long double Example07<T>::phi4(const long double& x)
+long double Example08<T>::phi4(const long double& x)
 {
-	return exp(x);
+	return exp(2-x);
 }
 
 template<typename T>
-long double Example07<T>::a(const long double& x, const long double& y)
+long double Example08<T>::a(const long double& x, const long double& y)
 {
-	return y * exp((pow(x, 2)+pow(y,2))/ 2);
+	return exp(x+y);
 }
 
 template<typename T>
-long double Example07<T>::c(const long double& x, const long double& y)
+long double Example08<T>::c(const long double& x, const long double& y)
 {
-	return x * exp((pow(x, 2)+pow(y,2))/ 2);
+	return exp(x * y);
 }
 
 template<typename T>
-Interval<T> Example07<T>::F(const Interval<T>& ix, const Interval<T>& iy, int& st)
+Interval<T> Example08<T>::F(const Interval<T>& ix, const Interval<T>& iy, int& st)
 {
 	//f(x,y)=x * y * (y*pow(x, 2) - 3 * x + x*pow(y, 2) - 3 * y);
 
@@ -126,7 +126,7 @@ Interval<T> Example07<T>::F(const Interval<T>& ix, const Interval<T>& iy, int& s
 }
 
 template<typename T>
-Interval<T> Example07<T>::PHI1(const Interval<T>& iy, int& st)
+Interval<T> Example08<T>::PHI1(const Interval<T>& iy, int& st)
 {
 	//phi1(y) = return exp(1-sin(pi*(2-y)/2.0))
 
@@ -141,15 +141,15 @@ Interval<T> Example07<T>::PHI1(const Interval<T>& iy, int& st)
 	{ 2, 2 };
 
 	st=0;
-	r = ICos((itwo-iy) * Interval<T>::IPi() / itwo);//
+	//r = ICos((itwo-iy) * Interval<T>::IPi() / itwo);//
 	//r = ione - ISin((itwo-iy) * Interval<T>::IPi() / itwo);
-	r = IExp(r);
+	r = IExp(iy-ione);
 
 	return r;
 }
 
 template<typename T>
-Interval<T> Example07<T>::PHI2(const Interval<T>& ix, int& st)
+Interval<T> Example08<T>::PHI2(const Interval<T>& ix, int& st)
 {
 	//phi2(x) = exp(sin((x-1)*(M_PI/2)));
 
@@ -169,7 +169,7 @@ Interval<T> Example07<T>::PHI2(const Interval<T>& ix, int& st)
 }
 
 template<typename T>
-Interval<T> Example07<T>::PHI3(const Interval<T>& iy, int& st)
+Interval<T> Example08<T>::PHI3(const Interval<T>& iy, int& st)
 {
 	//phi3(y) = exp(y);
 	Interval<T> powy2, iexp, tmp;
@@ -182,7 +182,7 @@ Interval<T> Example07<T>::PHI3(const Interval<T>& iy, int& st)
 }
 
 template<typename T>
-Interval<T> Example07<T>::PHI4(const Interval<T>& ix, int& st)
+Interval<T> Example08<T>::PHI4(const Interval<T>& ix, int& st)
 {
 	//phi4(y) = exp(x);
 	Interval<T> r =
@@ -194,7 +194,7 @@ Interval<T> Example07<T>::PHI4(const Interval<T>& ix, int& st)
 }
 
 template<typename T>
-Interval<T> Example07<T>::PSI(const Interval<T>& ix, const Interval<T>& iy, int& st)
+Interval<T> Example08<T>::PSI(const Interval<T>& ix, const Interval<T>& iy, int& st)
 {
 	//psi(x,y) = 14*y*x^2 - 6*y - 3*y^2
 
@@ -236,7 +236,7 @@ Interval<T> Example07<T>::PSI(const Interval<T>& ix, const Interval<T>& iy, int&
 }
 
 template<typename T>
-Interval<T> Example07<T>::OMEGA(const Interval<T>& ix, const Interval<T>& iy, int& st)
+Interval<T> Example08<T>::OMEGA(const Interval<T>& ix, const Interval<T>& iy, int& st)
 {
 	//omega(x,y) = 14*x*y^2 - 6*x - 3*x^2
 	Interval<T> powx2, powy2, tmp;
@@ -275,7 +275,7 @@ Interval<T> Example07<T>::OMEGA(const Interval<T>& ix, const Interval<T>& iy, in
 }
 
 template<typename T>
-Interval<T> Example07<T>::A(const Interval<T>& ix, const Interval<T>& iy, int& st)
+Interval<T> Example08<T>::A(const Interval<T>& ix, const Interval<T>& iy, int& st)
 {
 	// a(x,y) =  y * exp(((x^2+y^2)/2));
 
@@ -295,7 +295,7 @@ Interval<T> Example07<T>::A(const Interval<T>& ix, const Interval<T>& iy, int& s
 }
 
 template<typename T>
-Interval<T> Example07<T>::C(const Interval<T>& ix, const Interval<T>& iy, int& st)
+Interval<T> Example08<T>::C(const Interval<T>& ix, const Interval<T>& iy, int& st)
 {
 	//c(x,y) = y * exp(((x^2+y^2)/2));
 	Interval<T> powx2, powy2, iexp, tmp;
@@ -314,13 +314,13 @@ Interval<T> Example07<T>::C(const Interval<T>& ix, const Interval<T>& iy, int& s
 }
 
 template<typename T>
-long double Example07<T>::ExactSol(long double x, long double y)
+long double Example08<T>::ExactSol(long double x, long double y)
 {
 	return 0.0;
 }
 
 template<typename T>
-long double Example07<T>::GetConstM()
+long double Example08<T>::GetConstM()
 {
 	long double constM = 2.2073;
 
@@ -328,7 +328,7 @@ long double Example07<T>::GetConstM()
 }
 
 template<typename T>
-long double Example07<T>::GetConstN()
+long double Example08<T>::GetConstN()
 {
 	long double constN = 2.2073;
 
@@ -336,13 +336,13 @@ long double Example07<T>::GetConstN()
 }
 
 template<typename T>
-void Example07<T>::SetArithmeticMode(IAMode mode)
+void Example08<T>::SetArithmeticMode(IAMode mode)
 {
 	Interval<T>::SetMode(mode);
 }
 
 template<typename T>
-int Example07<T>::boundconds_classic(const long double& b1, const long double& b2,
+int Example08<T>::boundconds_classic(const long double& b1, const long double& b2,
 		const long double eps)
 {
 	if ((b1 != 0) && (b2 != 0))
@@ -372,4 +372,4 @@ int Example07<T>::boundconds_classic(const long double& b1, const long double& b
 }
 
 } /* namespace interval_arithmetic */
-#endif /* EXAMPLE07_H_ */
+#endif /* EXAMPLE08_H_ */

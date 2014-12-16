@@ -44,6 +44,9 @@ int GPDESolver<T>::SetExample(int eid) {
 	case 7:
 		bc = new Example07<T>();
 		break;
+	case 8:
+		bc = new Example08<T>();
+		break;
 	default:
 		bc = NULL;
 		break;
@@ -1026,6 +1029,9 @@ int GPDESolver<T>::SolveDIA() {
 	}
 	return 0;
 }
+
+
+
 
 //The explicit instantiation part
 template class GPDESolver<long double> ;
