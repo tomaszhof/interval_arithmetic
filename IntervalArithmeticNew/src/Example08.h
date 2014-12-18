@@ -64,14 +64,14 @@ Example08<T>::~Example08()
 template<typename T>
 long double Example08<T>::f(const long double& x, const long double& y)
 {
-	return pow(x,2)*pow(y,3)-pow(x,3)*pow(y,2);//x*pow(y,2)/(pow(x,2) + pow(y,4));
+	return exp(cos(x*M_PI))*exp(cos(y*M_PI));//pow(x,2)*pow(y,3)-pow(x,3)*pow(y,2);//x*pow(y,2)/(pow(x,2) + pow(y,4));
 }
 
 template<typename T>
 long double Example08<T>::phi1(const long double& y)
 {
 	//long double pi = 4*atan(1.0);
-	return exp(y-1);
+	return y-1; //exp(y-1);
 }
 
 template<typename T>
@@ -79,31 +79,31 @@ long double Example08<T>::phi2(const long double& x)
 {
 	//long double pi = 4*atan(1.0);
 	//return exp(sin((x-1)*(pi/2.0)));
-	return exp(x-1);
+	return x-1; //exp(x-1);
 }
 
 template<typename T>
 long double Example08<T>::phi3(const long double& y)
 {
-	return exp(2-y);
+	return 2-y; //exp(2-y);
 }
 
 template<typename T>
 long double Example08<T>::phi4(const long double& x)
 {
-	return exp(2-x);
+	return 2-x; //exp(2-x);
 }
 
 template<typename T>
 long double Example08<T>::a(const long double& x, const long double& y)
 {
-	return exp(x+y);
+	return exp(x*y);
 }
 
 template<typename T>
 long double Example08<T>::c(const long double& x, const long double& y)
 {
-	return exp(x * y);
+	return exp(x+y);
 }
 
 template<typename T>

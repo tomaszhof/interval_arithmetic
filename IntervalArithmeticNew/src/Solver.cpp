@@ -278,7 +278,7 @@ void Solver<T>::InitializeX(int m, int n) {
 template<typename T>
 int Solver<T>::ConstMExperiment() {
 	this->SetEstimateMN(true);
-	for (int i = 2; i < 6; ++i) {
+	for (int i = 2; i < 5; ++i) {
 		this->params.m = (i + 1) * 10;
 		this->params.n = this->params.m;
 		this->SolveFP();
