@@ -64,14 +64,14 @@ Example08<T>::~Example08()
 template<typename T>
 long double Example08<T>::f(const long double& x, const long double& y)
 {
-	return exp(cos(x*M_PI))*exp(cos(y*M_PI));//pow(x,2)*pow(y,3)-pow(x,3)*pow(y,2);//x*pow(y,2)/(pow(x,2) + pow(y,4));
+	return (1/(x*y))*cos(y*M_PI/2)*cos(x*M_PI/2);//x*y*exp(cos(x*M_PI/2))*exp(cos(y*M_PI/2));//pow(x,2)*pow(y,3)-pow(x,3)*pow(y,2);//x*pow(y,2)/(pow(x,2) + pow(y,4));
 }
 
 template<typename T>
 long double Example08<T>::phi1(const long double& y)
 {
 	//long double pi = 4*atan(1.0);
-	return y-1; //exp(y-1);
+	return sin((y-1)*M_PI); //y-1; //exp(y-1);
 }
 
 template<typename T>
@@ -79,38 +79,37 @@ long double Example08<T>::phi2(const long double& x)
 {
 	//long double pi = 4*atan(1.0);
 	//return exp(sin((x-1)*(pi/2.0)));
-	return x-1; //exp(x-1);
+	return sin((x-1)*M_PI); //x-1; //exp(x-1);
 }
 
 template<typename T>
 long double Example08<T>::phi3(const long double& y)
 {
-	return 2-y; //exp(2-y);
+	return sin((2-y)*M_PI); //2-y;//exp(2-y);
 }
 
 template<typename T>
 long double Example08<T>::phi4(const long double& x)
 {
-	return 2-x; //exp(2-x);
+	return sin((2-x)*M_PI); //2-x; //exp(2-x);
 }
 
 template<typename T>
 long double Example08<T>::a(const long double& x, const long double& y)
 {
-	return exp(x*y);
+	return exp(cos(x*M_PI)-cos(y*M_PI));//x*(y-1)*exp(x*x);
 }
 
 template<typename T>
 long double Example08<T>::c(const long double& x, const long double& y)
 {
-	return exp(x+y);
+	return exp(x - y);//(x-1)*y*exp(y*y);//sin((2*x-1)*M_PI)*cos((2*y-3)*M_PI);
 }
 
 template<typename T>
 Interval<T> Example08<T>::F(const Interval<T>& ix, const Interval<T>& iy, int& st)
 {
 	//f(x,y)=x * y * (y*pow(x, 2) - 3 * x + x*pow(y, 2) - 3 * y);
-
 	Interval<T> r, xy, xpy, xym3, i3y, xpow2, ypow2;
 	r.a = 0;
 	r.b = 0;
