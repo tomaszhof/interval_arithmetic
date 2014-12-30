@@ -109,40 +109,31 @@ long double Example08<T>::c(const long double& x, const long double& y)
 template<typename T>
 Interval<T> Example08<T>::F(const Interval<T>& ix, const Interval<T>& iy, int& st)
 {
-	//f(x,y)=x * y * (y*pow(x, 2) - 3 * x + x*pow(y, 2) - 3 * y);
+	//f(x,y)=(1/(x*y))*cos(y*M_PI/2)*cos(x*M_PI/2);
 	Interval<T> r, xy, xpy, xym3, i3y, xpow2, ypow2;
 	r.a = 0;
 	r.b = 0;
 	st = 0;
 
-	Interval<T> ithree (3,3);
-	xpow2 = ix * ix;
-	ypow2 = iy * iy;
+	Interval<T> itwo (2,2);
+	Interval<T> ione (1,1);
+	Interval<T> ionexy = ione/(ix * iy);
+	Interval<T> xcos = ICos(ix*Interval<T>::IPi()/itwo);
+	Interval<T> ycos = ICos(iy*Interval<T>::IPi()/itwo);
 
-	st=0;
-	r = xpow2 + ypow2;
+	r = ionexy*ycos*xcos;
 	return r;
 }
 
 template<typename T>
 Interval<T> Example08<T>::PHI1(const Interval<T>& iy, int& st)
 {
-	//phi1(y) = return exp(1-sin(pi*(2-y)/2.0))
-
-	Interval<T> powy2, iexp, tmp;
+	//phi1(y) = sin((y-1)*M_PI)
 	Interval<T> r =
-	{ 0, 0 };
-	Interval<T> izero =
 	{ 0, 0 };
 	Interval<T> ione =
 	{ 1, 1 };
-	Interval<T> itwo =
-	{ 2, 2 };
-
-	st=0;
-	//r = ICos((itwo-iy) * Interval<T>::IPi() / itwo);//
-	//r = ione - ISin((itwo-iy) * Interval<T>::IPi() / itwo);
-	r = IExp(iy-ione);
+	r = ISin((iy-ione)*Interval<T>::IPi());
 
 	return r;
 }
@@ -150,145 +141,72 @@ Interval<T> Example08<T>::PHI1(const Interval<T>& iy, int& st)
 template<typename T>
 Interval<T> Example08<T>::PHI2(const Interval<T>& ix, int& st)
 {
-	//phi2(x) = exp(sin((x-1)*(M_PI/2)));
-
-	Interval<T> powx2, iexp, tmp;
+	//phi2(x) = sin((x-1)*M_PI);
 	Interval<T> ione =
 		{ 1, 1 };
-	Interval<T> itwo =
-			{ 2, 2 };
 	Interval<T> r =
 	{ 0, 0 };
 
-	st=0;
-	//r = ISin((ix-ione) * (Interval<T>::IPi()/itwo));
-	//r = IExp(r);
-	r = IExp(ix-ione);
+	r = ISin((ix-ione)*Interval<T>::IPi());
 	return r;
 }
 
 template<typename T>
 Interval<T> Example08<T>::PHI3(const Interval<T>& iy, int& st)
 {
-	//phi3(y) = exp(y);
-	Interval<T> powy2, iexp, tmp;
+	//phi3(y) = sin((2-y)*M_PI);
 	Interval<T> r =
 	{ 0, 0 };
+	Interval<T> itwo =
+		{ 2, 2 };
 
-	st=0;
-	r = IExp(iy);
+	r = ISin((itwo - iy)*Interval<T>::IPi());
 	return r;
 }
 
 template<typename T>
 Interval<T> Example08<T>::PHI4(const Interval<T>& ix, int& st)
 {
-	//phi4(y) = exp(x);
+	//phi4(y) = sin((2-x)*M_PI);
 	Interval<T> r =
 	{ 0, 0 };
+	Interval<T> itwo =
+	{ 2, 2 };
 
-	st=0;
-	r = IExp(ix);
+	r = ISin((itwo - ix)*Interval<T>::IPi());
 	return r;
 }
 
 template<typename T>
 Interval<T> Example08<T>::PSI(const Interval<T>& ix, const Interval<T>& iy, int& st)
 {
-	//psi(x,y) = 14*y*x^2 - 6*y - 3*y^2
-
-	Interval<T> powx2, powy2, tmp;
-	Interval<T> ifourteen =
-	{ 14, 14 };
-	Interval<T> isix =
-	{ 6, 6 };
-	Interval<T> ithree =
-	{ 3, 3 };
+	//psi(x,y) = 0
 	Interval<T> r =
 	{ 0, 0 };
 
-	st = 0;
-	int status = 0;
-	int mode = Interval<T>::GetMode();
-
-	if (mode == PINT_MODE)
-	{
-		powx2 = (ix * ix);
-		powy2 = (iy * iy);
-		r = ifourteen *(iy * powx2);
-		tmp = (isix * iy);
-		r = (r - tmp);
-		tmp = (ithree * powy2);
-		r = (r - tmp);
-	}
-	else
-	{
-		powx2 = (ix * ix);
-		powy2 = (iy * iy);
-		r = (ifourteen* (iy * powx2));
-		tmp = (isix * iy);
-		r = (r - tmp);
-		tmp = (ithree * powy2);
-		r = (r - tmp);
-	}
 	return r;
 }
 
 template<typename T>
 Interval<T> Example08<T>::OMEGA(const Interval<T>& ix, const Interval<T>& iy, int& st)
 {
-	//omega(x,y) = 14*x*y^2 - 6*x - 3*x^2
-	Interval<T> powx2, powy2, tmp;
-	Interval<T> ifourteen =
-	{ 14, 14 };
-	Interval<T> isix =
-	{ 6, 6 };
-	Interval<T> ithree =
-	{ 3, 3 };
+	//omega(x,y) = 0
+
 	Interval<T> r =
 	{ 0, 0 };
-
-	st = 0;
-
-	if (Interval<T>::GetMode() == PINT_MODE)
-	{
-		powx2 = (ix * ix);
-		powy2 = (iy * iy);
-		r = (ifourteen *(ix * powy2));
-		tmp = (isix * ix);
-		r = (r - tmp);
-		tmp = (ithree * powx2);
-		r = (r - tmp);
-	}
-	else
-	{
-		powx2 = (ix * ix);
-		powy2 = (iy * iy);
-		r = (ifourteen * (ix * powy2));
-		tmp = (isix * ix);
-		r = (r - tmp);
-		tmp = (ithree * powx2);
-		r = (r - tmp);
-	}
 	return r;
 }
 
 template<typename T>
 Interval<T> Example08<T>::A(const Interval<T>& ix, const Interval<T>& iy, int& st)
 {
-	// a(x,y) =  y * exp(((x^2+y^2)/2));
-
-	Interval<T> powx2, powy2, iexp, tmp;
+	// a(x,y) =  exp(cos(x*M_PI)-cos(y*M_PI));
 	Interval<T> r =
 	{ 0, 0 };
-	Interval<T> itwo =
-	{ 2, 2 };
+	Interval<T> xcos = ICos(ix*Interval<T>::IPi());
+	Interval<T> ycos = ICos(iy*Interval<T>::IPi());
 
-	st = 0;
-	Interval<T> xpow2 = ix * ix;
-	Interval<T> ypow2 = iy * iy;
-
-	r = iy*IExp((xpow2+ypow2)/itwo);
+	r = IExp(xcos-ycos);
 
 	return r;
 }
@@ -296,18 +214,10 @@ Interval<T> Example08<T>::A(const Interval<T>& ix, const Interval<T>& iy, int& s
 template<typename T>
 Interval<T> Example08<T>::C(const Interval<T>& ix, const Interval<T>& iy, int& st)
 {
-	//c(x,y) = y * exp(((x^2+y^2)/2));
-	Interval<T> powx2, powy2, iexp, tmp;
+	//c(x,y) = exp(x - y);
 	Interval<T> r =
-	{ 0, 0 };
-	Interval<T> itwo =
-	{ 2, 2 };
-	int status = 0;
-
-	Interval<T> xpow2 = ix * ix;
-	Interval<T> ypow2 = iy * iy;
-
-	r = ix*IExp((xpow2+ypow2)/itwo);
+		{ 0, 0 };
+	r = IExp(ix-iy);
 
 	return r;
 }
@@ -321,7 +231,7 @@ long double Example08<T>::ExactSol(long double x, long double y)
 template<typename T>
 long double Example08<T>::GetConstM()
 {
-	long double constM = 2.2073;
+	long double constM = 640;
 
 	return constM;
 }
@@ -329,7 +239,7 @@ long double Example08<T>::GetConstM()
 template<typename T>
 long double Example08<T>::GetConstN()
 {
-	long double constN = 2.2073;
+	long double constN = 650;
 
 	return constN;
 }

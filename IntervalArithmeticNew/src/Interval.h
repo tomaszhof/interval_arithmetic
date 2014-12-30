@@ -474,9 +474,13 @@ Interval<T> ISin(const Interval<T>& x) {
 	int k;
 	int st = 0;
 	Interval<T> d, s, w, w1, x2;
+
+
 	if (x.a > x.b)
 		st = 1;
 	else {
+		if ((x.a == 0.0) && (x.b ==0.0))
+				return Interval<T>(0.0, 0.0);
 		s = x;
 		w = x;
 		x2 = IMul(x, x);
@@ -494,22 +498,22 @@ Interval<T> ISin(const Interval<T>& x) {
 			else
 				w1 = IAdd(w, s);
 			if ((w.a != 0) && (w.b != 0)) {
-				if ((abs(w.a - w1.a) / abs(w.a) < 1e-16)
-						&& (abs(w.b - w1.b) / abs(w.b) < 1e-16))
+				if ((abs(w.a - w1.a) / abs(w.a) < 1e-18)
+						&& (abs(w.b - w1.b) / abs(w.b) < 1e-18))
 					finished = true;
 				else
 					;
 			} else if ((w.a == 0) && (w.b != 0)) {
 				if ((abs(w.a - w1.a) < 1e-16)
-						&& (abs(w.b - w1.b) / abs(w.b) < 1e-16))
+						&& (abs(w.b - w1.b) / abs(w.b) < 1e-18))
 					finished = true;
 				else
 					;
 			} else if (w.a != 0) {
-				if ((abs(w.a - w1.a) / abs(w.a) < 1e-16)
-						& (abs(w.b - w1.b) < 1e-16))
+				if ((abs(w.a - w1.a) / abs(w.a) < 1e-18)
+						& (abs(w.b - w1.b) < 1e-18))
 					finished = true;
-				else if ((abs(w.a - w1.a) < 1e-16) & (abs(w.b - w1.b) < 1e-16))
+				else if ((abs(w.a - w1.a) < 1e-16) & (abs(w.b - w1.b) < 1e-18))
 					finished = true;
 			}
 
