@@ -566,7 +566,7 @@ template<typename T>
 void ConfigReader<T>::SetDefaultParameters()
 {
 	//default configuration
-	this->exp_mode =  CONST_M_EXP; //CLASSICAL_EXP; //CONST_M_EXP; //INTERVAL_EXP; //CLASSICAL_EXP; //CONST_M_EXP
+	this->exp_mode =  CLASSICAL_EXP; //CLASSICAL_EXP; //CONST_M_EXP; //INTERVAL_EXP; //CLASSICAL_EXP; //CONST_M_EXP
 	this->arth_mode = PINT_MODE;
 	this->m = 20; //default grid size m=n=20
 	this->n = 20;
