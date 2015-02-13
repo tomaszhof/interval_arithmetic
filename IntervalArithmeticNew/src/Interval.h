@@ -529,12 +529,12 @@ Interval<T> ISin(const Interval<T>& x) {
 				w = w1;
 				k = k + 2;
 				is_even = !is_even;
-//				if ((w.a <= 0.0)&&(w.b >=0.0))
-//				{
-//					finished = true;
-//					w = {0,0};
-//					return w;
-//				}
+				if ((w.a <= 0.0)&&(w.b >=0.0))
+				{
+					finished = true;
+					w = {0,0};
+					return w;
+				}
 			}
 		} while (!(finished || (k > INT_MAX / 2)));
 	}

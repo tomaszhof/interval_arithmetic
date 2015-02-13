@@ -115,12 +115,17 @@ Interval<T> Example08<T>::F(const Interval<T>& ix, const Interval<T>& iy, int& s
 	r.b = 0;
 	st = 0;
 
+	Interval<T> ione (1,1);
+	Interval<T> itwo (2,2);
 	Interval<T> ithree (3,3);
 	xpow2 = ix * ix;
 	ypow2 = iy * iy;
 
 	st=0;
-	r = xpow2 + ypow2;
+
+
+	//r = xpow2 + ypow2; old
+	r = (ione/(ix*iy))*ICos(iy*(Interval<T>::IPi()/itwo))*ICos(ix*(Interval<T>::IPi()/itwo));
 	return r;
 }
 
@@ -142,7 +147,9 @@ Interval<T> Example08<T>::PHI1(const Interval<T>& iy, int& st)
 	st=0;
 	//r = ICos((itwo-iy) * Interval<T>::IPi() / itwo);//
 	//r = ione - ISin((itwo-iy) * Interval<T>::IPi() / itwo);
-	r = IExp(iy-ione);
+
+	r = ISin((iy-ione) * Interval<T>::IPi());
+	//r = IExp(iy-ione); old
 
 	return r;
 }
@@ -163,7 +170,9 @@ Interval<T> Example08<T>::PHI2(const Interval<T>& ix, int& st)
 	st=0;
 	//r = ISin((ix-ione) * (Interval<T>::IPi()/itwo));
 	//r = IExp(r);
-	r = IExp(ix-ione);
+
+	r = ISin((ix-ione) * Interval<T>::IPi());
+	//r = IExp(ix-ione); old
 	return r;
 }
 
@@ -172,11 +181,13 @@ Interval<T> Example08<T>::PHI3(const Interval<T>& iy, int& st)
 {
 	//phi3(y) = exp(y);
 	Interval<T> powy2, iexp, tmp;
-	Interval<T> r =
-	{ 0, 0 };
+	Interval<T> r = { 0, 0 };
+	Interval<T> itwo = { 2, 2 };
 
 	st=0;
-	r = IExp(iy);
+
+	r = ISin((itwo - iy) * Interval<T>::IPi());
+	//r = IExp(iy); old
 	return r;
 }
 
@@ -186,9 +197,12 @@ Interval<T> Example08<T>::PHI4(const Interval<T>& ix, int& st)
 	//phi4(y) = exp(x);
 	Interval<T> r =
 	{ 0, 0 };
+	Interval<T> itwo = { 2, 2 };
 
 	st=0;
-	r = IExp(ix);
+
+	r = ISin((itwo - ix) * Interval<T>::IPi());
+	//r = IExp(ix); old
 	return r;
 }
 
@@ -288,8 +302,8 @@ Interval<T> Example08<T>::A(const Interval<T>& ix, const Interval<T>& iy, int& s
 	Interval<T> xpow2 = ix * ix;
 	Interval<T> ypow2 = iy * iy;
 
-	r = iy*IExp((xpow2+ypow2)/itwo);
-
+	//r = iy*IExp((xpow2+ypow2)/itwo); old
+	r = IExp(ICos(ix*Interval<T>::IPi()) - ICos(iy*Interval<T>::IPi()));
 	return r;
 }
 
@@ -307,7 +321,8 @@ Interval<T> Example08<T>::C(const Interval<T>& ix, const Interval<T>& iy, int& s
 	Interval<T> xpow2 = ix * ix;
 	Interval<T> ypow2 = iy * iy;
 
-	r = ix*IExp((xpow2+ypow2)/itwo);
+	//r = ix*IExp((xpow2+ypow2)/itwo); old
+	r = IExp(ix-iy);
 
 	return r;
 }
@@ -321,7 +336,7 @@ long double Example08<T>::ExactSol(long double x, long double y)
 template<typename T>
 long double Example08<T>::GetConstM()
 {
-	long double constM = 2.2073;
+	long double constM = 650;
 
 	return constM;
 }
@@ -329,7 +344,7 @@ long double Example08<T>::GetConstM()
 template<typename T>
 long double Example08<T>::GetConstN()
 {
-	long double constN = 2.2073;
+	long double constN = 675;
 
 	return constN;
 }

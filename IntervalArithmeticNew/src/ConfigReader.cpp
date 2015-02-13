@@ -346,7 +346,7 @@ void ConfigReader<T>::parseCommandArgs(int ac, char* av[])
 	if (vm.count("alpha2"))
 	{
 		alpha2 = vm["alpha2"].as<T>();
-		this->SetAlpha1(alpha2);
+		this->SetAlpha2(alpha2);
 		cout << "Alpha2 was set to " << alpha2 << ".\n";
 	}
 	else
@@ -566,7 +566,7 @@ template<typename T>
 void ConfigReader<T>::SetDefaultParameters()
 {
 	//default configuration
-	this->exp_mode =  CLASSICAL_EXP; //CLASSICAL_EXP; //CONST_M_EXP; //INTERVAL_EXP; //CLASSICAL_EXP; //CONST_M_EXP
+	this->exp_mode =  INTERVAL_EXP; //CLASSICAL_EXP; //CONST_M_EXP; //INTERVAL_EXP; //CLASSICAL_EXP; //CONST_M_EXP
 	this->arth_mode = PINT_MODE;
 	this->m = 20; //default grid size m=n=20
 	this->n = 20;
@@ -575,7 +575,7 @@ void ConfigReader<T>::SetDefaultParameters()
 	this->alpha2 = 2;
 	this->beta1 = 1;
 	this->beta2 = 2;
-	this->file_name = "ex08_constM_t03.txt";
+	this->file_name = "ex08_verifiaction_pint_new.txt";
 }
 
 //The explicit instantiation part

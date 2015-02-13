@@ -288,9 +288,9 @@ int GPDESolver<T>::SolveFP() {
 
 template<typename T>
 int GPDESolver<T>::SolvePIA() {
-	fstream filestr;
-	string fname = "tmpLog.txt";
-	filestr.open(fname.c_str(), fstream::out);
+//	fstream filestr;
+//	string fname = "tmpLog.txt";
+//	filestr.open(fname.c_str(), fstream::out);
 
 	if (!_initparams)
 		throw runtime_error("Parameters not initialized!");
@@ -462,7 +462,7 @@ int GPDESolver<T>::SolvePIA() {
 			}
 
 			S = H1POW2K1POW2 * bc->F(HH1, KK1, st);
-			filestr << k << " B: S= [" << S.a << " ; " << S.b << "]" << endl;
+//			filestr << k << " B: S= [" << S.a << " ; " << S.b << "]" << endl;
 			if (st == 0) {
 				//S1 = ia.IMul(H1, H1);
 				//S2 = ia.IMul(K1, K1);
@@ -543,7 +543,7 @@ int GPDESolver<T>::SolvePIA() {
 				}
 			}
 
-			filestr << k << " E: S= [" << S.a << " ; " << S.b << "]" << endl;
+//			filestr << k << " E: S= [" << S.a << " ; " << S.b << "]" << endl;
 			if (st == 0) {
 				bm.ToMap(n2 - 1, S);
 
@@ -660,7 +660,7 @@ int GPDESolver<T>::SolvePIA() {
 			}
 		}
 	}
-	filestr.close();
+//	filestr.close();
 	return 0;
 }
 
