@@ -278,7 +278,7 @@ void Solver<T>::InitializeX(int m, int n) {
 template<typename T>
 int Solver<T>::ConstMExperiment() {
 	this->SetEstimateMN(true);
-	for (int i = 7; i <11 ; ++i) {
+	for (int i = 2; i <11 ; ++i) {
 		this->params.m = (i + 1) * 10;
 		this->params.n = this->params.m;
 		this->SolveFP();
@@ -427,8 +427,6 @@ inline void Solver<T>::WriteFPResultsToCsv() {
 	jmod = m / 10;
 	ui = n / 2;
 	uj = m / 2;
-
-	fp_filestr << endl;
 
 	for (int i = 0; i <= n; i++) {
 		for (j = 0; j <= m; j++) {
