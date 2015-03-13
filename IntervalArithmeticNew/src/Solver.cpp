@@ -388,16 +388,11 @@ long double Solver<T>::GetMaxN() {
 
 template<typename T>
 inline void Solver<T>::WriteFPResultsToCsv() {
-	int i, imod, j, jmod, l, ui, uj, nmin, nmax, mmax, step;
-	long double exact, h, k, w;
-	bool OK, OK1;
+	int imod, j, jmod;
+	long double exact, h, k;
 	long double sol;
-	char z, z1;
 	string file_name, left, right, time;
 	fstream fp_filestr, exact_filestr;
-	clock_t time1, time2;
-	double time_diff;
-	long double Mconst = 0;
 
 	if (!_initparams)
 		throw runtime_error("Parameters not initialized!");
@@ -422,11 +417,10 @@ inline void Solver<T>::WriteFPResultsToCsv() {
 
 	h = (delta - alpha) / n;
 	k = (gamma - beta) / m;
-	l = 0;
+
 	imod = n / 10;
 	jmod = m / 10;
-	ui = n / 2;
-	uj = m / 2;
+
 
 	for (int i = 0; i <= n; i++) {
 		for (j = 0; j <= m; j++) {
@@ -455,7 +449,106 @@ inline void Solver<T>::WriteFPResultsToCsv() {
 
 template<typename T>
 inline void Solver<T>::WriteIntervalResultsToCsv() {
+	int imod, j, jmod;
+		long double exact, h, k;
 
+		string file_name, left, right, time;
+		fstream fp_filestr, exact_filestr;
+
+		if (!_initparams)
+			throw runtime_error("Parameters not initialized!");
+
+		int st = 0;
+		int m = params.m;
+		int n = params.n;
+		T alpha = params.alpha;
+		T beta = params.beta;
+		T delta = params.delta;
+		T gamma = params.gamma;
+		T eps = params.eps;
+
+		Interval<T> HH, KK, NN, MM, sol, UIH, UII, UJJ, UJK;
+
+			fstream filestr;
+
+			int dprec = std::numeric_limits<T>::digits10;
+			std::setprecision(dprec);
+
+			if (!_initparams)
+				throw runtime_error("Parameters not initialized!");
+
+			Interval<T> intalpha = { params.alpha, params.alpha };
+			Interval<T> intbeta = { params.beta, params.beta };
+			Interval<T> GAMMA = { params.gamma, params.gamma };
+			Interval<T> DELTA = { params.delta, params.delta };
+
+			NN.a = n;
+			NN.b = n;
+			MM.a = m;
+			MM.b = m;
+
+		std::setprecision(dprec);
+		cout.setf(std::ios_base::scientific);
+		fp_filestr.open("res_fp.csv", fstream::out);
+		exact_filestr.open("res_exact.csv", fstream::out);
+
+		if (st != 0)
+			return;
+
+		h = (delta - alpha) / n;
+		k = (gamma - beta) / m;
+
+		imod = n / 10;
+		jmod = m / 10;
+
+//
+//		for (int i = 0; i <= n; i++) {
+//			for (j = 0; j <= m; j++) {
+//				exact = bc->ExactSol(alpha + i * h, beta + j * k); // exact solution
+//				if ((j != 0) && (j != m) && (i != 0) && (i != n))
+//					sol = u[i][j];
+//				else {
+//					if (j == 0)
+//						sol = bc->phi2(alpha + i * h);
+//					else if (j == m)
+//						sol = bc->phi4(alpha + i * h);
+//					else if (i == 0)
+//						sol = bc->phi1(beta + j * k);
+//					else
+//						sol = bc->phi3(beta + j * k);
+//				}
+//				fp_filestr << std::setprecision(dprec) << sol << ";";
+//
+//
+//				exact_filestr << std::setprecision(dprec) << exact << ";";
+//
+//							if ((i != 0) && (i != n))
+//								sol = X[(i - 1) * (m - 1) + j - 1];
+//							else {
+//								UJK = intbeta + (UJJ * KK);
+//								if (i == 0)
+//									sol = bc->PHI1(UJK, st);
+//								else
+//									sol = bc->PHI3(UJK, st);
+//							}
+//							sol = sol.Projection();
+//							w = sol.GetWidth();
+//							sol.IEndsToStrings(left, right);
+//							filestr << " " << endl;
+//							filestr << std::setprecision(2) << " u(" << alpha + i * h << ","
+//									<< beta + uj * k << ") = ";
+//							filestr << "[" << left << "," << right << "]" << endl;
+//							filestr << "      width =  " << std::setprecision(dprec) << w
+//									<< endl;
+//							filestr << std::setprecision(2) << "eu(" << alpha + i * h << ","
+//									<< beta + uj * k << ") =" << std::setprecision(dprec)
+//									<< exact << endl;
+//			}
+//			fp_filestr << std::setprecision(dprec) << endl;
+//			exact_filestr << endl;
+//		}
+//		fp_filestr.close();
+//		exact_filestr.close();
 }
 
 //The explicit instantiation part
