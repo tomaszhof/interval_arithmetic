@@ -409,8 +409,9 @@ inline void Solver<T>::WriteFPResultsToCsv() {
 	int dprec = std::numeric_limits<T>::digits10;
 	std::setprecision(dprec);
 	cout.setf(std::ios_base::scientific);
-	fp_filestr.open("res_fp.csv", fstream::out);
-	exact_filestr.open("res_exact.csv", fstream::out);
+	string fname = fs::basename(params.file_name);
+	fp_filestr.open((fname+"_f.csv").c_str(), fstream::out);
+	exact_filestr.open((fname+"_e.csv").c_str(), fstream::out);
 
 	if (st != 0)
 		return;
