@@ -262,6 +262,7 @@ void Solver<T>::WriteResults() {
 		break;
 	case INTERVAL_EXP:
 		this->WriteIntervalResultsToFile();
+		this->WriteIntervalResultsToCsv();
 		break;
 	}
 }
@@ -404,7 +405,7 @@ inline void Solver<T>::WriteFPResultsToCsv() {
 	T beta = params.beta;
 	T delta = params.delta;
 	T gamma = params.gamma;
-
+	string sep = ";";
 	int dprec = std::numeric_limits<T>::digits10;
 	std::setprecision(dprec);
 	cout.setf(std::ios_base::scientific);
@@ -435,11 +436,10 @@ inline void Solver<T>::WriteFPResultsToCsv() {
 				else
 					sol = bc->phi3(beta + j * k);
 			}
-			fp_filestr << std::setprecision(dprec) << sol << ";";
-			exact_filestr << std::setprecision(dprec) << exact << ";";
+			sep = (j==m) ? "\n" : ";";
+			fp_filestr << std::setprecision(dprec) << sol << sep;
+			exact_filestr << std::setprecision(dprec) << exact << sep;
 		}
-		fp_filestr << std::setprecision(dprec) << endl;
-		exact_filestr << endl;
 	}
 	fp_filestr.close();
 	exact_filestr.close();
@@ -447,11 +447,8 @@ inline void Solver<T>::WriteFPResultsToCsv() {
 
 template<typename T>
 inline void Solver<T>::WriteIntervalResultsToCsv() {
-	int imod, jmod;
-	long double  h, k;
-
 	string file_name, left, right, time;
-	fstream l_filestr, p_filestr, w_filestr, exact_filestr;
+	fstream l_filestr, r_filestr, w_filestr;
 
 	if (!_initparams)
 		throw runtime_error("Parameters not initialized!");
@@ -459,21 +456,15 @@ inline void Solver<T>::WriteIntervalResultsToCsv() {
 	int st = 0;
 	int m = params.m;
 	int n = params.n;
-	T alpha = params.alpha;
-	T beta = params.beta;
-	T delta = params.delta;
-	T gamma = params.gamma;
+
+	string fname = fs::basename(params.file_name);
+	string sep = ";";
 	T w = 0.0;
 
 	Interval<T> HH, KK, NN, MM, sol, UIH, UII, UJJ, UJK;
 
-	fstream filestr;
-
 	int dprec = std::numeric_limits<T>::digits10;
 	std::setprecision(dprec);
-
-	if (!_initparams)
-		throw runtime_error("Parameters not initialized!");
 
 	Interval<T> intalpha = { params.alpha, params.alpha };
 	Interval<T> intbeta = { params.beta, params.beta };
@@ -487,18 +478,12 @@ inline void Solver<T>::WriteIntervalResultsToCsv() {
 
 	std::setprecision(dprec);
 	cout.setf(std::ios_base::scientific);
-	w_filestr.open("res_w.csv", fstream::out);
-	l_filestr.open("res_l.csv", fstream::out);
-	p_filestr.open("res_p.csv", fstream::out);
+	w_filestr.open((fname+"_w.csv").c_str(), fstream::out);
+	l_filestr.open((fname+"_l.csv").c_str(), fstream::out);
+	r_filestr.open((fname+"_r.csv").c_str(), fstream::out);
 
 	if (st != 0)
 		return;
-
-	h = (delta - alpha) / n;
-	k = (gamma - beta) / m;
-
-	imod = n / 10;
-	jmod = m / 10;
 
 	HH = intalpha / NN;
 	KK = intbeta / MM;
@@ -533,17 +518,15 @@ inline void Solver<T>::WriteIntervalResultsToCsv() {
 			w = sol.GetWidth();
 
 			sol.IEndsToStrings(left, right);
-			l_filestr << std::setprecision(dprec) << left << ";";
-			l_filestr << std::setprecision(dprec) << right << ";";
-			w_filestr << std::setprecision(dprec) << w << ";";
+			sep = (j==m) ? "\n" : ";";
+			l_filestr << std::setprecision(dprec) << left << sep;
+			r_filestr << std::setprecision(dprec) << right << sep;
+			w_filestr << std::setprecision(dprec) << w << sep;
 
 		}
-		l_filestr << endl;
-		p_filestr << endl;
-		w_filestr << endl;
 	}
 	l_filestr.close();
-	p_filestr.close();
+	r_filestr.close();
 	w_filestr.close();
 }
 
