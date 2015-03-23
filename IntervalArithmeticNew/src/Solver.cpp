@@ -409,9 +409,12 @@ inline void Solver<T>::WriteFPResultsToCsv() {
 	int dprec = std::numeric_limits<T>::digits10;
 	std::setprecision(dprec);
 	cout.setf(std::ios_base::scientific);
+	fs::path p(params.file_name);
 	string fname = fs::basename(params.file_name);
-	fp_filestr.open((fname+"_f.csv").c_str(), fstream::out);
-	exact_filestr.open((fname+"_e.csv").c_str(), fstream::out);
+
+	string dir = p.parent_path().string();
+	fp_filestr.open((dir + "/" + fname +"_f.csv").c_str(), fstream::out);
+	exact_filestr.open((dir + "/" + fname+"_e.csv").c_str(), fstream::out);
 
 	if (st != 0)
 		return;
@@ -458,7 +461,13 @@ inline void Solver<T>::WriteIntervalResultsToCsv() {
 	int m = params.m;
 	int n = params.n;
 
+	fs::path p(params.file_name);
 	string fname = fs::basename(params.file_name);
+	string dir = p.parent_path().string();
+	if (dir.length() > 0)
+		{
+		  dir = dir +"\\";
+		}
 	string sep = ";";
 	T w = 0.0;
 
@@ -479,9 +488,9 @@ inline void Solver<T>::WriteIntervalResultsToCsv() {
 
 	std::setprecision(dprec);
 	cout.setf(std::ios_base::scientific);
-	w_filestr.open((fname+"_w.csv").c_str(), fstream::out);
-	l_filestr.open((fname+"_l.csv").c_str(), fstream::out);
-	r_filestr.open((fname+"_r.csv").c_str(), fstream::out);
+	w_filestr.open((dir + fname+"_w.csv").c_str(), fstream::out);
+	l_filestr.open((dir + fname+"_l.csv").c_str(), fstream::out);
+	r_filestr.open((dir + fname+"_r.csv").c_str(), fstream::out);
 
 	if (st != 0)
 		return;

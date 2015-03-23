@@ -568,8 +568,8 @@ template<typename T>
 void ConfigReader<T>::SetDefaultParameters()
 {
 	//default configuration
-	this->exp_mode =  CLASSICAL_EXP; //CLASSICAL_EXP; //CONST_M_EXP; //INTERVAL_EXP; //CLASSICAL_EXP; //CONST_M_EXP
-	this->arth_mode = PINT_MODE;
+	this->exp_mode =  INTERVAL_EXP; //CLASSICAL_EXP; //CONST_M_EXP; //INTERVAL_EXP; //CLASSICAL_EXP; //CONST_M_EXP
+	this->arth_mode = DINT_MODE;
 	this->m = 20; //default grid size m=n=20
 	this->n = 20;
 	this->e = 3; //default example_id = 1
@@ -577,7 +577,7 @@ void ConfigReader<T>::SetDefaultParameters()
 	this->alpha2 = 2;
 	this->beta1 = 1;
 	this->beta2 = 2;
-	this->file_name = "ex03fp.txt";
+	this->file_name = "ex03dint.txt";
 }
 
 //The explicit instantiation part
