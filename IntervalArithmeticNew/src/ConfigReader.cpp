@@ -105,6 +105,19 @@ int ConfigReader<T>::GetExampleId()
 }
 
 template<typename T>
+bool ConfigReader<T>::SetPrintCSV(bool b)
+{
+	this->print_csv = b;
+	return this->print_csv;
+}
+
+template<typename T>
+bool ConfigReader<T>::GetPrintCSV()
+{
+	return this->print_csv;
+}
+
+template<typename T>
 void ConfigReader<T>::readConfigFile(string fileName)
 {
 	if (!boost::filesystem::exists(fileName.c_str()))
@@ -225,6 +238,7 @@ void ConfigReader<T>::parseCommandArgs(int ac, char* av[])
 	string configFileName, outFileName, programMode;
 	int m, e;
 	T alpha1, alpha2, beta1, beta2;
+	bool print_csv;
 
 	//parsing values
 	po::options_description desc("Allowed options");
@@ -232,7 +246,10 @@ void ConfigReader<T>::parseCommandArgs(int ac, char* av[])
 	desc.add_options()("help", "print help")("m", po::value<int>(),
 			"set grid size m")("mode", po::value<string>(), "set program mode")(
 			"arth_mode", po::value<string>(),
-			"set interval arithmetic mode [pint-proper, dint-directed]")(
+			"set interval arithmetic mode [pint-proper, dint-directed]")
+			("mode", po::value<string>(), "set program mode")(
+						"print_csv", po::value<bool>(),
+						"print all (warining!) results to csv")(
 			"exp_mode", po::value<string>(),
 			"set experiment mode [c-classic, m-constM]")("e", po::value<int>(),
 			"set example [e=1,2,3,4]")("file", po::value<string>(),
@@ -267,6 +284,13 @@ void ConfigReader<T>::parseCommandArgs(int ac, char* av[])
 		cout << "Configuration file was set to " << configFileName << ".\n";
 		return;
 	}
+
+	if (vm.count("print_csv"))
+		{
+			print_csv = vm["print_csv"].as<bool>();
+			this->SetPrintCSV(print_csv);
+			cout << "Print_csv was set to " << print_csv << ".\n";
+		}
 
 	if (vm.count("out_file"))
 	{
@@ -548,6 +572,7 @@ Parameters<T> ConfigReader<T>::GetParameters()
 	currParameters.exp_mode = this->GetExperimentMode();
 	currParameters.selected_solver = this->GetSolverId();
 	currParameters.example_id = this->GetExampleId();
+	currParameters.print_csv = this->GetPrintCSV();
 	return currParameters;
 }
 
@@ -578,6 +603,7 @@ void ConfigReader<T>::SetDefaultParameters()
 	this->beta1 = 1;
 	this->beta2 = 2;
 	this->file_name = "ex03dint.txt";
+	this->print_csv = false;
 }
 
 //The explicit instantiation part

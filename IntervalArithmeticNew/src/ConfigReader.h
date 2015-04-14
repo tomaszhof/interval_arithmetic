@@ -30,6 +30,7 @@ private:
 	T beta1;
 	T beta2;
 	string file_name;
+	bool print_csv;
 	void parseCommandArgs(int ac, char *av[]);
 	void readConfigFile(string fileName);
 	void readParametersFromConsole();
@@ -47,6 +48,7 @@ public:
 	T SetBeta1(T beta1);
 	T SetBeta2(T beta2);
 	int SetExampleId(int e);
+	bool SetPrintCSV(bool b);
 	void SetFileName(string fname);
 	ExperimentMode GetExperimentMode();
 	IAMode GetArithmeticMode();
@@ -54,6 +56,7 @@ public:
 	int GetM();
 	int GetN();
 	int GetExampleId();
+	bool GetPrintCSV();
 	T GetAlpha1();
 	T GetAlpha2();
 	T GetBeta1();

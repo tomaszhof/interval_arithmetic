@@ -258,11 +258,18 @@ void Solver<T>::WriteResults() {
 		break;
 	case CLASSICAL_EXP:
 		this->WriteFPResultsToFile();
-		this->WriteFPResultsToCsv();
+		if (params.print_csv)
+		{
+			this->WriteFPResultsToCsv();
+		}
 		break;
 	case INTERVAL_EXP:
 		this->WriteIntervalResultsToFile();
-		this->WriteIntervalResultsToCsv();
+		if (params.print_csv)
+		{
+			this->WriteIntervalResultsToCsv();
+		}
+		else cout << "Print csv is False!" << endl;
 		break;
 	}
 }
@@ -466,7 +473,7 @@ inline void Solver<T>::WriteIntervalResultsToCsv() {
 	string dir = p.parent_path().string();
 	if (dir.length() > 0)
 		{
-		  dir = dir +"\\";
+		  dir = dir +"/";
 		}
 	string sep = ";";
 	T w = 0.0;

@@ -3,7 +3,7 @@
 // Author      : Tomasz Hoffmann
 // Version     :
 // Copyright   : TH
-// Description : analyzer for interval results, Ansi-style
+// Description : Analyzer for interval results
 //============================================================================
 
 #include <iostream>
@@ -33,11 +33,15 @@ int main(int ac, char *av[])
 		{
 			cout << "Usage: \n" << fs::basename(av[0]) << " <l_filename>"
 					<< " <r_filename>" << " <e_filename>" << " <f_filename>"
+					<< " <oe_filename" << " <of_filename>"
 					<< endl << endl;
 			cout << "where: \n" << "l_ - left ends of interval solution \n"
 					<< "r_ - right ends of interval solution \n"
 					<< "e_ - exact solution (if known) \n"
-					<< "f_ - fp arithmetic solutions \n" << endl;
+					<< "f_ - fp arithmetic solutions \n"
+					<< "oe_ - exact distribution output file name \n"
+					<< "of_ - fp distribution output file name \n"
+					<< endl;
 			return 0;
 		}
 		ifstream l_file(av[1]);

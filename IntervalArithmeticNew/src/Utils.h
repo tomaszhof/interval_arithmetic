@@ -34,6 +34,7 @@ public:
 	T delta;
 	T eps;
 	string file_name;
+	bool print_csv;
 };
 }
 
