@@ -12,6 +12,7 @@
 #include <time.h>
 #include <string>
 #include <vector>
+#include <limits.h>
 #include <boost/lexical_cast.hpp>
 #include <boost/filesystem.hpp>
 #include <boost/algorithm/string.hpp>
@@ -24,13 +25,13 @@ namespace fs = boost::filesystem;
 
 int main(int ac, char *av[])
 {
-	cout << "Interval Analyzer" << endl;
-
+	long double eps = std::numeric_limits<long double>::epsilon();
 	try
 	{
 
 		if (ac != 7)
 		{
+			cout << "Interval Analyzer" << endl;
 			cout << "Usage: \n" << fs::basename(av[0]) << " <l_filename>"
 					<< " <r_filename>" << " <e_filename>" << " <f_filename>"
 					<< " <oe_filename" << " <of_filename>"
@@ -84,24 +85,35 @@ int main(int ac, char *av[])
 				vector<string>::iterator it;
 				if (v.size() < 2)
 					break;
+				cout << "Start left..." << endl;
 				for (it = v.begin(); it != v.end(); ++it)
 				{
 					lv.push_back(boost::lexical_cast<long double>(*it));
 				}
+				cout << "Read left done." << endl;
 
 				getline(r_file, line);
+				cout << "Start right..." << endl;
 				alg::split(v, line, alg::is_any_of(";"));
+				if (v.size() < 2)
+					break;
 				for (it = v.begin(); it != v.end(); ++it)
 				{
 					rv.push_back(boost::lexical_cast<long double>(*it));
 				}
+				cout << "Read right done." << endl;
 
 				getline(e_file, line);
+				cout << "Start exact..." << endl;
+				if (v.size() < 2)
+					break;
 				alg::split(v, line, alg::is_any_of(";"));
 				for (it = v.begin(); it != v.end(); ++it)
 				{
+					cout << (*it);
 					ev.push_back(boost::lexical_cast<long double>(*it));
 				}
+				cout << "Read exact done." << endl;
 
 				getline(f_file, line);
 				alg::split(v, line, alg::is_any_of(";"));
@@ -109,6 +121,7 @@ int main(int ac, char *av[])
 				{
 					fv.push_back(boost::lexical_cast<long double>(*it));
 				}
+				cout << "Read floating-point done." << endl;
 
 				if ((lv.size() == rv.size()) && (rv.size() == ev.size())
 						&& (ev.size() == fv.size()))
@@ -123,6 +136,11 @@ int main(int ac, char *av[])
 						r = rv.at(i);
 						e = ev.at(i);
 						w = r - l;
+						if (w < eps)
+						{
+							res.push_back(0.5);
+							continue;
+						}
 						w1 = e - l;
 						res.push_back(w1 / w);
 					}
@@ -144,6 +162,11 @@ int main(int ac, char *av[])
 						r = rv.at(i);
 						f = fv.at(i);
 						w = r - l;
+						if (w < eps)
+						{
+							res.push_back(0.5);
+							continue;
+						}
 						w1 = f - l;
 						res.push_back(w1 / w);
 					}
