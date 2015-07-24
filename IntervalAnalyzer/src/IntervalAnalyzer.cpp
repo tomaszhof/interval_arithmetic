@@ -34,15 +34,13 @@ int main(int ac, char *av[])
 			cout << "Interval Analyzer" << endl;
 			cout << "Usage: \n" << fs::basename(av[0]) << " <l_filename>"
 					<< " <r_filename>" << " <e_filename>" << " <f_filename>"
-					<< " <oe_filename" << " <of_filename>"
-					<< endl << endl;
+					<< " <oe_filename" << " <of_filename>" << endl << endl;
 			cout << "where: \n" << "l_ - left ends of interval solution \n"
 					<< "r_ - right ends of interval solution \n"
 					<< "e_ - exact solution (if known) \n"
 					<< "f_ - fp arithmetic solutions \n"
 					<< "oe_ - exact distribution output file name \n"
-					<< "of_ - fp distribution output file name \n"
-					<< endl;
+					<< "of_ - fp distribution output file name \n" << endl;
 			return 0;
 		}
 		ifstream l_file(av[1]);
@@ -85,15 +83,15 @@ int main(int ac, char *av[])
 				vector<string>::iterator it;
 				if (v.size() < 2)
 					break;
-				cout << "Start left..." << endl;
+//				cout << "Start left..." << endl;
 				for (it = v.begin(); it != v.end(); ++it)
 				{
 					lv.push_back(boost::lexical_cast<long double>(*it));
 				}
-				cout << "Read left done." << endl;
+//				cout << "Read left done." << endl;
 
 				getline(r_file, line);
-				cout << "Start right..." << endl;
+//				cout << "Start right..." << endl;
 				alg::split(v, line, alg::is_any_of(";"));
 				if (v.size() < 2)
 					break;
@@ -101,19 +99,19 @@ int main(int ac, char *av[])
 				{
 					rv.push_back(boost::lexical_cast<long double>(*it));
 				}
-				cout << "Read right done." << endl;
+//				cout << "Read right done." << endl;
 
 				getline(e_file, line);
-				cout << "Start exact..." << endl;
+//				cout << "Start exact..." << endl;
 				if (v.size() < 2)
 					break;
 				alg::split(v, line, alg::is_any_of(";"));
 				for (it = v.begin(); it != v.end(); ++it)
 				{
-					cout << (*it);
+//					cout << (*it);
 					ev.push_back(boost::lexical_cast<long double>(*it));
 				}
-				cout << "Read exact done." << endl;
+//				cout << "Read exact done." << endl;
 
 				getline(f_file, line);
 				alg::split(v, line, alg::is_any_of(";"));
@@ -121,12 +119,12 @@ int main(int ac, char *av[])
 				{
 					fv.push_back(boost::lexical_cast<long double>(*it));
 				}
-				cout << "Read floating-point done." << endl;
+//				cout << "Read floating-point done." << endl;
 
 				if ((lv.size() == rv.size()) && (rv.size() == ev.size())
 						&& (ev.size() == fv.size()))
 				{
-					long double l, r, e, f, w1, w;
+					long double l, r, e, f, w1, w, m;
 
 					vector<long double> res;
 					//caluclate exact solutions distribution
@@ -136,12 +134,22 @@ int main(int ac, char *av[])
 						r = rv.at(i);
 						e = ev.at(i);
 						w = r - l;
-						if (w < eps)
+						m = (r + l) / 2;
+						if ((w < eps) || (e == r) || (e == l))
 						{
 							res.push_back(0.5);
 							continue;
 						}
-						w1 = e - l;
+						w1 = abs(e - m);
+						if ((w1 / w) > 0.5)
+						{
+							cout << " \n Wrong element: "
+									<< std::setprecision(dprec) << e;
+							cout << std::setprecision(dprec) << "\n [ " << l
+									<< " ; " << r << " ] \n";
+							cout << std::setprecision(dprec) << "m = " << m
+									<< " \n";
+						}
 						res.push_back(w1 / w);
 					}
 
@@ -162,12 +170,22 @@ int main(int ac, char *av[])
 						r = rv.at(i);
 						f = fv.at(i);
 						w = r - l;
-						if (w < eps)
+						m = (r + l) / 2;
+						if ((w < eps) || (f == r) || (f == l))
 						{
 							res.push_back(0.5);
 							continue;
 						}
-						w1 = f - l;
+						w1 = abs(f - m);
+						if ((w1 / w) > 0.5)
+						{
+							cout << " \n Wrong element: "
+									<< std::setprecision(dprec) << e;
+							cout << std::setprecision(dprec) << "\n [ " << l
+									<< " ; " << r << " ] \n";
+							cout << std::setprecision(dprec) << "m = " << m
+									<< " \n";
+						}
 						res.push_back(w1 / w);
 					}
 

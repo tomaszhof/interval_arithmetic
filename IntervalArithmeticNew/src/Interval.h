@@ -34,11 +34,11 @@ namespace interval_arithmetic {
 //};
 
 enum IAPrecision {
-	LONGDOUBLE_PREC = 80, DOUBLE_PREC = 60, FLOAT_PREC = 60
+	LONGDOUBLE_PREC = 80, DOUBLE_PREC = 64, FLOAT_PREC = 32
 };
 
 enum IAOutDigits {
-	LONGDOUBLE_DIGITS = 17, DOUBLE_DIGITS = 17, FLOAT_DIGITS = 17
+	LONGDOUBLE_DIGITS = 17, DOUBLE_DIGITS = 16, FLOAT_DIGITS = 7
 };
 
 template<typename T> class Interval {
@@ -79,7 +79,7 @@ public:
 };
 
 template<typename T> IAMode Interval<T>::mode = PINT_MODE;
-template<typename T> IAPrecision Interval<T>::precision = LONGDOUBLE_PREC;
+//template<typename T> IAPrecision Interval<T>::precision = LONGDOUBLE_PREC;
 template<typename T> IAOutDigits Interval<T>::outdigits = LONGDOUBLE_DIGITS;
 
 template<typename T>
@@ -1282,6 +1282,11 @@ Interval<T> DISqr(const Interval<T>& x) {
 
 //The explicit instantiation part
 template class Interval<long double>;
+template class Interval<double>;
+template class Interval<float>;
+template<> IAPrecision Interval<long double>::precision = LONGDOUBLE_PREC;
+template<> IAPrecision Interval<double>::precision = DOUBLE_PREC;
+template<> IAPrecision Interval<float>::precision = FLOAT_PREC;
 
 } /* namespace interval_arithmetic */
 
