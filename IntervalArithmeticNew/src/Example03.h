@@ -64,43 +64,43 @@ Example03<T>::~Example03()
 template<typename T>
 long double Example03<T>::f(const long double& x, const long double& y)
 {
-	return x * y * (y*pow(x, 2) - 3 * x + x*pow(y, 2) - 3 * y);
+	return x * y * (y*std::pow(x, 2) - 3 * x + x*std::pow(y, 2) - 3 * y);
 }
 
 template<typename T>
 long double Example03<T>::phi1(const long double& y)
 {
-	return y * exp((-1)*(1 + pow(y, 2)) / 2);
+	return y * std::exp((-1)*(1 + std::pow(y, 2)) / 2);
 }
 
 template<typename T>
 long double Example03<T>::phi2(const long double& x)
 {
-	return x * exp((-1)*(1 + pow(x, 2)) / 2);
+	return x * std::exp((-1)*(1 + std::pow(x, 2)) / 2);
 }
 
 template<typename T>
 long double Example03<T>::phi3(const long double& y)
 {
-	return 2 * y * exp((-1)*(4 + pow(y, 2)) / 2);
+	return 2 * y * std::exp((-1)*(4 + std::pow(y, 2)) / 2);
 }
 
 template<typename T>
 long double Example03<T>::phi4(const long double& x)
 {
-	return 2 * x * exp((-1)*(4 + pow(x, 2)) / 2);
+	return 2 * x * std::exp((-1)*(4 + std::pow(x, 2)) / 2);
 }
 
 template<typename T>
 long double Example03<T>::a(const long double& x, const long double& y)
 {
-	return y * exp((pow(x, 2) + pow(y, 2)) / 2);
+	return y * std::exp((std::pow(x, 2) + std::pow(y, 2)) / 2);
 }
 
 template<typename T>
 long double Example03<T>::c(const long double& x, const long double& y)
 {
-	return x * exp((pow(x, 2) + pow(y, 2)) / 2);
+	return x * std::exp((std::pow(x, 2) + std::pow(y, 2)) / 2);
 }
 
 template<typename T>
@@ -624,7 +624,7 @@ Interval<T> Example03<T>::C(const Interval<T>& ix, const Interval<T>& iy, int& s
 template<typename T>
 long double Example03<T>::ExactSol(long double x, long double y)
 {
-	long double exact = x * y * exp((-1) * (pow(x, 2) + pow(y, 2)) / 2);
+	long double exact = x * y * std::exp((-1) * (std::pow(x, 2) + std::pow(y, 2)) / 2);
 	return exact;
 }
 

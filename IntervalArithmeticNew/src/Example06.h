@@ -64,43 +64,43 @@ Example06<T>::~Example06()
 template<typename T>
 long double Example06<T>::f(const long double& x, const long double& y)
 {
-	return x * y * (y*pow(x, 2) - 3 * x + x*pow(y, 2) - 3 * y);
+	return x * y * (y*std::pow(x, 2) - 3 * x + x*std::pow(y, 2) - 3 * y);
 }
 
 template<typename T>
 long double Example06<T>::phi1(const long double& y)
 {
-	return (1-y*cos(y*(M_PI / 2)))*pow((M_PI),y);
+	return (1-y*std::cos(y*(M_PI / 2)))*std::pow((M_PI),y);
 }
 
 template<typename T>
 long double Example06<T>::phi2(const long double& x)
 {
-	return pow(M_PI,x);
+	return std::pow(M_PI,x);
 }
 
 template<typename T>
 long double Example06<T>::phi3(const long double& y)
 {
-	return pow(M_PI,(1-y))*exp(y);
+	return std::pow(M_PI,(1-y))*exp(y);
 }
 
 template<typename T>
 long double Example06<T>::phi4(const long double& x)
 {
-	return pow(M_PI,(1-x))*exp(sin(x*M_PI/2));
+	return std::pow(M_PI,(1-x))*exp(sin(x*M_PI/2));
 }
 
 template<typename T>
 long double Example06<T>::a(const long double& x, const long double& y)
 {
-	return (sin(y*M_PI/2) + cos(x*M_PI/2)) * exp(pow(x, 2)/ 2);
+	return (std::sin(y*M_PI/2) + std::cos(x*M_PI/2)) * std::exp(std::pow(x, 2)/ 2);
 }
 
 template<typename T>
 long double Example06<T>::c(const long double& x, const long double& y)
 {
-	return exp((pow(x, 2) + pow(y, 2)) / 2);
+	return std::exp((std::pow(x, 2) + std::pow(y, 2)) / 2);
 }
 
 template<typename T>
