@@ -1,7 +1,7 @@
 /*
  * IntervalMpreal.h
  *
- *  Created on: 13 wrz 2014
+ *  Created on: 28 lip 2015
  *      Author: tomhof
  */
 #include "Interval.h"
@@ -184,6 +184,8 @@ Interval<mpreal> ISin(const Interval<mpreal>& x) {
 	int k;
 	int st = 0;
 	Interval<mpreal> d, s, w, w1, x2;
+	mpreal eps = nextabove(0);
+
 	if (x.a > x.b)
 		st = 1;
 	else {
@@ -204,22 +206,22 @@ Interval<mpreal> ISin(const Interval<mpreal>& x) {
 			else
 				w1 = IAdd(w, s);
 			if ((w.a != 0) && (w.b != 0)) {
-				if ((abs(w.a - w1.a) / abs(w.a) < 1e-16)
-						&& (abs(w.b - w1.b) / abs(w.b) < 1e-16))
+				if ((abs(w.a - w1.a) / abs(w.a) < eps)
+						&& (abs(w.b - w1.b) / abs(w.b) < eps))
 					finished = true;
 				else
 					;
 			} else if ((w.a == 0) && (w.b != 0)) {
-				if ((abs(w.a - w1.a) < 1e-16)
-						&& (abs(w.b - w1.b) / abs(w.b) < 1e-16))
+				if ((abs(w.a - w1.a) < eps)
+						&& (abs(w.b - w1.b) / abs(w.b) < eps))
 					finished = true;
 				else
 					;
 			} else if (w.a != 0) {
-				if ((abs(w.a - w1.a) / abs(w.a) < 1e-16)
-						& (abs(w.b - w1.b) < 1e-16))
+				if ((abs(w.a - w1.a) / abs(w.a) < eps)
+						& (abs(w.b - w1.b) < eps))
 					finished = true;
-				else if ((abs(w.a - w1.a) < 1e-16) & (abs(w.b - w1.b) < 1e-16))
+				else if ((abs(w.a - w1.a) < eps) & (abs(w.b - w1.b) < eps))
 					finished = true;
 			}
 
@@ -263,6 +265,8 @@ Interval<mpreal> ICos(const Interval<mpreal>& x) {
 	int k;
 	int st = 0;
 	Interval<mpreal> d, c, w, w1, x2;
+	mpreal eps = nextabove(0);
+
 	if (x.a > x.b)
 		st = 1;
 	else {
@@ -285,24 +289,24 @@ Interval<mpreal> ICos(const Interval<mpreal>& x) {
 				w1 = IAdd(w, c);
 
 			if ((w.a != 0) && (w.b != 0)) {
-				if ((abs(w.a - w1.a) / abs(w.a) < 1e-18)
-						&& (abs(w.b - w1.b) / abs(w.b) < 1e-18))
+				if ((abs(w.a - w1.a) / abs(w.a) < eps)
+						&& (abs(w.b - w1.b) / abs(w.b) < eps))
 					finished = true;
 				else
 					;
 			} else if ((w.a == 0) && (w.b != 0)) {
-				if ((abs(w.a - w1.a) < 1e-18)
-						&& (abs(w.b - w1.b) / abs(w.b) < 1e-18))
+				if ((abs(w.a - w1.a) < eps)
+						&& (abs(w.b - w1.b) / abs(w.b) < eps))
 					finished = true;
 				else
 					;
 			}
 
 			else if (w.a != 0) {
-				if ((abs(w.a - w1.a) / abs(w.a) < 1e-18)
-						& (abs(w.b - w1.b) < 1e-18))
+				if ((abs(w.a - w1.a) / abs(w.a) < eps)
+						& (abs(w.b - w1.b) < eps))
 					finished = true;
-				else if ((abs(w.a - w1.a) < 1e-18) & (abs(w.b - w1.b) < 1e-18))
+				else if ((abs(w.a - w1.a) < eps) & (abs(w.b - w1.b) < eps))
 					finished = true;
 			}
 
@@ -339,6 +343,8 @@ Interval<mpreal> IExp(const Interval<mpreal>& x) {
 	bool finished;
 	int k;
 	int st = 0;
+	mpreal eps = nextabove(0);
+
 	Interval<mpreal> d, e, w, w1;
 	if (x.a > x.b)
 		st = 1;
@@ -354,8 +360,8 @@ Interval<mpreal> IExp(const Interval<mpreal>& x) {
 			d.b = k;
 			e = IMul(e, IDiv(x, d));
 			w1 = IAdd(w, e);
-			if ((abs(w.a - w1.a) / abs(w.a) < 1e-18)
-					&& (abs(w.b - w1.b) / abs(w.b) < 1e-18)) {
+			if ((abs(w.a - w1.a) / abs(w.a) < eps)
+					&& (abs(w.b - w1.b) / abs(w.b) < eps)) {
 				finished = true;
 				return w1;
 			} else {
@@ -681,6 +687,7 @@ Interval<mpreal> DISin(const Interval<mpreal>& x) {
 	int k;
 	int st = 0;
 	Interval<mpreal> d, s, w, w1, x2;
+	mpreal eps = nextabove(0);
 	if (x.a > x.b)
 		st = 1;
 	else {
@@ -701,24 +708,24 @@ Interval<mpreal> DISin(const Interval<mpreal>& x) {
 			else
 				w1 = DIAdd(w, s);
 			if ((w.a != 0) && (w.b != 0)) {
-				if ((abs(w.a - w1.a) / abs(w.a) < 1e-18)
-						&& (abs(w.b - w1.b) / abs(w.b) < 1e-18))
+				if ((abs(w.a - w1.a) / abs(w.a) < eps)
+						&& (abs(w.b - w1.b) / abs(w.b) < eps))
 					finished = true;
 				else
 					;
 			} else if ((w.a == 0) && (w.b != 0)) {
-				if ((abs(w.a - w1.a) < 1e-18)
-						&& (abs(w.b - w1.b) / abs(w.b) < 1e-18))
+				if ((abs(w.a - w1.a) < eps)
+						&& (abs(w.b - w1.b) / abs(w.b) < eps))
 					finished = true;
 				else
 					;
 			}
 
 			else if (w.a != 0) {
-				if ((abs(w.a - w1.a) / abs(w.a) < 1e-18)
-						& (abs(w.b - w1.b) < 1e-18))
+				if ((abs(w.a - w1.a) / abs(w.a) < eps)
+						& (abs(w.b - w1.b) < eps))
 					finished = true;
-				else if ((abs(w.a - w1.a) < 1e-18) & (abs(w.b - w1.b) < 1e-18))
+				else if ((abs(w.a - w1.a) < eps) & (abs(w.b - w1.b) < eps))
 					finished = true;
 			}
 
@@ -755,6 +762,8 @@ Interval<mpreal> DICos(const Interval<mpreal>& x, int & st) {
 	bool is_even, finished;
 	int k;
 	Interval<mpreal> d, c, w, w1, x2;
+	mpreal eps = nextabove(0);
+
 	if (x.a > x.b)
 		st = 1;
 	else {
@@ -777,24 +786,24 @@ Interval<mpreal> DICos(const Interval<mpreal>& x, int & st) {
 				w1 = DIAdd(w, c);
 
 			if ((w.a != 0) && (w.b != 0)) {
-				if ((abs(w.a - w1.a) / abs(w.a) < 1e-18)
-						&& (abs(w.b - w1.b) / abs(w.b) < 1e-18))
+				if ((abs(w.a - w1.a) / abs(w.a) < eps)
+						&& (abs(w.b - w1.b) / abs(w.b) < eps))
 					finished = true;
 				else
 					;
 			} else if ((w.a == 0) && (w.b != 0)) {
-				if ((abs(w.a - w1.a) < 1e-18)
-						&& (abs(w.b - w1.b) / abs(w.b) < 1e-18))
+				if ((abs(w.a - w1.a) < eps)
+						&& (abs(w.b - w1.b) / abs(w.b) < eps))
 					finished = true;
 				else
 					;
 			}
 
 			else if (w.a != 0) {
-				if ((abs(w.a - w1.a) / abs(w.a) < 1e-18)
-						& (abs(w.b - w1.b) < 1e-18))
+				if ((abs(w.a - w1.a) / abs(w.a) < eps)
+						& (abs(w.b - w1.b) < eps))
 					finished = true;
-				else if ((abs(w.a - w1.a) < 1e-18) & (abs(w.b - w1.b) < 1e-18))
+				else if ((abs(w.a - w1.a) < eps) & (abs(w.b - w1.b) < eps))
 					finished = true;
 			}
 
@@ -832,6 +841,8 @@ Interval<mpreal> DIExp(const Interval<mpreal>& x) {
 	int k;
 	int st = 0;
 	Interval<mpreal> d, e, w, w1;
+	mpreal eps = nextabove(0);
+
 	if (x.a > x.b)
 		st = 1;
 	else {
@@ -846,8 +857,8 @@ Interval<mpreal> DIExp(const Interval<mpreal>& x) {
 			d.b = k;
 			e = IMul(e, DIDiv(x, d));
 			w1 = DIAdd(w, e);
-			if ((abs(w.a - w1.a) / abs(w.a) < 1e-18)
-					&& (abs(w.b - w1.b) / abs(w.b) < 1e-18)) {
+			if ((abs(w.a - w1.a) / abs(w.a) < eps)
+					&& (abs(w.b - w1.b) / abs(w.b) < eps)) {
 				finished = true;
 				return w1;
 			} else {
@@ -869,6 +880,7 @@ Interval<mpreal> DISqr(const Interval<mpreal>& x) {
 	mpreal minx, maxx;
 	int st = 0;
 	Interval<mpreal> r;
+
 	r.a = 0;
 	r.b = 0;
 	if (x.a > x.b)
