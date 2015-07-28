@@ -22,12 +22,14 @@
 #include <iomanip>
 #include <fstream>
 #include <float.h>
-#include <mpreal.h>
 #include <typeinfo>
 #include "Utils.h"
+#include <mpfr.h>
+#include <mpreal.h>
 
 using namespace std;
 using namespace mpfr;
+
 
 namespace interval_arithmetic {
 //
@@ -693,6 +695,10 @@ Interval<T> ISqr(const Interval<T>& x, int & st) {
 	return r;
 }
 
+
+
+
+
 template<typename T>
 Interval<T> IAdd(const Interval<T>& x, const Interval<T>& y) {
 	Interval<T> r;
@@ -787,6 +793,8 @@ Interval<T> IDiv(const Interval<T>& x, const Interval<T>& y) {
 	fesetround(FE_TONEAREST);
 	return r;
 }
+
+
 
 template<typename T>
 Interval<T> DIAdd(const Interval<T>& x, const Interval<T>& y) {
@@ -1281,6 +1289,10 @@ Interval<T> DISqr(const Interval<T>& x) {
 	}
 	return r;
 }
+
+
+
+
 
 //The explicit instantiation part
 template class Interval<long double>;

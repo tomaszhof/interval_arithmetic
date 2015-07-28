@@ -13,54 +13,10 @@ using namespace mpfr;
 
 namespace interval_arithmetic {
 
-
-template<> class Interval<mpreal> {
-private:
-	static IAPrecision precision;
-	static IAOutDigits outdigits;
-
-public:
-	static IAMode mode;
-	mpreal a;
-	mpreal b;
-	Interval();
-	Interval(mpreal a, mpreal b);
-	virtual ~Interval();
-	Interval<mpreal> operator=(const Interval<mpreal>& i);
-	Interval<mpreal> operator+(const Interval<mpreal>& i);
-	Interval<mpreal> operator-(const Interval<mpreal>& i);
-	Interval<mpreal> operator*(const Interval<mpreal>& i);
-	Interval<mpreal> operator/(const Interval<mpreal>& i);
-	Interval<mpreal> Projection();
-	Interval<mpreal> Opposite();
-	Interval<mpreal> Inverse();
-	mpreal GetWidth();
-	static void Initialize();
-	static Interval<mpreal> ISqr2();
-	static Interval<mpreal> ISqr3();
-	static Interval<mpreal> IPi();
-	static void SetMode(IAMode m) {mode = m; }
-	static IAMode GetMode();
-	static void SetPrecision(IAPrecision p);
-	static IAPrecision GetPrecision(IAPrecision p);
-	static void SetOutDigits(IAOutDigits o);
-	static IAOutDigits GetOutDigits(IAOutDigits o);
-	static Interval<mpreal> IntRead(const string & sa);
-	void IEndsToStrings(string & left, string & right);
-	static mpreal LeftRead(const string& sa);
-	static mpreal RightRead(const string& sa);
-};
-
 template<> IAMode Interval<mpreal>::mode = PINT_MODE;
-//template<typename T> IAPrecision Interval<T>::precision = LONGDOUBLE_PREC;
+template<> IAPrecision Interval<mpreal>::precision = LONGDOUBLE_PREC;
 template<> IAOutDigits Interval<mpreal>::outdigits = LONGDOUBLE_DIGITS;
 
-template<>
-Interval<mpreal>::Interval()
-{
-	this->a = 0.0;
-	this->b = 0.0;
-}
 
 template<>
 Interval<mpreal>::~Interval()
@@ -76,322 +32,6 @@ inline Interval<mpreal>::Interval(mpreal a, mpreal b) {
 template<>
 inline IAMode Interval<mpreal>::GetMode() {
 	return Interval<mpreal>::mode;
-}
-
-template<>
-inline Interval<mpreal> Interval<mpreal>::operator =(const Interval<mpreal>& i) {
-	this->a = i.a;
-	this->b = i.b;
-
-	return *this;
-}
-
-template<>
-inline Interval<mpreal> Interval<mpreal>::operator +(const Interval<mpreal>& y) {
-	Interval<mpreal> x(this->a, this->b);
-	Interval<mpreal> r = {0, 0};
-	switch (mode) {
-	case PINT_MODE:
-		r = IAdd(x, y);
-		break;
-	case DINT_MODE:
-		r = DIAdd(x, y);
-		break;
-	default:
-		r = IAdd(x, y);
-		break;
-	}
-
-	return r;
-}
-
-template<>
-inline Interval<mpreal> operator +(Interval<mpreal> x, const Interval<mpreal>& y) {
-	switch (Interval<mpreal>::mode) {
-	case PINT_MODE:
-		return  IAdd(x, y);
-	case DINT_MODE:
-		return  DIAdd(x, y);
-	default:
-		return IAdd(x, y);
-	}
-}
-
-template<>
-inline Interval<mpreal> Interval<mpreal>::operator -(const Interval<mpreal>& y) {
-	Interval<mpreal> x(this->a, this->b);
-	Interval<mpreal> r = {0, 0};
-	switch (mode) {
-	case PINT_MODE:
-		r = ISub(x, y);
-		break;
-	case DINT_MODE:
-		r = DISub(x, y);
-		break;
-	default:
-		r = ISub(x, y);
-		break;
-	}
-
-	return r;
-}
-
-template<>
-inline Interval<mpreal> operator -(Interval<mpreal> x, const Interval<mpreal>& y) {
-	switch (Interval<mpreal>::mode) {
-	case PINT_MODE:
-		return  ISub(x, y);
-	case DINT_MODE:
-		return  DISub(x, y);
-	default:
-		return ISub(x, y);
-	}
-}
-
-
-template<>
-inline Interval<mpreal> Interval<mpreal>::operator *(const Interval<mpreal>& y) {
-	Interval<mpreal> x(this->a, this->b);
-	Interval<mpreal> r = {0, 0};
-	switch (mode) {
-	case PINT_MODE:
-		r = IMul(x, y);
-		break;
-	case DINT_MODE:
-		r = DIMul(x, y);
-		break;
-	default:
-		r = IMul(x, y);
-		break;
-	}
-
-	return r;
-}
-
-template<>
-inline Interval<mpreal> operator *(Interval<mpreal> x, const Interval<mpreal>& y) {
-	switch (Interval<mpreal>::mode) {
-	case PINT_MODE:
-		return IMul(x, y);
-	case DINT_MODE:
-		return DIMul(x, y);
-	default:
-		return IMul(x, y);
-	}
-}
-
-template<>
-inline Interval<mpreal> Interval<mpreal>::operator /(const Interval<mpreal>& y) {
-	Interval<mpreal> x(this->a, this->b);
-	Interval<mpreal> r = {0, 0};
-	switch (mode) {
-	case PINT_MODE:
-		r = IDiv(x, y);
-		break;
-	case DINT_MODE:
-		r = DIDiv(x, y);
-		break;
-	default:
-		r = IDiv(x, y);
-		break;
-	}
-
-	return r;
-}
-
-template<>
-inline Interval<mpreal> operator /(Interval<mpreal> x, const Interval<mpreal>& y) {
-	switch (Interval<mpreal>::mode) {
-	case PINT_MODE:
-		return IDiv(x, y);
-	case DINT_MODE:
-		return DIDiv(x, y);
-	default:
-		return IDiv(x, y);
-	}
-}
-template<>
-inline void Interval<mpreal>::SetPrecision(IAPrecision p) {
-	Interval<mpreal>::precision = p;
-}
-
-template<>
-inline IAPrecision Interval<mpreal>::GetPrecision(IAPrecision p) {
-	return Interval<mpreal>::precision;
-}
-
-template<>
-inline void Interval<mpreal>::SetOutDigits(IAOutDigits o) {
-	Interval<mpreal>::outdigits = LONGDOUBLE_DIGITS;
-}
-
-template<>
-inline IAOutDigits Interval<mpreal>::GetOutDigits(IAOutDigits o) {
-	return Interval<mpreal>::outdigits;
-}
-
-template<>
-inline Interval<mpreal> Interval<mpreal>::IntRead(const string& sa) {
-	Interval<mpreal> r;
-	mpfr_t ropl;
-	mpfr_init2(ropl, precision);
-	mpfr_set_str(ropl, sa.c_str(), 10, MPFR_RNDD);
-
-	mpfr_t ropr;
-	mpfr_init2(ropr, precision);
-	mpfr_set_str(ropr, sa.c_str(), 10, MPFR_RNDU);
-
-	r.a = ropl;
-	r.b = ropr;
-	return r;
-}
-
-// TODO: perform changes form mpreal type template specialization
-
-template<>
-inline void Interval<mpreal>::IEndsToStrings(string& left, string& right) {
-	mpfr_t rop;
-	mpfr_exp_t exponent;
-	mpfr_init2(rop, precision);
-	char* str = NULL;
-	char *buffer = new char(precision + 3);
-	mpfr_set(rop, this->a.mpfr_ptr(), MPFR_RNDD);
-	mpfr_get_str(buffer, &exponent, 10, outdigits, rop, MPFR_RNDD);
-	str = buffer;
-
-	stringstream ss;
-	int prec = std::numeric_limits<mpreal>::digits10();
-	ss.setf(std::ios_base::scientific);
-	bool minus = (str[0] == '-');
-	int splitpoint = minus ? 1 : 0;
-	string sign = minus ? "-" : "";
-
-	ss << std::setprecision(prec) << sign << str[splitpoint] << "."
-			<< &str[splitpoint + 1] << "E" << exponent - 1;
-	left = ss.str();
-	ss.str(std::string());
-
-	mpfr_set(rop, this->b.mpfr_ptr(), MPFR_RNDU);
-	mpfr_get_str(buffer, &exponent, 10, outdigits, rop, MPFR_RNDU);
-	str = buffer;
-	splitpoint = (str[0] == '-') ? 1 : 0;
-	ss << std::setprecision(prec) << sign << str[splitpoint] << "."
-			<< &str[splitpoint + 1] << "E" << exponent - 1;
-	right = ss.str();
-	ss.clear();
-}
-
-template<>
-inline Interval<mpreal> Interval<mpreal>::Projection() {
-	Interval<mpreal> x(this->a, this->b);
-	Interval<mpreal> r;
-	r = x;
-	if (x.a > x.b) {
-		r.a = x.b;
-		r.b = x.a;
-	}
-	return r;
-}
-
-template<>
-inline Interval<mpreal> Interval<mpreal>::Opposite() {
-	Interval<mpreal> x(this->a, this->b);
-	Interval<mpreal> r;
-	r.a = -x.a;
-	r.b = -x.b;
-	return r;
-}
-
-template<>
-inline Interval<mpreal> Interval<mpreal>::Inverse() {
-	Interval<mpreal> x(this->a, this->b);
-	Interval<mpreal> z1, z2;
-
-	mpreal::set_default_rnd(MPFR_RNDD);
-	z1.a = 1 / x.a;
-	z2.b = 1 / x.b;
-	mpreal::set_default_rnd(MPFR_RNDU);
-	z1.b = 1 / x.b;
-	z2.a = 1 / x.a;
-	mpreal::set_default_rnd(MPFR_RNDN);
-	if (DIntWidth(z1) >= DIntWidth(z2))
-		return z1;
-	else
-		return z2;
-}
-
-template<>
-inline mpreal Interval<mpreal>::LeftRead(const string& sa) {
-	Interval<mpreal> int_number;
-	int_number = IntRead(sa);
-	return int_number.a;
-}
-
-template<>
-inline mpreal Interval<mpreal>::GetWidth() {
-	Interval<mpreal> x(this->a, this->b);
-	switch (mode) {
-	case PINT_MODE:
-		return IntWidth(x);
-	case DINT_MODE:
-		return DIntWidth(x);
-	default:
-		return IntWidth(x);
-	}
-}
-
-template<>
-inline Interval<mpreal> Interval<mpreal>::ISqr2() {
-	string i2;
-	Interval<mpreal> r;
-	i2 = "1.414213562373095048";
-	r.a = LeftRead(i2);
-	i2 = "1.414213562373095049";
-	r.b = RightRead(i2);
-	return r;
-}
-
-template<>
-inline Interval<mpreal> Interval<mpreal>::ISqr3() {
-	string i2;
-	Interval<mpreal> r;
-	i2 = "1.732050807568877293";
-	r.a = LeftRead(i2);
-	i2 = "1.732050807568877294";
-	r.b = RightRead(i2);
-	return r;
-}
-
-template<>
-inline Interval<mpreal> Interval<mpreal>::IPi() {
-	string i2;
-	Interval<mpreal> r;
-	i2 = "3.141592653589793238";
-	r.a = LeftRead(i2);
-	i2 = "3.141592653589793239";
-	r.b = RightRead(i2);
-	return r;
-}
-
-template<>
-inline void Interval<mpreal>::Initialize() {
-	Interval<mpreal>::precision = LONGDOUBLE_PREC;
-	Interval<mpreal>::outdigits = LONGDOUBLE_DIGITS;
-}
-
-template<>
-inline mpreal Interval<mpreal>::RightRead(const string& sa) {
-	Interval<mpreal> int_number;
-	int_number = IntRead(sa);
-	return int_number.b;
-}
-
-template<>
-mpreal IntWidth(const Interval<mpreal>& x) {
-	mpreal::set_default_rnd(MPFR_RNDU);
-	mpreal w = x.b - x.a;
-	mpreal::set_default_rnd(MPFR_RNDN);
-	return w;
 }
 
 template<>
@@ -411,6 +51,131 @@ mpreal DIntWidth(const Interval<mpreal>& x) {
 		return w1;
 	else
 		return w2;
+}
+
+template<>
+mpreal IntWidth(const Interval<mpreal>& x) {
+	mpreal::set_default_rnd(MPFR_RNDU);
+	mpreal w = x.b - x.a;
+	mpreal::set_default_rnd(MPFR_RNDN);
+	return w;
+}
+
+template<>
+inline mpreal Interval<mpreal>::GetWidth() {
+	Interval<mpreal> x(this->a, this->b);
+	switch (mode) {
+	case PINT_MODE:
+		return IntWidth(x);
+	case DINT_MODE:
+		return DIntWidth(x);
+	default:
+		return IntWidth(x);
+	}
+}
+
+template<>
+inline Interval<mpreal> Interval<mpreal>::operator =(const Interval<mpreal>& i) {
+	this->a = i.a;
+	this->b = i.b;
+
+	return *this;
+}
+
+template<>
+Interval<mpreal> IAdd(const Interval<mpreal>& x, const Interval<mpreal>& y) {
+	Interval<mpreal> r;
+	mpreal::set_default_rnd(MPFR_RNDD);
+	r.a = x.a + y.a;
+	mpreal::set_default_rnd(MPFR_RNDU);
+	r.b = x.b + y.b;
+	mpreal::set_default_rnd(MPFR_RNDN);
+	return r;
+}
+
+
+template<>
+Interval<mpreal> IDiv(const Interval<mpreal>& x, const Interval<mpreal>& y) {
+	Interval<mpreal> r;
+	mpreal x1y1, x1y2, x2y1, t;
+
+	if ((y.a <= 0) && (y.b >= 0)) {
+		throw runtime_error("Division by an interval containing 0.");
+	} else {
+		mpreal::set_default_rnd(MPFR_RNDD);
+		x1y1 = x.a / y.a;
+		x1y2 = x.a / y.b;
+		x2y1 = x.b / y.a;
+		r.a = x.b / y.b;
+		t = r.a;
+		if (x2y1 < t)
+			r.a = x2y1;
+		if (x1y2 < t)
+			r.a = x1y2;
+		if (x1y1 < t)
+			r.a = x1y1;
+
+		mpreal::set_default_rnd(MPFR_RNDU);
+		x1y1 = x.a / y.a;
+		x1y2 = x.a / y.b;
+		x2y1 = x.b / y.a;
+
+		r.b = x.b / y.b;
+		t = r.b;
+		if (x2y1 > t)
+			r.b = x2y1;
+		if (x1y2 > t)
+			r.b = x1y2;
+		if (x1y1 > t)
+			r.b = x1y1;
+
+	}
+	mpreal::set_default_rnd(MPFR_RNDN);
+	return r;
+}
+
+template<>
+Interval<mpreal> ISub(const Interval<mpreal>& x, const Interval<mpreal>& y) {
+	Interval<mpreal> r;
+	mpreal::set_default_rnd(MPFR_RNDD);
+	r.a = x.a - y.b;
+	mpreal::set_default_rnd(MPFR_RNDU);
+	r.b = x.b - y.a;
+	mpreal::set_default_rnd(MPFR_RNDN);
+	return r;
+}
+
+template<>
+Interval<mpreal> IMul(const Interval<mpreal>& x, const Interval<mpreal>& y) {
+	Interval<mpreal> r(0, 0);
+	mpreal x1y1, x1y2, x2y1;
+
+	mpreal::set_default_rnd(MPFR_RNDD);
+	x1y1 = x.a * y.a;
+	x1y2 = x.a * y.b;
+	x2y1 = x.b * y.a;
+	r.a = x.b * y.b;
+	if (x2y1 < r.a)
+		r.a = x2y1;
+	if (x1y2 < r.a)
+		r.a = x1y2;
+	if (x1y1 < r.a)
+		r.a = x1y1;
+
+	mpreal::set_default_rnd(MPFR_RNDU);
+	x1y1 = x.a * y.a;
+	x1y2 = x.a * y.b;
+	x2y1 = x.b * y.a;
+
+	r.b = x.b * y.b;
+	if (x2y1 > r.b)
+		r.b = x2y1;
+	if (x1y2 > r.b)
+		r.b = x1y2;
+	if (x1y1 > r.b)
+		r.b = x1y1;
+	mpreal::set_default_rnd(MPFR_RNDN);
+	return r;
 }
 
 template<>
@@ -636,102 +401,6 @@ Interval<mpreal> ISqr(const Interval<mpreal>& x, int & st) {
 	return r;
 }
 
-template<>
-Interval<mpreal> IAdd(const Interval<mpreal>& x, const Interval<mpreal>& y) {
-	Interval<mpreal> r;
-	mpreal::set_default_rnd(MPFR_RNDD);
-	r.a = x.a + y.a;
-	mpreal::set_default_rnd(MPFR_RNDU);
-	r.b = x.b + y.b;
-	mpreal::set_default_rnd(MPFR_RNDN);
-	return r;
-}
-
-template<>
-Interval<mpreal> ISub(const Interval<mpreal>& x, const Interval<mpreal>& y) {
-	Interval<mpreal> r;
-	mpreal::set_default_rnd(MPFR_RNDD);
-	r.a = x.a - y.b;
-	mpreal::set_default_rnd(MPFR_RNDU);
-	r.b = x.b - y.a;
-	mpreal::set_default_rnd(MPFR_RNDN);
-	return r;
-}
-
-template<>
-Interval<mpreal> IMul(const Interval<mpreal>& x, const Interval<mpreal>& y) {
-	Interval<mpreal> r(0, 0);
-	mpreal x1y1, x1y2, x2y1;
-
-	mpreal::set_default_rnd(MPFR_RNDD);
-	x1y1 = x.a * y.a;
-	x1y2 = x.a * y.b;
-	x2y1 = x.b * y.a;
-	r.a = x.b * y.b;
-	if (x2y1 < r.a)
-		r.a = x2y1;
-	if (x1y2 < r.a)
-		r.a = x1y2;
-	if (x1y1 < r.a)
-		r.a = x1y1;
-
-	mpreal::set_default_rnd(MPFR_RNDU);
-	x1y1 = x.a * y.a;
-	x1y2 = x.a * y.b;
-	x2y1 = x.b * y.a;
-
-	r.b = x.b * y.b;
-	if (x2y1 > r.b)
-		r.b = x2y1;
-	if (x1y2 > r.b)
-		r.b = x1y2;
-	if (x1y1 > r.b)
-		r.b = x1y1;
-	mpreal::set_default_rnd(MPFR_RNDN);
-	return r;
-}
-
-template<>
-Interval<mpreal> IDiv(const Interval<mpreal>& x, const Interval<mpreal>& y) {
-	Interval<mpreal> r;
-	mpreal x1y1, x1y2, x2y1, t;
-
-	if ((y.a <= 0) && (y.b >= 0)) {
-		throw runtime_error("Division by an interval containing 0.");
-	} else {
-		mpreal::set_default_rnd(MPFR_RNDD);
-		x1y1 = x.a / y.a;
-		x1y2 = x.a / y.b;
-		x2y1 = x.b / y.a;
-		r.a = x.b / y.b;
-		t = r.a;
-		if (x2y1 < t)
-			r.a = x2y1;
-		if (x1y2 < t)
-			r.a = x1y2;
-		if (x1y1 < t)
-			r.a = x1y1;
-
-		mpreal::set_default_rnd(MPFR_RNDU);
-		x1y1 = x.a / y.a;
-		x1y2 = x.a / y.b;
-		x2y1 = x.b / y.a;
-
-		r.b = x.b / y.b;
-		t = r.b;
-		if (x2y1 > t)
-			r.b = x2y1;
-		if (x1y2 > t)
-			r.b = x1y2;
-		if (x1y1 > t)
-			r.b = x1y1;
-
-	}
-	mpreal::set_default_rnd(MPFR_RNDN);
-	return r;
-}
-
-template<>
 Interval<mpreal> DIAdd(const Interval<mpreal>& x, const Interval<mpreal>& y) {
 	Interval<mpreal> z1, z2;
 	if ((x.a <= x.b) && (y.a <= y.b)) {
@@ -1223,6 +892,292 @@ Interval<mpreal> DISqr(const Interval<mpreal>& x) {
 		mpreal::set_default_rnd(MPFR_RNDN);
 	}
 	return r;
+}
+
+template<>
+inline Interval<mpreal> Interval<mpreal>::operator +(const Interval<mpreal>& y) {
+	Interval<mpreal> x(this->a, this->b);
+	Interval<mpreal> r = {0, 0};
+	switch (mode) {
+	case PINT_MODE:
+		r = IAdd(x, y);
+		break;
+	case DINT_MODE:
+		r = DIAdd(x, y);
+		break;
+	default:
+		r = IAdd(x, y);
+		break;
+	}
+
+	return r;
+}
+
+template<>
+inline Interval<mpreal> operator +(Interval<mpreal> x, const Interval<mpreal>& y) {
+	switch (Interval<mpreal>::mode) {
+	case PINT_MODE:
+		return  IAdd(x, y);
+	case DINT_MODE:
+		return  DIAdd(x, y);
+	default:
+		return IAdd(x, y);
+	}
+}
+
+template<>
+inline Interval<mpreal> Interval<mpreal>::operator -(const Interval<mpreal>& y) {
+	Interval<mpreal> x(this->a, this->b);
+	Interval<mpreal> r = {0, 0};
+	switch (mode) {
+	case PINT_MODE:
+		r = ISub(x, y);
+		break;
+	case DINT_MODE:
+		r = DISub(x, y);
+		break;
+	default:
+		r = ISub(x, y);
+		break;
+	}
+
+	return r;
+}
+
+template<>
+inline Interval<mpreal> operator -(Interval<mpreal> x, const Interval<mpreal>& y) {
+	switch (Interval<mpreal>::mode) {
+	case PINT_MODE:
+		return  ISub(x, y);
+	case DINT_MODE:
+		return  DISub(x, y);
+	default:
+		return ISub(x, y);
+	}
+}
+
+template<>
+inline Interval<mpreal> Interval<mpreal>::operator *(const Interval<mpreal>& y) {
+	Interval<mpreal> x(this->a, this->b);
+	Interval<mpreal> r = {0, 0};
+	switch (mode) {
+	case PINT_MODE:
+		r = IMul(x, y);
+		break;
+	case DINT_MODE:
+		r = DIMul(x, y);
+		break;
+	default:
+		r = IMul(x, y);
+		break;
+	}
+
+	return r;
+}
+
+template<>
+inline Interval<mpreal> operator *(Interval<mpreal> x, const Interval<mpreal>& y) {
+	switch (Interval<mpreal>::mode) {
+	case PINT_MODE:
+		return IMul(x, y);
+	case DINT_MODE:
+		return DIMul(x, y);
+	default:
+		return IMul(x, y);
+	}
+}
+
+template<>
+inline Interval<mpreal> Interval<mpreal>::operator /(const Interval<mpreal>& y) {
+	Interval<mpreal> x(this->a, this->b);
+	Interval<mpreal> r = {0, 0};
+	switch (mode) {
+	case PINT_MODE:
+		r = IDiv(x, y);
+		break;
+	case DINT_MODE:
+		r = DIDiv(x, y);
+		break;
+	default:
+		r = IDiv(x, y);
+		break;
+	}
+
+	return r;
+}
+
+template<>
+inline Interval<mpreal> operator /(Interval<mpreal> x, const Interval<mpreal>& y) {
+	switch (Interval<mpreal>::mode) {
+	case PINT_MODE:
+		return IDiv(x, y);
+	case DINT_MODE:
+		return DIDiv(x, y);
+	default:
+		return IDiv(x, y);
+	}
+}
+template<>
+inline void Interval<mpreal>::SetPrecision(IAPrecision p) {
+	Interval<mpreal>::precision = p;
+}
+
+template<>
+inline IAPrecision Interval<mpreal>::GetPrecision(IAPrecision p) {
+	return Interval<mpreal>::precision;
+}
+
+template<>
+inline void Interval<mpreal>::SetOutDigits(IAOutDigits o) {
+	Interval<mpreal>::outdigits = LONGDOUBLE_DIGITS;
+}
+
+template<>
+inline IAOutDigits Interval<mpreal>::GetOutDigits(IAOutDigits o) {
+	return Interval<mpreal>::outdigits;
+}
+
+template<>
+inline Interval<mpreal> Interval<mpreal>::IntRead(const string& sa) {
+	Interval<mpreal> r;
+	mpfr_t ropl;
+	mpfr_init2(ropl, precision);
+	mpfr_set_str(ropl, sa.c_str(), 10, MPFR_RNDD);
+
+	mpfr_t ropr;
+	mpfr_init2(ropr, precision);
+	mpfr_set_str(ropr, sa.c_str(), 10, MPFR_RNDU);
+
+	r.a = ropl;
+	r.b = ropr;
+	return r;
+}
+
+// TODO: perform changes form mpreal type template specialization
+
+template<>
+inline void Interval<mpreal>::IEndsToStrings(string& left, string& right) {
+	mpfr_t rop;
+	mpfr_exp_t exponent;
+	mpfr_init2(rop, precision);
+	char* str = NULL;
+	char *buffer = new char(precision + 3);
+	mpfr_set(rop, this->a.mpfr_ptr(), MPFR_RNDD);
+	mpfr_get_str(buffer, &exponent, 10, outdigits, rop, MPFR_RNDD);
+	str = buffer;
+
+	stringstream ss;
+	int prec = std::numeric_limits<mpreal>::digits10();
+	ss.setf(std::ios_base::scientific);
+	bool minus = (str[0] == '-');
+	int splitpoint = minus ? 1 : 0;
+	string sign = minus ? "-" : "";
+
+	ss << std::setprecision(prec) << sign << str[splitpoint] << "."
+			<< &str[splitpoint + 1] << "E" << exponent - 1;
+	left = ss.str();
+	ss.str(std::string());
+
+	mpfr_set(rop, this->b.mpfr_ptr(), MPFR_RNDU);
+	mpfr_get_str(buffer, &exponent, 10, outdigits, rop, MPFR_RNDU);
+	str = buffer;
+	splitpoint = (str[0] == '-') ? 1 : 0;
+	ss << std::setprecision(prec) << sign << str[splitpoint] << "."
+			<< &str[splitpoint + 1] << "E" << exponent - 1;
+	right = ss.str();
+	ss.clear();
+}
+
+template<>
+inline Interval<mpreal> Interval<mpreal>::Projection() {
+	Interval<mpreal> x(this->a, this->b);
+	Interval<mpreal> r;
+	r = x;
+	if (x.a > x.b) {
+		r.a = x.b;
+		r.b = x.a;
+	}
+	return r;
+}
+
+template<>
+inline Interval<mpreal> Interval<mpreal>::Opposite() {
+	Interval<mpreal> x(this->a, this->b);
+	Interval<mpreal> r;
+	r.a = -x.a;
+	r.b = -x.b;
+	return r;
+}
+
+template<>
+inline Interval<mpreal> Interval<mpreal>::Inverse() {
+	Interval<mpreal> x(this->a, this->b);
+	Interval<mpreal> z1, z2;
+
+	mpreal::set_default_rnd(MPFR_RNDD);
+	z1.a = 1 / x.a;
+	z2.b = 1 / x.b;
+	mpreal::set_default_rnd(MPFR_RNDU);
+	z1.b = 1 / x.b;
+	z2.a = 1 / x.a;
+	mpreal::set_default_rnd(MPFR_RNDN);
+	if (DIntWidth(z1) >= DIntWidth(z2))
+		return z1;
+	else
+		return z2;
+}
+
+template<>
+inline mpreal Interval<mpreal>::LeftRead(const string& sa) {
+	Interval<mpreal> int_number;
+	int_number = IntRead(sa);
+	return int_number.a;
+}
+
+template<>
+inline mpreal Interval<mpreal>::RightRead(const string& sa) {
+	Interval<mpreal> int_number;
+	int_number = IntRead(sa);
+	return int_number.b;
+}
+
+template<>
+inline Interval<mpreal> Interval<mpreal>::ISqr2() {
+	string i2;
+	Interval<mpreal> r;
+	i2 = "1.414213562373095048";
+	r.a = LeftRead(i2);
+	i2 = "1.414213562373095049";
+	r.b = RightRead(i2);
+	return r;
+}
+
+template<>
+inline Interval<mpreal> Interval<mpreal>::ISqr3() {
+	string i2;
+	Interval<mpreal> r;
+	i2 = "1.732050807568877293";
+	r.a = LeftRead(i2);
+	i2 = "1.732050807568877294";
+	r.b = RightRead(i2);
+	return r;
+}
+
+template<>
+inline Interval<mpreal> Interval<mpreal>::IPi() {
+	string i2;
+	Interval<mpreal> r;
+	i2 = "3.141592653589793238";
+	r.a = LeftRead(i2);
+	i2 = "3.141592653589793239";
+	r.b = RightRead(i2);
+	return r;
+}
+
+template<>
+inline void Interval<mpreal>::Initialize() {
+	Interval<mpreal>::precision = LONGDOUBLE_PREC;
+	Interval<mpreal>::outdigits = LONGDOUBLE_DIGITS;
 }
 
 }

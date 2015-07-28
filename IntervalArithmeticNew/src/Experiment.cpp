@@ -13,15 +13,15 @@ namespace interval_arithmetic
 template<typename T>
 Experiment<T>::Experiment()
 {
-	// TODO Auto-generated constructor stub
 	_param_initialized = false;
 	_solver_initialized = false;
+	_example = NULL;
+	solver = NULL;
 }
 
 template<typename T>
 Experiment<T>::~Experiment()
 {
-	// TODO Auto-generated destructor stub
 }
 
 template<typename T>

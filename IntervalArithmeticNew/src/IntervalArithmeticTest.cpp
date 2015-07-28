@@ -25,6 +25,11 @@ int main(int ac, char *av[]) {
 //	tester->ArithmeticTestNew();
 //	delete tester;
 
+//	Interval<mpreal> ione = {1, 1};
+//	Interval<mpreal> a = {-2, -1};
+//	Interval<mpreal> b = {-3, -1};
+//	Interval<mpreal> c, d;
+
 	Interval<mpreal> ione = {1, 1};
 	Interval<mpreal> a = {-2, -1};
 	Interval<mpreal> b = {-3, -1};

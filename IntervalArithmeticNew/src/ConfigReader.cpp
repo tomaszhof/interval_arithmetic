@@ -21,13 +21,37 @@ namespace interval_arithmetic
 template<typename T>
 ConfigReader<T>::ConfigReader()
 {
-	this->SetDefaultParameters();
+	//default configuration
+	this->exp_mode =  INTERVAL_EXP; //CLASSICAL_EXP; //CONST_M_EXP; //INTERVAL_EXP; //CLASSICAL_EXP; //CONST_M_EXP
+	this->arth_mode = DINT_MODE;
+	this->m = 20; //default grid size m=n=20
+	this->n = 20;
+	this->e = 3; //default example_id = 1
+	this->alpha1 = 1;
+	this->alpha2 = 2;
+	this->beta1 = 1;
+	this->beta2 = 2;
+	this->file_name = "ex03dint.txt";
+	this->print_csv = false;
+	this->solver_id = GPDE_SOLVER;
 }
 
 template<typename T>
 ConfigReader<T>::ConfigReader(int ac, char* av[])
 {
-	this->SetDefaultParameters();
+	//default configuration
+	this->exp_mode =  INTERVAL_EXP; //CLASSICAL_EXP; //CONST_M_EXP; //INTERVAL_EXP; //CLASSICAL_EXP; //CONST_M_EXP
+	this->arth_mode = DINT_MODE;
+	this->m = 20; //default grid size m=n=20
+	this->n = 20;
+	this->e = 3; //default example_id = 1
+	this->alpha1 = 1;
+	this->alpha2 = 2;
+	this->beta1 = 1;
+	this->beta2 = 2;
+	this->file_name = "ex03dint.txt";
+	this->print_csv = false;
+	this->solver_id = GPDE_SOLVER;
 	this->parseCommandArgs(ac, av);
 }
 
@@ -604,6 +628,7 @@ void ConfigReader<T>::SetDefaultParameters()
 	this->beta2 = 2;
 	this->file_name = "ex03dint.txt";
 	this->print_csv = false;
+	this->solver_id = GPDE_SOLVER;
 }
 
 //The explicit instantiation part
