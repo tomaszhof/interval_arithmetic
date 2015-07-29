@@ -8,8 +8,8 @@
 #ifndef SOLVER_H_
 #define SOLVER_H_
 
-#include "Utils.h"
-#include "Interval.h"
+//#include "Utils.h"
+//#include "Interval.h"
 #include "BoundaryConditions.h"
 
 #include <iostream>
@@ -20,7 +20,9 @@
 #include <boost/lexical_cast.hpp>
 #include <boost/filesystem.hpp>
 
+
 using namespace std;
+
 namespace fs = boost::filesystem ;
 
 namespace interval_arithmetic
@@ -32,7 +34,7 @@ class Solver
 protected:
 	bool _initparams;
 	bool _estimateMN;
-	Parameters<T> params;
+	Parameters<long double> params;
 	BoundaryConditions<T>* bc;
 	long double** u;
 	long double maxM;
@@ -43,7 +45,7 @@ public:
 	Interval<T>* X;
 	Solver();
 	virtual ~Solver();
-	void SetParameters(Parameters<T>& p);
+	void SetParameters(Parameters<long double>& p);
 	void WriteFPResultsToFile();
 	void WriteIntervalResultsToFile();
 	void WriteFPResultsToCsv();

@@ -4,7 +4,7 @@
  *  Created on: 25-01-2014
  *      Author: thof
  */
-
+#include "Interval.cpp"
 #include "GPDESolver.h"
 
 namespace interval_arithmetic {

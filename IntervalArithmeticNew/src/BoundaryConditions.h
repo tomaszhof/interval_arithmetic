@@ -7,7 +7,7 @@
 
 #ifndef BOUNDARYCONDITIONS_H_
 #define BOUNDARYCONDITIONS_H_
-#include "Interval.h"
+#include "Interval.cpp"
 
 using namespace interval_arithmetic;
 
@@ -36,12 +36,12 @@ public:
 			int& st);
 
 	//floating-point arithmetic functions
-	virtual long double f(const long double& x, const long double& y);
-	virtual long double phi1(const long double& y);
-	virtual long double phi2(const long double& x);
-	virtual long double phi3(const long double& y);
-	virtual long double phi4(const long double& x);
-	virtual long double psi(const long double& x, const long double& y);
+	virtual long double f(const T& x, const T& y);
+	virtual long double phi1(const T& y);
+	virtual long double phi2(const T& x);
+	virtual long double phi3(const T& y);
+	virtual long double phi4(const T& x);
+	virtual long double psi(const T& x, const T& y);
 	virtual long double omega(const long double& x, const long double& y);
 	virtual long double a(const long double& x, const long double& y);
 	virtual long double c(const long double& x, const long double& y);
@@ -50,7 +50,7 @@ public:
 	virtual int boundconds(const Interval<T>& B1, const Interval<T>& B2,
 			const long double eps);
 
-	virtual long double ExactSol(long double x, long double y);
+	virtual long double ExactSol(T x, T y);
 	virtual long double GetConstM();
 	virtual long double GetConstN();
 	virtual void SetArithmeticMode(int mode);
@@ -68,34 +68,34 @@ BoundaryConditions<T>::~BoundaryConditions() {
 }
 
 template<typename T>
-long double BoundaryConditions<T>::f(const long double& x,
-		const long double& y) {
+long double BoundaryConditions<T>::f(const T& x,
+		const T& y) {
 	return 0;
 }
 
 template<typename T>
-long double BoundaryConditions<T>::phi1(const long double& y) {
+long double BoundaryConditions<T>::phi1(const T& y) {
 	return 0;
 }
 
 template<typename T>
-long double BoundaryConditions<T>::phi2(const long double& x) {
+long double BoundaryConditions<T>::phi2(const T& x) {
 	return 0;
 }
 
 template<typename T>
-long double BoundaryConditions<T>::phi3(const long double& y) {
+long double BoundaryConditions<T>::phi3(const T& y) {
 	return 0;
 }
 
 template<typename T>
-long double BoundaryConditions<T>::phi4(const long double& x) {
+long double BoundaryConditions<T>::phi4(const T& x) {
 	return 0;
 }
 
 template<typename T>
-long double BoundaryConditions<T>::psi(const long double& x,
-		const long double& y) {
+long double BoundaryConditions<T>::psi(const T& x,
+		const T& y) {
 	return 0;
 }
 
@@ -195,7 +195,7 @@ Interval<T> BoundaryConditions<T>::C(const Interval<T>& ix,
 }
 
 template<typename T>
-long double BoundaryConditions<T>::ExactSol(long double x, long double y) {
+long double BoundaryConditions<T>::ExactSol(T x, T y) {
 	long double exact = 0;
 	return exact;
 }

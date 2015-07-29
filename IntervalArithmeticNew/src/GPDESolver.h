@@ -10,7 +10,7 @@
 
 #include "Solver.h"
 #include "THashMap.h"
-#include "BoundaryConditions.h"
+//#include "BoundaryConditions.h"
 //#include "Example01.h"
 //#include "Example02.h"
 #include "Example03.h"

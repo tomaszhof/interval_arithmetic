@@ -8,13 +8,13 @@
 #ifndef EXPERIMENT_H_
 #define EXPERIMENT_H_
 
-#include "Interval.h"
+#include "Interval.cpp"
 //#include "DiffPoisson.h"
 #include "BoundaryConditions.h"
 //#include "Example01.h"
 //#include "Example02.h"
-#include "Example03.h"
-#include "Example04.h"
+//#include "Example03.h"
+//#include "Example04.h"
 #include <iostream>
 #include <iomanip>
 #include <fstream>
@@ -22,7 +22,7 @@
 #include <float.h>
 #include <boost/lexical_cast.hpp>
 #include "ConfigReader.h"
-#include "Solver.h"
+//#include "Solver.h"
 #include "GPDESolver.h"
 #include "Utils.h"
 
@@ -37,7 +37,7 @@ class Experiment
 {
 private:
 	BoundaryConditions<T>* _example;
-	Parameters<T> parameters;
+	Parameters<long double> parameters;
 	Solver<T>* solver;
 	bool _param_initialized;
 	bool _solver_initialized;
@@ -46,10 +46,10 @@ public:
 	Experiment(int ac, char *av[]);
 	virtual ~Experiment();
 	void SetExample(int eid, int arth_mode);
-	void SetSolver(Parameters<T> p);
+	void SetSolver(Parameters<long double> p);
 	void SetExampleForSolver(int eid);
 	void Initialize();
-	void SetParameters(Parameters<T> p);
+	void SetParameters(Parameters<long double> p);
 	void Execute();
 	static void SetMode(IAMode m);
 };

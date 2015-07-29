@@ -62,7 +62,7 @@ public:
 	T GetBeta1();
 	T GetBeta2();
 	string GetFileName();
-	Parameters<T> GetParameters();
+	Parameters<long double> GetParameters();
 	void SetDefaultParameters();
 };
 

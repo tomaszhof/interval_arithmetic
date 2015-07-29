@@ -61,7 +61,7 @@ Experiment<T>::Experiment(int ac, char* av[])
 }
 
 template<typename T>
-void Experiment<T>::SetSolver(Parameters<T> p)
+void Experiment<T>::SetSolver(Parameters<long double> p)
 {
 	switch (p.selected_solver)
 	{
@@ -81,7 +81,7 @@ void Experiment<T>::SetSolver(Parameters<T> p)
 }
 
 template<typename T>
-void Experiment<T>::SetParameters(Parameters<T> p)
+void Experiment<T>::SetParameters(Parameters<long double> p)
 {
 	this->parameters = p;
 	_param_initialized = true;
@@ -114,5 +114,6 @@ void Experiment<T>::Execute()
 
 //The explicit instantiation part
 template class Experiment<long double>;
+//template class Experiment<mpreal>;
 }
 

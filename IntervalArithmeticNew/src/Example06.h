@@ -9,7 +9,7 @@
 #define EXAMPLE06_H_
 
 #include "Utils.h"
-#include "Interval.h"
+//#include "Interval.h"
 #include "BoundaryConditions.h"
 
 using namespace interval_arithmetic;

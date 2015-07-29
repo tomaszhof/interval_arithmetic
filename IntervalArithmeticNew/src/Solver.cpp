@@ -6,6 +6,7 @@
  */
 
 #include "Solver.h"
+#include "Interval.cpp"
 
 using namespace interval_arithmetic;
 using namespace std;
@@ -39,7 +40,7 @@ void Solver<T>::WriteFPResultsToFile() {
 	fstream filestr;
 	clock_t time1, time2;
 	double time_diff;
-	long double Mconst = 0;
+	T Mconst = 0;
 
 	if (!_initparams)
 		throw runtime_error("Parameters not initialized!");
@@ -47,13 +48,14 @@ void Solver<T>::WriteFPResultsToFile() {
 	int st = 0;
 	int m = params.m;
 	int n = params.n;
-	T alpha = params.alpha;
-	T beta = params.beta;
-	T delta = params.delta;
-	T gamma = params.gamma;
-	T eps = params.eps;
+	long double alpha = params.alpha;
+	long double beta = params.beta;
+	long double delta = params.delta;
+	long double gamma = params.gamma;
+	long double eps = params.eps;
 
-	int dprec = std::numeric_limits<T>::digits10;
+	int dprec = Interval<T>::GetOutDigits();
+
 	std::setprecision(dprec);
 	cout.setf(std::ios_base::scientific);
 	filestr.open(params.file_name.c_str(), fstream::out);
@@ -124,14 +126,14 @@ void Solver<T>::WriteFPResultsToFile() {
 		}
 	}
 	stringstream ss;
-	int prec = std::numeric_limits<T>::digits10;
+	int prec = Interval<T>::GetOutDigits();
 	ss << file_name << "_m_" << m;
 }
 
 template<typename T>
 void Solver<T>::WriteIntervalResultsToFile() {
 	int i, imod, j, jmod, l, ui, uj;
-	long double exact, h, k, w;
+	T exact, h, k, w;
 	bool OK, OK1, dint_mode;
 	Interval<T> HH, KK, NN, MM, sol, UIH, UII, UJJ, UJK;
 	char z, z1;
@@ -139,7 +141,7 @@ void Solver<T>::WriteIntervalResultsToFile() {
 	fstream filestr;
 	clock_t time1, time2;
 	double time_diff;
-	int dprec = std::numeric_limits<T>::digits10;
+	int dprec = Interval<T>::GetOutDigits();
 	std::setprecision(dprec);
 
 	if (!_initparams)
@@ -148,10 +150,10 @@ void Solver<T>::WriteIntervalResultsToFile() {
 	int st = 0;
 	int n = params.n;
 	int m = params.m;
-	T alpha = params.alpha;
-	T beta = params.beta;
-	T delta = params.delta;
-	T gamma = params.gamma;
+	long double alpha = params.alpha;
+	long double beta = params.beta;
+	long double delta = params.delta;
+	long double gamma = params.gamma;
 	Interval<T> intalpha = { params.alpha, params.alpha };
 	Interval<T> intbeta = { params.beta, params.beta };
 	Interval<T> GAMMA = { params.gamma, params.gamma };
@@ -335,7 +337,7 @@ int Solver<T>::SolveDIA() {
 }
 
 template<typename T>
-void Solver<T>::SetParameters(Parameters<T>& p) {
+void Solver<T>::SetParameters(Parameters<long double>& p) {
 	this->params = p;
 	this->SetExample(p.example_id);
 	_initparams = true;
@@ -397,8 +399,8 @@ long double Solver<T>::GetMaxN() {
 template<typename T>
 inline void Solver<T>::WriteFPResultsToCsv() {
 	int imod, j, jmod;
-	long double exact, h, k;
-	long double sol;
+	T exact, h, k;
+	T sol;
 	string file_name, left, right, time;
 	fstream fp_filestr, exact_filestr;
 
@@ -408,12 +410,12 @@ inline void Solver<T>::WriteFPResultsToCsv() {
 	int st = 0;
 	int m = params.m;
 	int n = params.n;
-	T alpha = params.alpha;
-	T beta = params.beta;
-	T delta = params.delta;
-	T gamma = params.gamma;
+	long double alpha = params.alpha;
+	long double beta = params.beta;
+	long double delta = params.delta;
+	long double gamma = params.gamma;
 	string sep = ";";
-	int dprec = std::numeric_limits<T>::digits10;
+	int dprec = Interval<T>::GetOutDigits();
 	std::setprecision(dprec);
 	cout.setf(std::ios_base::scientific);
 	fs::path p(params.file_name);
@@ -480,7 +482,7 @@ inline void Solver<T>::WriteIntervalResultsToCsv() {
 
 	Interval<T> HH, KK, NN, MM, sol, UIH, UII, UJJ, UJK;
 
-	int dprec = std::numeric_limits<T>::digits10;
+	int dprec = Interval<T>::GetOutDigits();
 	std::setprecision(dprec);
 
 	Interval<T> intalpha = { params.alpha, params.alpha };
@@ -549,6 +551,6 @@ inline void Solver<T>::WriteIntervalResultsToCsv() {
 
 //The explicit instantiation part
 template class Solver<long double> ;
-
+//template class Solver<mpreal> ;
 }
 /* namespace intervalarth */

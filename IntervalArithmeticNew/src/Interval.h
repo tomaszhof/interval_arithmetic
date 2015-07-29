@@ -32,10 +32,6 @@ using namespace mpfr;
 
 
 namespace interval_arithmetic {
-//
-//enum IAMode {
-//	DINT_MODE, PINT_MODE
-//};
 
 enum IAPrecision {
 	LONGDOUBLE_PREC = 80, DOUBLE_PREC = 64, FLOAT_PREC = 32
@@ -75,16 +71,14 @@ public:
 	static void SetPrecision(IAPrecision p);
 	static IAPrecision GetPrecision(IAPrecision p);
 	static void SetOutDigits(IAOutDigits o);
-	static IAOutDigits GetOutDigits(IAOutDigits o);
+	static IAOutDigits GetOutDigits();
 	static Interval<T> IntRead(const string & sa);
 	void IEndsToStrings(string & left, string & right);
 	static T LeftRead(const string& sa);
 	static T RightRead(const string& sa);
 };
 
-template<typename T> IAMode Interval<T>::mode = PINT_MODE;
-//template<typename T> IAPrecision Interval<T>::precision = LONGDOUBLE_PREC;
-template<typename T> IAOutDigits Interval<T>::outdigits = LONGDOUBLE_DIGITS;
+template<> class Interval<mpreal>;
 
 template<typename T>
 inline Interval<T>::~Interval() {
@@ -255,7 +249,7 @@ inline void Interval<T>::SetOutDigits(IAOutDigits o) {
 }
 
 template<typename T>
-inline IAOutDigits Interval<T>::GetOutDigits(IAOutDigits o) {
+inline IAOutDigits Interval<T>::GetOutDigits() {
 	return Interval<T>::outdigits;
 }
 
@@ -815,6 +809,7 @@ Interval<T> DIAdd(const Interval<T>& x, const Interval<T>& y) {
 			return z2;
 	}
 }
+template<> Interval<mpreal> DIAdd(const Interval<mpreal>& x, const Interval<mpreal>& y);
 
 template<typename T>
 Interval<T> DISub(const Interval<T>& x, const Interval<T>& y) {
@@ -1290,14 +1285,14 @@ Interval<T> DISqr(const Interval<T>& x) {
 	return r;
 }
 
-
-
-
-
 //The explicit instantiation part
 template class Interval<long double>;
 template class Interval<double>;
 template class Interval<float>;
+
+template<typename T> IAMode Interval<T>::mode = PINT_MODE;
+template<typename T> IAOutDigits Interval<T>::outdigits = LONGDOUBLE_DIGITS;
+
 template<> IAPrecision Interval<long double>::precision = LONGDOUBLE_PREC;
 template<> IAPrecision Interval<double>::precision = DOUBLE_PREC;
 template<> IAPrecision Interval<float>::precision = FLOAT_PREC;
