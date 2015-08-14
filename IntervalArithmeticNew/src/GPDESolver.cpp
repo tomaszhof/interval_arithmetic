@@ -4,7 +4,7 @@
  *  Created on: 25-01-2014
  *      Author: thof
  */
-#include "Interval.cpp"
+
 #include "GPDESolver.h"
 
 namespace interval_arithmetic {
@@ -319,7 +319,7 @@ int GPDESolver<T>::SolvePIA() {
 	bool list_exists;
 	Interval<T> aij;
 	int* r;
-	long double z;
+	T z;
 	THashMap<T> bm;
 
 	st = 0;
@@ -691,7 +691,7 @@ int GPDESolver<T>::SolveDIA() {
 	bool list_exists;
 	Interval<T> aij;
 	int* r;
-	long double z;
+	T z;
 	THashMap<T> bm;
 
 	st = 0;
@@ -1035,6 +1035,7 @@ int GPDESolver<T>::SolveDIA() {
 
 //The explicit instantiation part
 template class GPDESolver<long double> ;
+template class GPDESolver<mpreal> ;
 
 }
 /* namespace intervalarth */

@@ -581,9 +581,9 @@ string ConfigReader<T>::GetFileName()
 }
 
 template<typename T>
-Parameters<long double> ConfigReader<T>::GetParameters()
+Parameters<T> ConfigReader<T>::GetParameters()
 {
-	Parameters<long double> currParameters;
+	Parameters<T> currParameters;
 	currParameters.eps = 1e-16; //don't change!
 	currParameters.m = this->GetM();
 	currParameters.n = this->GetN();

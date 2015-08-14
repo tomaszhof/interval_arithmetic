@@ -8,7 +8,7 @@
 #ifndef EXPERIMENT_H_
 #define EXPERIMENT_H_
 
-#include "Interval.cpp"
+//#include "Interval.cpp"
 //#include "DiffPoisson.h"
 #include "BoundaryConditions.h"
 //#include "Example01.h"

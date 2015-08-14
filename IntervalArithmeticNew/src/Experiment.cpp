@@ -55,7 +55,7 @@ Experiment<T>::Experiment(int ac, char* av[])
 	solver = NULL;
 	_param_initialized = false;
 	_solver_initialized = false;
-	ConfigReader<T>* cf = new ConfigReader<T>(ac, av);
+	ConfigReader<long double>* cf = new ConfigReader<long double>(ac, av);
 	this->SetParameters(cf->GetParameters());
 	delete cf;
 }
@@ -114,6 +114,6 @@ void Experiment<T>::Execute()
 
 //The explicit instantiation part
 template class Experiment<long double>;
-//template class Experiment<mpreal>;
+template class Experiment<mpreal>;
 }
 

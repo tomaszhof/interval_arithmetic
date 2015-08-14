@@ -52,4 +52,5 @@ void THashMap<T>::Erase(int ij) {
 
 //The explicit instantiation part
 template class THashMap<long double>;
+template class THashMap<mpreal>;
 }

@@ -7,7 +7,7 @@
 
 #ifndef BOUNDARYCONDITIONS_H_
 #define BOUNDARYCONDITIONS_H_
-#include "Interval.cpp"
+#include "Interval.h"
 
 using namespace interval_arithmetic;
 

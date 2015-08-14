@@ -10,9 +10,12 @@
 
 #include "Utils.h"
 #include <string>
+#include <mpfr.h>
+#include <mpreal.h>
 
 
 using namespace std;
+using namespace mpfr;
 
 namespace interval_arithmetic {
 
@@ -62,7 +65,7 @@ public:
 	T GetBeta1();
 	T GetBeta2();
 	string GetFileName();
-	Parameters<long double> GetParameters();
+	Parameters<T> GetParameters();
 	void SetDefaultParameters();
 };
 

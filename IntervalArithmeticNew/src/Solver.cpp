@@ -6,7 +6,6 @@
  */
 
 #include "Solver.h"
-#include "Interval.cpp"
 
 using namespace interval_arithmetic;
 using namespace std;
@@ -551,6 +550,7 @@ inline void Solver<T>::WriteIntervalResultsToCsv() {
 
 //The explicit instantiation part
 template class Solver<long double> ;
-//template class Solver<mpreal> ;
+template class Solver<mpreal> ;
+
 }
 /* namespace intervalarth */

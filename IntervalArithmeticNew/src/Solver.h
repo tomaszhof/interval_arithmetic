@@ -9,7 +9,6 @@
 #define SOLVER_H_
 
 //#include "Utils.h"
-//#include "Interval.h"
 #include "BoundaryConditions.h"
 
 #include <iostream>

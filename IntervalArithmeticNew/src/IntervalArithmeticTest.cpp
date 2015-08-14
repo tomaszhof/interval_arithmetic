@@ -8,7 +8,7 @@
 
 #include <iostream>
 //#include "Tester.h"
-#include "Interval.cpp"
+#include "Interval.h"
 #include "Experiment.h"
 
 
@@ -25,11 +25,6 @@ int main(int ac, char *av[]) {
 //	tester->ArithmeticTestNew();
 //	delete tester;
 
-	Interval<mpreal> ione = {1, 1};
-//	Interval<mpreal> a = {-2, -1};
-//	Interval<mpreal> b = {-3, -1};
-//	Interval<mpreal> c, d;
-
 //	Interval<mpreal> ione = {1, 1};
 //	Interval<mpreal> a = {-2, -1};
 //	Interval<mpreal> b = {-3, -1};
@@ -39,7 +34,7 @@ int main(int ac, char *av[]) {
 //	d = ione /b;
 
 	//experiment for the Generalized Poisson Equation
-	Experiment<long double>* exper = new Experiment<long double>(ac, av);
+	Experiment<mpreal>* exper = new Experiment<mpreal>(ac, av);
 	exper->Initialize();
 	exper->Execute();
 	delete exper;

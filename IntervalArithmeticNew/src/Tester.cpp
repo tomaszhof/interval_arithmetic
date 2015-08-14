@@ -47,7 +47,7 @@ void Tester::ArithmeticTestNew() {
 	string x1, x2, y1, y2, z1, z2;
 	Interval<long double> x, y, z;
 	string xa, xb;
-	x = x.IntRead("3.14");
+	x = IntRead<long double>("3.14");
 	Interval<long double> three(3, 3);
 	x = x / three;
 
@@ -59,7 +59,7 @@ void Tester::ArithmeticTestNew() {
 	cout << "x = ";
 	cin >> x1;
 	cout << endl;
-	x = x.IntRead(x1);
+	x = IntRead<long double>(x1);
 	x.IEndsToStrings(z1, z2);
 	cout << "x converted" << endl;
 	cout << "to machine interval X = [" << z1 << "," << z2 << "]" << endl;
@@ -71,7 +71,7 @@ void Tester::ArithmeticTestNew() {
 	cout << "y = ";
 	cin >> y1;
 	cout << endl;
-	y = y.IntRead(y1);
+	y = IntRead<long double>(y1);
 	y.IEndsToStrings(z1, z2);
 	cout << "y converted" << endl;
 	cout << "to machine interval Y = [" << z1 << "," << z2 << "]" << endl;
@@ -118,10 +118,10 @@ void Tester::ArithmeticTestNew() {
 	cout << "Test for proper intervals:" << endl;
 	cout << "X.a = ";
 	cin >> x1;
-	x.a = x.LeftRead(x1);
+	x.a = LeftRead<long double>(x1);
 	cout << "X.b (X.b>=X.a) = ";
 	cin >> x2;
-	x.b = x.RightRead(x2);
+	x.b = RightRead<long double>(x2);
 	x.IEndsToStrings(z1, z2);
 	cout << "X converted" << endl;
 	cout << "to machine interval X = [" << z1 << "," << z2 << "]" << endl;
@@ -132,10 +132,10 @@ void Tester::ArithmeticTestNew() {
 
 	cout << "Y.a = ";
 	cin >> y1;
-	y.a = y.LeftRead(y1);
+	y.a = LeftRead<long double>(y1);
 	cout << "Y.b (Y.b>=Y.a) = " << endl;
 	cin >> y2;
-	y.b = y.RightRead(y2);
+	y.b = RightRead<long double>(y2);
 	y.IEndsToStrings(z1, z2);
 	cout << "Y converted" << endl;
 	cout << "to machine interval Y = [" << z1 << "," << z2 << "]" << endl;

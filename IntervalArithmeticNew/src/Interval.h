@@ -41,6 +41,31 @@ enum IAOutDigits {
 	LONGDOUBLE_DIGITS = 17, DOUBLE_DIGITS = 16, FLOAT_DIGITS = 7
 };
 
+template<typename T> class Interval;
+
+template<typename T> Interval<T> IntRead(const string & sa);
+template<typename T> T LeftRead(const string& sa);
+template<typename T> T RightRead(const string& sa);
+template<typename T> T DIntWidth(const Interval<T>& x);
+template<typename T> T IntWidth(const Interval<T>& x);
+template<typename T> Interval<T> IAdd(const Interval<T>& x, const Interval<T>& y);
+template<typename T> Interval<T> ISub(const Interval<T>& x, const Interval<T>& y);
+template<typename T> Interval<T> IDiv(const Interval<T>& x, const Interval<T>& y);
+template<typename T> Interval<T> IMul(const Interval<T>& x, const Interval<T>& y);
+template<typename T> Interval<T> ISin(const Interval<T>& x);
+template<typename T> Interval<T> ICos(const Interval<T>& x);
+template<typename T> Interval<T> IExp(const Interval<T>& x);
+
+template<typename T> Interval<T> DIAdd(const Interval<T>& x, const Interval<T>& y);
+template<typename T> Interval<T> DISub(const Interval<T>& x, const Interval<T>& y);
+template<typename T> Interval<T> DIDiv(const Interval<T>& x, const Interval<T>& y);
+template<typename T> Interval<T> DIMul(const Interval<T>& x, const Interval<T>& y);
+template<typename T> Interval<T> DISin(const Interval<T>& x);
+template<typename T> Interval<T> DICos(const Interval<T>& x, int & st);
+template<typename T> Interval<T> DIExp(const Interval<T>& x);
+
+template<typename T> int SetRounding(int rounding);
+
 template<typename T> class Interval {
 private:
 	static IAPrecision precision;
@@ -53,14 +78,14 @@ public:
 	Interval();
 	Interval(T a, T b);
 	virtual ~Interval();
-	Interval<T> operator=(const Interval<T>& i);
-	Interval<T> operator+(const Interval<T>& i);
-	Interval<T> operator-(const Interval<T>& i);
-	Interval<T> operator*(const Interval<T>& i);
-	Interval<T> operator/(const Interval<T>& i);
-	Interval<T> Projection();
-	Interval<T> Opposite();
-	Interval<T> Inverse();
+	Interval operator=(const Interval<T>& i);
+	Interval operator+(const Interval<T>& i);
+	Interval operator-(const Interval<T>& i);
+	Interval operator*(const Interval<T>& i);
+	Interval operator/(const Interval<T>& i);
+	Interval Projection();
+	Interval Opposite();
+	Interval Inverse();
 	T GetWidth();
 	static void Initialize();
 	static Interval<T> ISqr2();
@@ -69,16 +94,36 @@ public:
 	static void SetMode(IAMode m) {mode = m; }
 	static IAMode GetMode();
 	static void SetPrecision(IAPrecision p);
-	static IAPrecision GetPrecision(IAPrecision p);
+	static IAPrecision GetPrecision();
 	static void SetOutDigits(IAOutDigits o);
 	static IAOutDigits GetOutDigits();
-	static Interval<T> IntRead(const string & sa);
-	void IEndsToStrings(string & left, string & right);
-	static T LeftRead(const string& sa);
-	static T RightRead(const string& sa);
-};
 
-template<> class Interval<mpreal>;
+	void IEndsToStrings(string & left, string & right);
+
+
+	friend T DIntWidth<T>(const Interval& x);
+	friend T IntWidth<T>(const Interval& x);
+	friend Interval IAdd<T>(const Interval& x, const Interval& y);
+	friend Interval ISub<T>(const Interval& x, const Interval& y);
+	friend Interval IDiv<T>(const Interval& x, const Interval& y);
+	friend Interval IMul<T>(const Interval& x, const Interval& y);
+	friend Interval ISin<T>(const Interval<T>& x);
+	friend Interval ICos<T>(const Interval<T>& x);
+	friend Interval IExp<T>(const Interval<T>& x);
+	friend Interval IntRead<T>(const string & sa);
+	friend T LeftRead<T>(const string& sa);
+	friend T RightRead<T>(const string& sa);
+
+	friend Interval DIAdd<T>(const Interval& x, const Interval& y);
+	friend Interval DISub<T>(const Interval& x, const Interval& y);
+	friend Interval DIDiv<T>(const Interval& x, const Interval& y);
+	friend Interval DIMul<T>(const Interval& x, const Interval& y);
+	friend Interval DISin<T>(const Interval& x);
+	friend Interval DICos<T>(const Interval& x, int & st);
+	friend Interval DIExp<T>(const Interval& x);
+
+	friend int SetRounding<T>(int rounding);
+};
 
 template<typename T>
 inline Interval<T>::~Interval() {
@@ -109,137 +154,14 @@ inline Interval<T> Interval<T>::operator =(const Interval<T>& i) {
 	return *this;
 }
 
-template<typename T>
-inline Interval<T> Interval<T>::operator +(const Interval<T>& y) {
-	Interval<T> x(this->a, this->b);
-	Interval<T> r = {0, 0};
-	switch (mode) {
-	case PINT_MODE:
-		r = IAdd(x, y);
-		break;
-	case DINT_MODE:
-		r = DIAdd(x, y);
-		break;
-	default:
-		r = IAdd(x, y);
-		break;
-	}
 
-	return r;
-}
-
-template<typename T>
-inline Interval<T> operator +(Interval<T> x, const Interval<T>& y) {
-	switch (Interval<T>::mode) {
-	case PINT_MODE:
-		return  IAdd(x, y);
-	case DINT_MODE:
-		return  DIAdd(x, y);
-	default:
-		return IAdd(x, y);
-	}
-}
-
-template<typename T>
-inline Interval<T> Interval<T>::operator -(const Interval<T>& y) {
-	Interval<T> x(this->a, this->b);
-	Interval<T> r = {0, 0};
-	switch (mode) {
-	case PINT_MODE:
-		r = ISub(x, y);
-		break;
-	case DINT_MODE:
-		r = DISub(x, y);
-		break;
-	default:
-		r = ISub(x, y);
-		break;
-	}
-
-	return r;
-}
-
-template<typename T>
-inline Interval<T> operator -(Interval<T> x, const Interval<T>& y) {
-	switch (Interval<T>::mode) {
-	case PINT_MODE:
-		return  ISub(x, y);
-	case DINT_MODE:
-		return  DISub(x, y);
-	default:
-		return ISub(x, y);
-	}
-}
-
-
-template<typename T>
-inline Interval<T> Interval<T>::operator *(const Interval<T>& y) {
-	Interval<T> x(this->a, this->b);
-	Interval<T> r = {0, 0};
-	switch (mode) {
-	case PINT_MODE:
-		r = IMul(x, y);
-		break;
-	case DINT_MODE:
-		r = DIMul(x, y);
-		break;
-	default:
-		r = IMul(x, y);
-		break;
-	}
-
-	return r;
-}
-
-template<typename T>
-inline Interval<T> operator *(Interval<T> x, const Interval<T>& y) {
-	switch (Interval<T>::mode) {
-	case PINT_MODE:
-		return IMul(x, y);
-	case DINT_MODE:
-		return DIMul(x, y);
-	default:
-		return IMul(x, y);
-	}
-}
-
-template<typename T>
-inline Interval<T> Interval<T>::operator /(const Interval<T>& y) {
-	Interval<T> x(this->a, this->b);
-	Interval<T> r = {0, 0};
-	switch (mode) {
-	case PINT_MODE:
-		r = IDiv(x, y);
-		break;
-	case DINT_MODE:
-		r = DIDiv(x, y);
-		break;
-	default:
-		r = IDiv(x, y);
-		break;
-	}
-
-	return r;
-}
-
-template<typename T>
-inline Interval<T> operator /(Interval<T> x, const Interval<T>& y) {
-	switch (Interval<T>::mode) {
-	case PINT_MODE:
-		return IDiv(x, y);
-	case DINT_MODE:
-		return DIDiv(x, y);
-	default:
-		return IDiv(x, y);
-	}
-}
 template<typename T>
 inline void Interval<T>::SetPrecision(IAPrecision p) {
 	Interval<T>::precision = p;
 }
 
 template<typename T>
-inline IAPrecision Interval<T>::GetPrecision(IAPrecision p) {
+inline IAPrecision Interval<T>::GetPrecision() {
 	return Interval<T>::precision;
 }
 
@@ -254,10 +176,10 @@ inline IAOutDigits Interval<T>::GetOutDigits() {
 }
 
 template<typename T>
-inline Interval<T> Interval<T>::IntRead(const string& sa) {
+inline Interval<T> IntRead(const string& sa) {
 	Interval<T> r;
 	mpfr_t rop;
-	mpfr_init2(rop, precision);
+	mpfr_init2(rop, Interval<T>::precision);
 	mpfr_set_str(rop, sa.c_str(), 10, MPFR_RNDD);
 	T le = 0.0;
 	if (strcmp(typeid(T).name(), typeid(long double).name()) == 0) {
@@ -281,7 +203,7 @@ inline Interval<T> Interval<T>::IntRead(const string& sa) {
 	if (strcmp(typeid(T).name(), typeid(float).name()) == 0) {
 		re = mpfr_get_flt(rop, MPFR_RNDU);
 	}
-	fesetround(FE_TONEAREST);
+	SetRounding<T>(FE_TONEAREST);
 
 	r.a = le;
 	r.b = re;
@@ -348,13 +270,13 @@ inline Interval<T> Interval<T>::Inverse() {
 	Interval<T> x(this->a, this->b);
 	Interval<T> z1, z2;
 
-	fesetround(FE_DOWNWARD);
+	SetRounding<T>(FE_DOWNWARD);
 	z1.a = 1 / x.a;
 	z2.b = 1 / x.b;
-	fesetround(FE_UPWARD);
+	SetRounding<T>(FE_UPWARD);
 	z1.b = 1 / x.b;
 	z2.a = 1 / x.a;
-	fesetround(FE_TONEAREST);
+	SetRounding<T>(FE_TONEAREST);
 	if (DIntWidth(z1) >= DIntWidth(z2))
 		return z1;
 	else
@@ -362,9 +284,9 @@ inline Interval<T> Interval<T>::Inverse() {
 }
 
 template<typename T>
-inline T Interval<T>::LeftRead(const string& sa) {
+inline T LeftRead(const string& sa) {
 	Interval<T> int_number;
-	int_number = IntRead(sa);
+	int_number = IntRead<T>(sa);
 	return int_number.a;
 }
 
@@ -386,9 +308,9 @@ inline Interval<T> Interval<T>::ISqr2() {
 	string i2;
 	Interval<T> r;
 	i2 = "1.414213562373095048";
-	r.a = LeftRead(i2);
+	r.a = LeftRead<T>(i2);
 	i2 = "1.414213562373095049";
-	r.b = RightRead(i2);
+	r.b = RightRead<T>(i2);
 	return r;
 }
 
@@ -397,9 +319,9 @@ inline Interval<T> Interval<T>::ISqr3() {
 	string i2;
 	Interval<T> r;
 	i2 = "1.732050807568877293";
-	r.a = LeftRead(i2);
+	r.a = LeftRead<T>(i2);
 	i2 = "1.732050807568877294";
-	r.b = RightRead(i2);
+	r.b = RightRead<T>(i2);
 	return r;
 }
 
@@ -408,9 +330,9 @@ inline Interval<T> Interval<T>::IPi() {
 	string i2;
 	Interval<T> r;
 	i2 = "3.141592653589793238";
-	r.a = LeftRead(i2);
+	r.a = LeftRead<T>(i2);
 	i2 = "3.141592653589793239";
-	r.b = RightRead(i2);
+	r.b = RightRead<T>(i2);
 	return r;
 }
 
@@ -433,17 +355,17 @@ inline void Interval<T>::Initialize() {
 }
 
 template<typename T>
-inline T Interval<T>::RightRead(const string& sa) {
+inline T RightRead(const string& sa) {
 	Interval<T> int_number;
-	int_number = IntRead(sa);
+	int_number = IntRead<T>(sa);
 	return int_number.b;
 }
 
 template<typename T>
 T IntWidth(const Interval<T>& x) {
-	fesetround(FE_UPWARD);
+	SetRounding<T>(FE_UPWARD);
 	T w = x.b - x.a;
-	fesetround(FE_TONEAREST);
+	SetRounding<T>(FE_TONEAREST);
 	return w;
 }
 
@@ -451,15 +373,15 @@ template<typename T>
 T DIntWidth(const Interval<T>& x) {
 	long double w1, w2;
 
-	fesetround(FE_UPWARD);
+	SetRounding<T>(FE_UPWARD);
 	w1 = x.b - x.a;
 	if (w1 < 0)
 		w1 = -w1;
-	fesetround(FE_DOWNWARD);
+	SetRounding<T>(FE_DOWNWARD);
 	w2 = x.b - x.a;
 	if (w2 < 0)
 		w2 = -w2;
-	fesetround(FE_TONEAREST);
+	SetRounding<T>(FE_TONEAREST);
 	if (w1 > w2)
 		return w1;
 	else
@@ -680,11 +602,11 @@ Interval<T> ISqr(const Interval<T>& x, int & st) {
 			maxx = abs(x.a);
 		else
 			maxx = abs(x.b);
-		fesetround(FE_DOWNWARD);
+		SetRounding<T>(FE_DOWNWARD);
 		r.a = minx * minx;
-		fesetround(FE_UPWARD);
+		SetRounding<T>(FE_UPWARD);
 		r.b = maxx * maxx;
-		fesetround(FE_TONEAREST);
+		SetRounding<T>(FE_TONEAREST);
 	}
 	return r;
 }
@@ -696,22 +618,22 @@ Interval<T> ISqr(const Interval<T>& x, int & st) {
 template<typename T>
 Interval<T> IAdd(const Interval<T>& x, const Interval<T>& y) {
 	Interval<T> r;
-	fesetround(FE_DOWNWARD);
+	SetRounding<T>(FE_DOWNWARD);
 	r.a = x.a + y.a;
-	fesetround(FE_UPWARD);
+	SetRounding<T>(FE_UPWARD);
 	r.b = x.b + y.b;
-	fesetround(FE_TONEAREST);
+	SetRounding<T>(FE_TONEAREST);
 	return r;
 }
 
 template<typename T>
 Interval<T> ISub(const Interval<T>& x, const Interval<T>& y) {
 	Interval<T> r;
-	fesetround(FE_DOWNWARD);
+	SetRounding<T>(FE_DOWNWARD);
 	r.a = x.a - y.b;
-	fesetround(FE_UPWARD);
+	SetRounding<T>(FE_UPWARD);
 	r.b = x.b - y.a;
-	fesetround(FE_TONEAREST);
+	SetRounding<T>(FE_TONEAREST);
 	return r;
 }
 
@@ -720,7 +642,7 @@ Interval<T> IMul(const Interval<T>& x, const Interval<T>& y) {
 	Interval<T> r(0, 0);
 	T x1y1, x1y2, x2y1;
 
-	fesetround(FE_DOWNWARD);
+	SetRounding<T>(FE_DOWNWARD);
 	x1y1 = x.a * y.a;
 	x1y2 = x.a * y.b;
 	x2y1 = x.b * y.a;
@@ -732,7 +654,7 @@ Interval<T> IMul(const Interval<T>& x, const Interval<T>& y) {
 	if (x1y1 < r.a)
 		r.a = x1y1;
 
-	fesetround(FE_UPWARD);
+	SetRounding<T>(FE_UPWARD);
 	x1y1 = x.a * y.a;
 	x1y2 = x.a * y.b;
 	x2y1 = x.b * y.a;
@@ -744,7 +666,7 @@ Interval<T> IMul(const Interval<T>& x, const Interval<T>& y) {
 		r.b = x1y2;
 	if (x1y1 > r.b)
 		r.b = x1y1;
-	fesetround(FE_TONEAREST);
+	SetRounding<T>(FE_TONEAREST);
 	return r;
 }
 
@@ -756,7 +678,7 @@ Interval<T> IDiv(const Interval<T>& x, const Interval<T>& y) {
 	if ((y.a <= 0) && (y.b >= 0)) {
 		throw runtime_error("Division by an interval containing 0.");
 	} else {
-		fesetround(FE_DOWNWARD);
+		SetRounding<T>(FE_DOWNWARD);
 		x1y1 = x.a / y.a;
 		x1y2 = x.a / y.b;
 		x2y1 = x.b / y.a;
@@ -769,7 +691,7 @@ Interval<T> IDiv(const Interval<T>& x, const Interval<T>& y) {
 		if (x1y1 < t)
 			r.a = x1y1;
 
-		fesetround(FE_UPWARD);
+		SetRounding<T>(FE_UPWARD);
 		x1y1 = x.a / y.a;
 		x1y2 = x.a / y.b;
 		x2y1 = x.b / y.a;
@@ -784,7 +706,7 @@ Interval<T> IDiv(const Interval<T>& x, const Interval<T>& y) {
 			r.b = x1y1;
 
 	}
-	fesetround(FE_TONEAREST);
+	SetRounding<T>(FE_TONEAREST);
 	return r;
 }
 
@@ -794,22 +716,21 @@ template<typename T>
 Interval<T> DIAdd(const Interval<T>& x, const Interval<T>& y) {
 	Interval<T> z1, z2;
 	if ((x.a <= x.b) && (y.a <= y.b)) {
-		return IAdd(x, y);
+		return IAdd<T>(x, y);
 	} else {
-		fesetround(FE_DOWNWARD);
+		SetRounding<T>(FE_DOWNWARD);
 		z1.a = x.a + y.a;
 		z2.b = x.b + y.b;
-		fesetround(FE_UPWARD);
+		SetRounding<T>(FE_UPWARD);
 		z1.b = x.b + y.b;
 		z2.a = x.a + y.a;
-		fesetround(FE_TONEAREST);
+		SetRounding<T>(FE_TONEAREST);
 		if (z1.GetWidth() >= z2.GetWidth())
 			return z1;
 		else
 			return z2;
 	}
 }
-template<> Interval<mpreal> DIAdd(const Interval<mpreal>& x, const Interval<mpreal>& y);
 
 template<typename T>
 Interval<T> DISub(const Interval<T>& x, const Interval<T>& y) {
@@ -817,13 +738,13 @@ Interval<T> DISub(const Interval<T>& x, const Interval<T>& y) {
 	if ((x.a <= x.b) && (y.a <= y.b)) {
 		return ISub(x, y);
 	} else {
-		fesetround(FE_DOWNWARD);
+		SetRounding<T>(FE_DOWNWARD);
 		z1.a = x.a - y.b;
 		z2.b = x.b - y.a;
-		fesetround(FE_UPWARD);
+		SetRounding<T>(FE_UPWARD);
 		z1.b = x.b - y.a;
 		z2.a = x.a - y.b;
-		fesetround(FE_TONEAREST);
+		SetRounding<T>(FE_TONEAREST);
 		if (z1.GetWidth() >= z2.GetWidth())
 			return z1;
 		else
@@ -834,7 +755,7 @@ Interval<T> DISub(const Interval<T>& x, const Interval<T>& y) {
 template<typename T>
 Interval<T> DIMul(const Interval<T>& x, const Interval<T>& y) {
 	Interval<T> z1, z2, r;
-	long double z;
+	T z;
 	bool xn, xp, yn, yp, zero;
 
 	if ((x.a <= x.b) && (y.a <= y.b))
@@ -848,31 +769,31 @@ Interval<T> DIMul(const Interval<T>& x, const Interval<T>& y) {
 		// A, B in H-T
 		if ((xn || xp) && (yn || yp))
 			if (xp && yp) {
-				fesetround(FE_DOWNWARD);
+				SetRounding<T>(FE_DOWNWARD);
 				z1.a = x.a * y.a;
 				z2.b = x.b * y.b;
-				fesetround(FE_UPWARD);
+				SetRounding<T>(FE_UPWARD);
 				z1.b = x.b * y.b;
 				z2.a = x.a * y.a;
 			} else if (xp && yn) {
-				fesetround(FE_DOWNWARD);
+				SetRounding<T>(FE_DOWNWARD);
 				z1.a = x.b * y.a;
 				z2.b = x.a * y.b;
-				fesetround(FE_UPWARD);
+				SetRounding<T>(FE_UPWARD);
 				z1.b = x.a * y.b;
 				z2.a = x.b * y.a;
 			} else if (xn && yp) {
-				fesetround(FE_DOWNWARD);
+				SetRounding<T>(FE_DOWNWARD);
 				z1.a = x.a * y.b;
 				z2.b = x.b * y.a;
-				fesetround(FE_UPWARD);
+				SetRounding<T>(FE_UPWARD);
 				z1.b = x.b * y.a;
 				z2.a = x.a * y.b;
 			} else {
-				fesetround(FE_DOWNWARD);
+				SetRounding<T>(FE_DOWNWARD);
 				z1.a = x.b * y.b;
 				z2.b = x.a * y.a;
-				fesetround(FE_UPWARD);
+				SetRounding<T>(FE_UPWARD);
 				z1.b = x.a * y.a;
 				z2.a = x.b * y.b;
 			}
@@ -880,31 +801,31 @@ Interval<T> DIMul(const Interval<T>& x, const Interval<T>& y) {
 		else if ((xn || xp)
 				&& (((y.a <= 0) && (y.b >= 0)) || ((y.a >= 0) && (y.b <= 0))))
 			if (xp && (y.a <= y.b)) {
-				fesetround(FE_DOWNWARD);
+				SetRounding<T>(FE_DOWNWARD);
 				z1.a = x.b * y.a;
 				z2.b = x.b * y.b;
-				fesetround(FE_UPWARD);
+				SetRounding<T>(FE_UPWARD);
 				z1.b = x.b * y.b;
 				z2.a = x.b * y.a;
 			} else if (xp && (y.a > y.b)) {
-				fesetround(FE_DOWNWARD);
+				SetRounding<T>(FE_DOWNWARD);
 				z1.a = x.a * y.a;
 				z2.b = x.a * y.b;
-				fesetround(FE_UPWARD);
+				SetRounding<T>(FE_UPWARD);
 				z1.b = x.a * y.b;
 				z2.a = x.a * y.a;
 			} else if (xn && (y.a <= y.b)) {
-				fesetround(FE_DOWNWARD);
+				SetRounding<T>(FE_DOWNWARD);
 				z1.a = x.a * y.b;
 				z2.b = x.a * y.a;
-				fesetround(FE_UPWARD);
+				SetRounding<T>(FE_UPWARD);
 				z1.b = x.a * y.a;
 				z2.a = x.a * y.b;
 			} else {
-				fesetround(FE_DOWNWARD);
+				SetRounding<T>(FE_DOWNWARD);
 				z1.a = x.b * y.b;
 				z2.b = x.b * y.a;
-				fesetround(FE_UPWARD);
+				SetRounding<T>(FE_UPWARD);
 				z1.b = x.b * y.a;
 				z2.a = x.b * y.b;
 			}
@@ -912,37 +833,37 @@ Interval<T> DIMul(const Interval<T>& x, const Interval<T>& y) {
 		else if ((((x.a <= 0) && (x.b >= 0)) || ((x.a >= 0) && (x.b <= 0)))
 				&& (yn || yp))
 			if ((x.a <= x.b) && yp) {
-				fesetround(FE_DOWNWARD);
+				SetRounding<T>(FE_DOWNWARD);
 				z1.a = x.a * y.b;
 				z2.b = x.b * y.b;
-				fesetround(FE_UPWARD);
+				SetRounding<T>(FE_UPWARD);
 				z1.b = x.b * y.b;
 				z2.a = x.a * y.b;
 			} else if ((x.a <= 0) && yn) {
-				fesetround(FE_DOWNWARD);
+				SetRounding<T>(FE_DOWNWARD);
 				z1.a = x.b * y.a;
 				z2.b = x.a * y.a;
-				fesetround(FE_UPWARD);
+				SetRounding<T>(FE_UPWARD);
 				z1.b = x.a * y.a;
 				z2.a = x.b * y.a;
 			} else if ((x.a > x.b) && yp) {
-				fesetround(FE_DOWNWARD);
+				SetRounding<T>(FE_DOWNWARD);
 				z1.a = x.a * y.a;
 				z2.b = x.b * y.a;
-				fesetround(FE_UPWARD);
+				SetRounding<T>(FE_UPWARD);
 				z1.b = x.b * y.a;
 				z2.a = x.a * y.a;
 			} else {
-				fesetround(FE_DOWNWARD);
+				SetRounding<T>(FE_DOWNWARD);
 				z1.a = x.b * y.b;
 				z2.b = x.a * y.b;
-				fesetround(FE_UPWARD);
+				SetRounding<T>(FE_UPWARD);
 				z1.b = x.a * y.b;
 				z2.a = x.b * y.b;
 			}
 		// A, B in Z-
 		else if ((x.a >= 0) && (x.b <= 0) && (y.a >= 0) && (y.b <= 0)) {
-			fesetround(FE_DOWNWARD);
+			SetRounding<T>(FE_DOWNWARD);
 			z1.a = x.a * y.a;
 			z = x.b * y.b;
 			if (z1.a < z)
@@ -951,7 +872,7 @@ Interval<T> DIMul(const Interval<T>& x, const Interval<T>& y) {
 			z = x.b * y.a;
 			if (z < z2.b)
 				z2.b = z;
-			fesetround(FE_UPWARD);
+			SetRounding<T>(FE_UPWARD);
 			z1.b = x.a * y.b;
 			z = x.b * y.a;
 			if (z < z1.b)
@@ -973,7 +894,7 @@ Interval<T> DIMul(const Interval<T>& x, const Interval<T>& y) {
 			r = z2;
 	}
 
-	fesetround(FE_TONEAREST);
+	SetRounding<T>(FE_TONEAREST);
 	return r;
 }
 
@@ -993,31 +914,31 @@ Interval<T> DIDiv(const Interval<T>& x, const Interval<T>& y) {
 		// A, B in H-T
 		if ((xn || xp) && (yn || yp))
 			if (xp && yp) {
-				fesetround(FE_DOWNWARD);
+				SetRounding<T>(FE_DOWNWARD);
 				z1.a = x.a / y.b;
 				z2.b = x.b / y.a;
-				fesetround(FE_UPWARD);
+				SetRounding<T>(FE_UPWARD);
 				z1.b = x.b / y.a;
 				z2.a = x.a / y.b;
 			} else if (xp && yn) {
-				fesetround(FE_DOWNWARD);
+				SetRounding<T>(FE_DOWNWARD);
 				z1.a = x.b / y.b;
 				z2.b = x.a / y.a;
-				fesetround(FE_UPWARD);
+				SetRounding<T>(FE_UPWARD);
 				z1.b = x.a / y.a;
 				z2.a = x.b / y.b;
 			} else if (xn && yp) {
-				fesetround(FE_DOWNWARD);
+				SetRounding<T>(FE_DOWNWARD);
 				z1.a = x.a / y.a;
 				z2.b = x.b / y.b;
-				fesetround(FE_UPWARD);
+				SetRounding<T>(FE_UPWARD);
 				z1.b = x.b / y.b;
 				z2.a = x.a / y.a;
 			} else {
-				fesetround(FE_DOWNWARD);
+				SetRounding<T>(FE_DOWNWARD);
 				z1.a = x.b / y.a;
 				z2.b = x.a / y.b;
-				fesetround(FE_UPWARD);
+				SetRounding<T>(FE_UPWARD);
 				z1.b = x.a / y.b;
 				z2.a = x.b / y.a;
 			}
@@ -1025,31 +946,31 @@ Interval<T> DIDiv(const Interval<T>& x, const Interval<T>& y) {
 		else if (((x.a <= 0) && (x.b >= 0))
 				|| (((x.a >= 0) && (x.b <= 0)) && (yn || yp)))
 			if ((x.a <= x.b) && yp) {
-				fesetround(FE_DOWNWARD);
+				SetRounding<T>(FE_DOWNWARD);
 				z1.a = x.a / y.a;
 				z2.b = x.b / y.a;
-				fesetround(FE_UPWARD);
+				SetRounding<T>(FE_UPWARD);
 				z1.b = x.b / y.a;
 				z2.a = x.a / y.a;
 			} else if ((x.a <= x.b) && yn) {
-				fesetround(FE_DOWNWARD);
+				SetRounding<T>(FE_DOWNWARD);
 				z1.a = x.b / y.b;
 				z2.b = x.a / y.b;
-				fesetround(FE_UPWARD);
+				SetRounding<T>(FE_UPWARD);
 				z1.b = x.a / y.b;
 				z2.a = x.b / y.b;
 			} else if ((x.a > x.b) && yp) {
-				fesetround(FE_DOWNWARD);
+				SetRounding<T>(FE_DOWNWARD);
 				z1.a = x.a / y.b;
 				z2.b = x.b / y.b;
-				fesetround(FE_UPWARD);
+				SetRounding<T>(FE_UPWARD);
 				z1.b = x.b / y.b;
 				z2.a = x.a / y.b;
 			} else {
-				fesetround(FE_DOWNWARD);
+				SetRounding<T>(FE_DOWNWARD);
 				z1.a = x.b / y.a;
 				z2.b = x.a / y.a;
-				fesetround(FE_UPWARD);
+				SetRounding<T>(FE_UPWARD);
 				z1.b = x.a / y.a;
 				z2.a = x.b / y.a;
 			}
@@ -1061,7 +982,7 @@ Interval<T> DIDiv(const Interval<T>& x, const Interval<T>& y) {
 			r = z1;
 		else
 			r = z2;
-		fesetround(FE_TONEAREST);
+		SetRounding<T>(FE_TONEAREST);
 	}
 	return r;
 }
@@ -1276,16 +1197,238 @@ Interval<T> DISqr(const Interval<T>& x) {
 			maxx = abs(x.a);
 		else
 			maxx = abs(x.b);
-		fesetround(FE_DOWNWARD);
+		SetRounding<T>(FE_DOWNWARD);
 		r.a = minx * minx;
-		fesetround(FE_UPWARD);
+		SetRounding<T>(FE_UPWARD);
 		r.b = maxx * maxx;
-		fesetround(FE_TONEAREST);
+		SetRounding<T>(FE_TONEAREST);
 	}
 	return r;
 }
 
+template<typename T>
+inline Interval<T> Interval<T>::operator +(const Interval<T>& y) {
+	Interval<T> x(this->a, this->b);
+	Interval<T> r = {0, 0};
+	switch (mode) {
+	case PINT_MODE:
+		r = IAdd<T>(x, y);
+		break;
+	case DINT_MODE:
+		r = DIAdd<T>(x, y);
+		break;
+	default:
+		r = IAdd<T>(x, y);
+		break;
+	}
+
+	return r;
+}
+
+template<typename T>
+inline Interval<T> operator +(Interval<T> x, const Interval<T>& y) {
+	switch (Interval<T>::mode) {
+	case PINT_MODE:
+		return  IAdd<T>(x, y);
+	case DINT_MODE:
+		return  DIAdd<T>(x, y);
+	default:
+		return IAdd<T>(x, y);
+	}
+}
+
+template<typename T>
+inline Interval<T> Interval<T>::operator -(const Interval<T>& y) {
+	Interval<T> x(this->a, this->b);
+	Interval<T> r = {0, 0};
+	switch (mode) {
+	case PINT_MODE:
+		r = ISub<T>(x, y);
+		break;
+	case DINT_MODE:
+		r = DISub<T>(x, y);
+		break;
+	default:
+		r = ISub<T>(x, y);
+		break;
+	}
+
+	return r;
+}
+
+template<typename T>
+inline Interval<T> operator -(Interval<T> x, const Interval<T>& y) {
+	switch (Interval<T>::mode) {
+	case PINT_MODE:
+		return  ISub<T>(x, y);
+	case DINT_MODE:
+		return  DISub<T>(x, y);
+	default:
+		return ISub<T>(x, y);
+	}
+}
+
+
+template<typename T>
+inline Interval<T> Interval<T>::operator *(const Interval<T>& y) {
+	Interval<T> x(this->a, this->b);
+	Interval<T> r = {0, 0};
+	switch (mode) {
+	case PINT_MODE:
+		r = IMul<T>(x, y);
+		break;
+	case DINT_MODE:
+		r = DIMul<T>(x, y);
+		break;
+	default:
+		r = IMul<T>(x, y);
+		break;
+	}
+
+	return r;
+}
+
+template<typename T>
+inline Interval<T> operator *(Interval<T> x, const Interval<T>& y) {
+	switch (Interval<T>::mode) {
+	case PINT_MODE:
+		return IMul<T>(x, y);
+	case DINT_MODE:
+		return DIMul<T>(x, y);
+	default:
+		return IMul<T>(x, y);
+	}
+}
+
+template<typename T>
+inline Interval<T> Interval<T>::operator /(const Interval<T>& y) {
+	Interval<T> x(this->a, this->b);
+	Interval<T> r = {0, 0};
+	switch (mode) {
+	case PINT_MODE:
+		r = IDiv<T>(x, y);
+		break;
+	case DINT_MODE:
+		r = DIDiv<T>(x, y);
+		break;
+	default:
+		r = IDiv<T>(x, y);
+		break;
+	}
+
+	return r;
+}
+
+template<typename T>
+inline Interval<T> operator /(Interval<T> x, const Interval<T>& y) {
+	switch (Interval<T>::mode) {
+	case PINT_MODE:
+		return IDiv<T>(x, y);
+	case DINT_MODE:
+		return DIDiv<T>(x, y);
+	default:
+		return IDiv<T>(x, y);
+	}
+}
+
+template<typename T>
+int SetRounding(int rounding)
+{
+	fesetround(rounding);
+	return rounding;
+}
+
+template<>
+inline void Interval<mpreal>::IEndsToStrings(string& left, string& right) {
+	mpfr_t rop;
+	mpfr_exp_t exponent;
+	mpfr_init2(rop, precision);
+	char* str = NULL;
+	char *buffer = new char(precision + 3);
+	mpfr_set(rop, this->a.mpfr_ptr(), MPFR_RNDD);
+	mpfr_get_str(buffer, &exponent, 10, outdigits, rop, MPFR_RNDD);
+	str = buffer;
+
+	stringstream ss;
+	int prec = std::numeric_limits<mpreal>::digits10();
+	ss.setf(std::ios_base::scientific);
+	bool minus = (str[0] == '-');
+	int splitpoint = minus ? 1 : 0;
+	string sign = minus ? "-" : "";
+
+	ss << std::setprecision(prec) << sign << str[splitpoint] << "."
+			<< &str[splitpoint + 1] << "E" << exponent - 1;
+	left = ss.str();
+	ss.str(std::string());
+
+	mpfr_set(rop, this->b.mpfr_ptr(), MPFR_RNDU);
+	mpfr_get_str(buffer, &exponent, 10, outdigits, rop, MPFR_RNDU);
+	str = buffer;
+	splitpoint = (str[0] == '-') ? 1 : 0;
+	ss << std::setprecision(prec) << sign << str[splitpoint] << "."
+			<< &str[splitpoint + 1] << "E" << exponent - 1;
+	right = ss.str();
+	ss.clear();
+}
+
+template<>
+inline mpreal DIntWidth<mpreal>(const Interval<mpreal>& x) {
+	mpreal w1, w2;
+
+	mpreal::set_default_rnd(MPFR_RNDU);
+	w1 = x.b - x.a;
+	if (w1 < 0)
+		w1 = -w1;
+	mpreal::set_default_rnd(MPFR_RNDD);
+	w2 = x.b - x.a;
+	if (w2 < 0)
+		w2 = -w2;
+	mpreal::set_default_rnd(MPFR_RNDN);
+	if (w1 > w2)
+		return w1;
+	else
+		return w2;
+}
+
+template<>
+inline int SetRounding<mpreal>(int rounding)
+{
+	if (rounding == FE_UPWARD)
+	{
+		mpreal::set_default_rnd(MPFR_RNDU);
+	}
+	else if (rounding == FE_DOWNWARD)
+	{
+		mpreal::set_default_rnd(MPFR_RNDD);
+	}
+	else
+	{
+		mpreal::set_default_rnd(MPFR_RNDN);
+	}
+	return rounding;
+}
+
+//template<>
+//inline mpreal Interval<mpreal>::GetWidth() {
+//	Interval<mpreal> x(this->a, this->b);
+//	switch (mode) {
+//	case PINT_MODE:
+//		return IntWidth(x);
+//	case DINT_MODE:
+//		return DIntWidth(x);
+//	default:
+//		return IntWidth(x);
+//	}
+//}
+
 //The explicit instantiation part
+template long double DIntWidth(const Interval<long double>& x);
+
+//template mpreal DIntWidth(const Interval<mpreal>& x);
+//template<>
+
+
+
 template class Interval<long double>;
 template class Interval<double>;
 template class Interval<float>;
@@ -1293,9 +1436,19 @@ template class Interval<float>;
 template<typename T> IAMode Interval<T>::mode = PINT_MODE;
 template<typename T> IAOutDigits Interval<T>::outdigits = LONGDOUBLE_DIGITS;
 
-template<> IAPrecision Interval<long double>::precision = LONGDOUBLE_PREC;
-template<> IAPrecision Interval<double>::precision = DOUBLE_PREC;
-template<> IAPrecision Interval<float>::precision = FLOAT_PREC;
+//template<> IAPrecision Interval<long double>::precision = LONGDOUBLE_PREC;
+//template<> IAPrecision Interval<double>::precision = DOUBLE_PREC;
+//template<> IAPrecision Interval<float>::precision = FLOAT_PREC;
+
+template<typename T> IAPrecision Interval<T>::precision = LONGDOUBLE_PREC;
+//template IAOutDigits Interval<mpreal>::outdigits = LONGDOUBLE_DIGITS;
+template class Interval<mpreal>;
+
+
+
+
+
+//-------------------------------------------------------------------------------------
 
 } /* namespace interval_arithmetic */
 
