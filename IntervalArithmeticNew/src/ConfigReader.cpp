@@ -23,15 +23,15 @@ ConfigReader<T>::ConfigReader()
 {
 	//default configuration
 	this->exp_mode =  INTERVAL_EXP; //CLASSICAL_EXP; //CONST_M_EXP; //INTERVAL_EXP; //CLASSICAL_EXP; //CONST_M_EXP
-	this->arth_mode = DINT_MODE;
+	this->arth_mode = PINT_MODE;
 	this->m = 20; //default grid size m=n=20
 	this->n = 20;
-	this->e = 3; //default example_id = 1
+	this->e = 4; //default example_id = 1
 	this->alpha1 = 1;
 	this->alpha2 = 2;
 	this->beta1 = 1;
 	this->beta2 = 2;
-	this->file_name = "ex03dint.txt";
+	this->file_name = "ex04pint.txt";
 	this->print_csv = false;
 	this->solver_id = GPDE_SOLVER;
 }
@@ -41,15 +41,15 @@ ConfigReader<T>::ConfigReader(int ac, char* av[])
 {
 	//default configuration
 	this->exp_mode =  INTERVAL_EXP; //CLASSICAL_EXP; //CONST_M_EXP; //INTERVAL_EXP; //CLASSICAL_EXP; //CONST_M_EXP
-	this->arth_mode = DINT_MODE;
+	this->arth_mode = PINT_MODE;
 	this->m = 20; //default grid size m=n=20
 	this->n = 20;
-	this->e = 3; //default example_id = 1
+	this->e = 4; //default example_id = 1
 	this->alpha1 = 1;
 	this->alpha2 = 2;
 	this->beta1 = 1;
 	this->beta2 = 2;
-	this->file_name = "ex03dint.txt";
+	this->file_name = "ex04pint.txt";
 	this->print_csv = false;
 	this->solver_id = GPDE_SOLVER;
 	this->parseCommandArgs(ac, av);

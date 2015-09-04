@@ -132,7 +132,8 @@ void Solver<T>::WriteFPResultsToFile() {
 template<typename T>
 void Solver<T>::WriteIntervalResultsToFile() {
 	int i, imod, j, jmod, l, ui, uj;
-	T exact, h, k, w;
+	long double exact, h, k;
+	T w;
 	bool OK, OK1, dint_mode;
 	Interval<T> HH, KK, NN, MM, sol, UIH, UII, UJJ, UJK;
 	char z, z1;
@@ -398,7 +399,7 @@ long double Solver<T>::GetMaxN() {
 template<typename T>
 inline void Solver<T>::WriteFPResultsToCsv() {
 	int imod, j, jmod;
-	T exact, h, k;
+	long double exact, h, k;
 	T sol;
 	string file_name, left, right, time;
 	fstream fp_filestr, exact_filestr;

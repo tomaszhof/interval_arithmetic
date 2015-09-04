@@ -34,7 +34,7 @@ using namespace mpfr;
 namespace interval_arithmetic {
 
 enum IAPrecision {
-	LONGDOUBLE_PREC = 80, DOUBLE_PREC = 64, FLOAT_PREC = 32
+	LONGDOUBLE_PREC = 80, DOUBLE_PREC = 64, FLOAT_PREC = 32, MPREAL_PREC = 20
 };
 
 enum IAOutDigits {
@@ -65,6 +65,8 @@ template<typename T> Interval<T> DICos(const Interval<T>& x, int & st);
 template<typename T> Interval<T> DIExp(const Interval<T>& x);
 
 template<typename T> int SetRounding(int rounding);
+
+template<> Interval<mpreal> IntRead(const string & sa);
 
 template<typename T> class Interval {
 private:
@@ -97,6 +99,7 @@ public:
 	static IAPrecision GetPrecision();
 	static void SetOutDigits(IAOutDigits o);
 	static IAOutDigits GetOutDigits();
+	static T GetEpsilon();
 
 	void IEndsToStrings(string & left, string & right);
 
@@ -157,6 +160,7 @@ inline Interval<T> Interval<T>::operator =(const Interval<T>& i) {
 
 template<typename T>
 inline void Interval<T>::SetPrecision(IAPrecision p) {
+	mpreal::set_default_prec(p);
 	Interval<T>::precision = p;
 }
 
@@ -173,6 +177,11 @@ inline void Interval<T>::SetOutDigits(IAOutDigits o) {
 template<typename T>
 inline IAOutDigits Interval<T>::GetOutDigits() {
 	return Interval<T>::outdigits;
+}
+
+template<typename T>
+inline T Interval<T>::GetEpsilon() {
+	return std::numeric_limits<T>::min();
 }
 
 template<typename T>
@@ -203,7 +212,25 @@ inline Interval<T> IntRead(const string& sa) {
 	if (strcmp(typeid(T).name(), typeid(float).name()) == 0) {
 		re = mpfr_get_flt(rop, MPFR_RNDU);
 	}
+
 	SetRounding<T>(FE_TONEAREST);
+
+	r.a = le;
+	r.b = re;
+	return r;
+}
+
+template<>
+inline Interval<mpreal> IntRead(const string& sa) {
+	Interval<mpreal> r;
+	mpfr_t rop;
+	mpfr_init2(rop, Interval<mpreal>::precision);
+	mpfr_set_str(rop, sa.c_str(), 10, MPFR_RNDD);
+	mpreal le = rop;
+
+
+	mpfr_set_str(rop, sa.c_str(), 10, MPFR_RNDU);
+	mpreal re = rop;
 
 	r.a = le;
 	r.b = re;
@@ -339,19 +366,25 @@ inline Interval<T> Interval<T>::IPi() {
 template<typename T>
 inline void Interval<T>::Initialize() {
 	if (strcmp(typeid(T).name(), typeid(long double).name()) == 0) {
-		Interval<T>::precision = LONGDOUBLE_PREC;
-		Interval<T>::outdigits = LONGDOUBLE_DIGITS;
+		Interval<T>::SetPrecision(LONGDOUBLE_PREC);
+		Interval<T>::SetOutDigits(LONGDOUBLE_DIGITS);
 	}
 
 	if (strcmp(typeid(T).name(), typeid(double).name()) == 0) {
-		Interval<T>::precision = DOUBLE_PREC;
-		Interval<T>::outdigits = DOUBLE_DIGITS;
+		Interval<T>::SetPrecision(DOUBLE_PREC);
+		Interval<T>::SetOutDigits(DOUBLE_DIGITS);
 	}
 
 	if (strcmp(typeid(T).name(), typeid(float).name()) == 0) {
-		Interval<T>::precision = FLOAT_PREC;
-		Interval<T>::outdigits = FLOAT_DIGITS;
+		Interval<T>::SetPrecision(FLOAT_PREC);
+		Interval<T>::SetOutDigits(FLOAT_DIGITS);
 	}
+
+	if (strcmp(typeid(T).name(), typeid(mpreal).name()) == 0) {
+		Interval<T>::SetPrecision(MPREAL_PREC);
+		Interval<T>::SetOutDigits(FLOAT_DIGITS);
+	}
+
 }
 
 template<typename T>
@@ -394,6 +427,8 @@ Interval<T> ISin(const Interval<T>& x) {
 	int k;
 	int st = 0;
 	Interval<T> d, s, w, w1, x2;
+	T eps = 2*Interval<T>::GetEpsilon();
+	T diff = std::numeric_limits<T>::max();
 	if (x.a > x.b)
 		st = 1;
 	else {
@@ -413,23 +448,30 @@ Interval<T> ISin(const Interval<T>& x) {
 				w1 = ISub(w, s);
 			else
 				w1 = IAdd(w, s);
+
+			T oldMid = (w.a + w.b) / 2;
+			T newMid = (w1.a + w1.b) / 2;
+			T currDiff = abs(oldMid - newMid);
+			finished = (currDiff > diff);
+			diff = currDiff;
+
 			if ((w.a != 0) && (w.b != 0)) {
-				if ((abs(w.a - w1.a) / abs(w.a) < 1e-16)
-						&& (abs(w.b - w1.b) / abs(w.b) < 1e-16))
+				if ((abs(w.a - w1.a) / abs(w.a) < eps)
+						&& (abs(w.b - w1.b) / abs(w.b) < eps))
 					finished = true;
 				else
 					;
 			} else if ((w.a == 0) && (w.b != 0)) {
-				if ((abs(w.a - w1.a) < 1e-16)
-						&& (abs(w.b - w1.b) / abs(w.b) < 1e-16))
+				if ((abs(w.a - w1.a) < eps)
+						&& (abs(w.b - w1.b) / abs(w.b) < eps))
 					finished = true;
 				else
 					;
 			} else if (w.a != 0) {
-				if ((abs(w.a - w1.a) / abs(w.a) < 1e-16)
-						& (abs(w.b - w1.b) < 1e-16))
+				if ((abs(w.a - w1.a) / abs(w.a) < eps)
+						& (abs(w.b - w1.b) < eps))
 					finished = true;
-				else if ((abs(w.a - w1.a) < 1e-16) & (abs(w.b - w1.b) < 1e-16))
+				else if ((abs(w.a - w1.a) < eps) & (abs(w.b - w1.b) < eps))
 					finished = true;
 			}
 
@@ -472,7 +514,12 @@ Interval<T> ICos(const Interval<T>& x) {
 	bool is_even, finished;
 	int k;
 	int st = 0;
-	Interval<T> d, c, w, w1, x2;
+	string left, right;
+	T eps = Interval<T>::GetEpsilon();
+	T diff = std::numeric_limits<T>::max();
+
+	Interval<T> d, c, w, w1, x2, tmp;
+	tmp = x;
 	if (x.a > x.b)
 		st = 1;
 	else {
@@ -494,25 +541,30 @@ Interval<T> ICos(const Interval<T>& x) {
 			else
 				w1 = IAdd(w, c);
 
+			T oldMid = (w.a + w.b) / 2;
+			T newMid = (w1.a + w1.b) / 2;
+			T currDiff = abs(oldMid - newMid);
+			finished = (currDiff > diff);
+			diff = currDiff;
 			if ((w.a != 0) && (w.b != 0)) {
-				if ((abs(w.a - w1.a) / abs(w.a) < 1e-18)
-						&& (abs(w.b - w1.b) / abs(w.b) < 1e-18))
+				if ((abs(w.a - w1.a) / abs(w.a) < eps)
+						&& (abs(w.b - w1.b) / abs(w.b) < eps))
 					finished = true;
 				else
 					;
 			} else if ((w.a == 0) && (w.b != 0)) {
-				if ((abs(w.a - w1.a) < 1e-18)
-						&& (abs(w.b - w1.b) / abs(w.b) < 1e-18))
+				if ((abs(w.a - w1.a) < eps)
+						&& (abs(w.b - w1.b) / abs(w.b) < eps))
 					finished = true;
 				else
 					;
 			}
 
 			else if (w.a != 0) {
-				if ((abs(w.a - w1.a) / abs(w.a) < 1e-18)
-						& (abs(w.b - w1.b) < 1e-18))
+				if ((abs(w.a - w1.a) / abs(w.a) < eps)
+						& (abs(w.b - w1.b) < eps))
 					finished = true;
-				else if ((abs(w.a - w1.a) < 1e-18) & (abs(w.b - w1.b) < 1e-18))
+				else if ((abs(w.a - w1.a) < eps) & (abs(w.b - w1.b) < eps))
 					finished = true;
 			}
 
@@ -532,6 +584,22 @@ Interval<T> ICos(const Interval<T>& x) {
 				w = w1;
 				k = k + 2;
 				is_even = !is_even;
+				if ((w.a <= -1.0)&&(w.b >=-1.0))
+								{
+									finished = true;
+									w = {0,0};
+									return w;
+								}
+				if (k>100000)
+				{
+					T wdth = w.GetWidth();
+					tmp.IEndsToStrings(left, right);
+					cout << "x=[" << left << "," << right << "]" << endl;
+					w.IEndsToStrings(left, right);
+					cout << "[" << left << "," << right << "]" << endl;
+								cout << "      width =  " << std::setprecision(17) << wdth
+										<< endl;
+				}
 			}
 		} while (!(finished || (k > INT_MAX / 2)));
 	}
@@ -550,6 +618,10 @@ Interval<T> IExp(const Interval<T>& x) {
 	int k;
 	int st = 0;
 	Interval<T> d, e, w, w1;
+	T eps = 2*Interval<T>::GetEpsilon();
+	T diff = std::numeric_limits<T>::max();
+	if ((x.a < 0) && (x.b > 0))
+		return {1,1};
 	if (x.a > x.b)
 		st = 1;
 	else {
@@ -564,8 +636,13 @@ Interval<T> IExp(const Interval<T>& x) {
 			d.b = k;
 			e = IMul(e, IDiv(x, d));
 			w1 = IAdd(w, e);
-			if ((abs(w.a - w1.a) / abs(w.a) < 1e-18)
-					&& (abs(w.b - w1.b) / abs(w.b) < 1e-18)) {
+			T oldMid = (w.a + w.b) / 2;
+			T newMid = (w1.a + w1.b) / 2;
+			T currDiff = abs(oldMid - newMid);
+			finished = (currDiff > diff);
+			diff = currDiff;
+			if ((abs(w.a - w1.a) / abs(w.a) < eps)
+					&& (abs(w.b - w1.b) / abs(w.b) < eps)) {
 				finished = true;
 				return w1;
 			} else {
@@ -1432,6 +1509,7 @@ template long double DIntWidth(const Interval<long double>& x);
 template class Interval<long double>;
 template class Interval<double>;
 template class Interval<float>;
+template class Interval<mpreal>;
 
 template<typename T> IAMode Interval<T>::mode = PINT_MODE;
 template<typename T> IAOutDigits Interval<T>::outdigits = LONGDOUBLE_DIGITS;
@@ -1440,9 +1518,10 @@ template<typename T> IAOutDigits Interval<T>::outdigits = LONGDOUBLE_DIGITS;
 //template<> IAPrecision Interval<double>::precision = DOUBLE_PREC;
 //template<> IAPrecision Interval<float>::precision = FLOAT_PREC;
 
+template<> IAPrecision Interval<mpreal>::precision = MPREAL_PREC;
 template<typename T> IAPrecision Interval<T>::precision = LONGDOUBLE_PREC;
 //template IAOutDigits Interval<mpreal>::outdigits = LONGDOUBLE_DIGITS;
-template class Interval<mpreal>;
+
 
 
 

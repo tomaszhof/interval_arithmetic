@@ -39,7 +39,7 @@ void Experiment<T>::SetExample(int eid, int arth_mode)
 		//_example = new Example03<T>();
 		break;
 	case 4:
-		//_example = new Example04<T>();
+		_example = new Example04<T>();
 		break;
 	default:
 		_example = NULL;
@@ -90,6 +90,7 @@ void Experiment<T>::SetParameters(Parameters<long double> p)
 template<typename T>
 void Experiment<T>::Initialize()
 {
+	Interval<T>::Initialize();
 	if (!_param_initialized)
 		return;
 	this->SetSolver(parameters);

@@ -50,7 +50,7 @@ public:
 	virtual int boundconds(const Interval<T>& B1, const Interval<T>& B2,
 			const long double eps);
 
-	virtual long double ExactSol(T x, T y);
+	virtual long double ExactSol(long double x, long double y);
 	virtual long double GetConstM();
 	virtual long double GetConstN();
 	virtual void SetArithmeticMode(int mode);
@@ -195,7 +195,7 @@ Interval<T> BoundaryConditions<T>::C(const Interval<T>& ix,
 }
 
 template<typename T>
-long double BoundaryConditions<T>::ExactSol(T x, T y) {
+long double BoundaryConditions<T>::ExactSol(long double x, long double y) {
 	long double exact = 0;
 	return exact;
 }
