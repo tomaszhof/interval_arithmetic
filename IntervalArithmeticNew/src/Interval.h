@@ -34,7 +34,7 @@ using namespace mpfr;
 namespace interval_arithmetic {
 
 enum IAPrecision {
-	LONGDOUBLE_PREC = 80, DOUBLE_PREC = 64, FLOAT_PREC = 32, MPREAL_PREC = 20
+	LONGDOUBLE_PREC = 80, DOUBLE_PREC = 64, FLOAT_PREC = 32, MPREAL_PREC = 40
 };
 
 enum IAOutDigits {
@@ -181,7 +181,7 @@ inline IAOutDigits Interval<T>::GetOutDigits() {
 
 template<typename T>
 inline T Interval<T>::GetEpsilon() {
-	return std::numeric_limits<T>::min();
+	return std::numeric_limits<T>::epsilon();
 }
 
 template<typename T>
@@ -491,12 +491,12 @@ Interval<T> ISin(const Interval<T>& x) {
 				w = w1;
 				k = k + 2;
 				is_even = !is_even;
-				if ((w.a <= 0.0)&&(w.b >=0.0))
-				{
-					finished = true;
-					w = {0,0};
-					return w;
-				}
+//				if ((w.a <= 0.0)&&(w.b >=0.0))
+//				{
+//					finished = true;
+//					w = {0,0};
+//					return w;
+//				}
 			}
 		} while (!(finished || (k > INT_MAX / 2)));
 	}
@@ -584,22 +584,22 @@ Interval<T> ICos(const Interval<T>& x) {
 				w = w1;
 				k = k + 2;
 				is_even = !is_even;
-				if ((w.a <= -1.0)&&(w.b >=-1.0))
-								{
-									finished = true;
-									w = {0,0};
-									return w;
-								}
-				if (k>100000)
-				{
-					T wdth = w.GetWidth();
-					tmp.IEndsToStrings(left, right);
-					cout << "x=[" << left << "," << right << "]" << endl;
-					w.IEndsToStrings(left, right);
-					cout << "[" << left << "," << right << "]" << endl;
-								cout << "      width =  " << std::setprecision(17) << wdth
-										<< endl;
-				}
+//				if ((w.a <= -1.0)&&(w.b >=-1.0))
+//								{
+//									finished = true;
+//									w = {0,0};
+//									return w;
+//								}
+//				if (k>100000)
+//				{
+//					T wdth = w.GetWidth();
+//					tmp.IEndsToStrings(left, right);
+//					cout << "x=[" << left << "," << right << "]" << endl;
+//					w.IEndsToStrings(left, right);
+//					cout << "[" << left << "," << right << "]" << endl;
+//								cout << "      width =  " << std::setprecision(17) << wdth
+//										<< endl;
+//				}
 			}
 		} while (!(finished || (k > INT_MAX / 2)));
 	}
@@ -618,6 +618,8 @@ Interval<T> IExp(const Interval<T>& x) {
 	int k;
 	int st = 0;
 	Interval<T> d, e, w, w1;
+	string left, right;
+	Interval<T> tmp = x;
 	T eps = 2*Interval<T>::GetEpsilon();
 	T diff = std::numeric_limits<T>::max();
 	if ((x.a < 0) && (x.b > 0))
@@ -639,7 +641,8 @@ Interval<T> IExp(const Interval<T>& x) {
 			T oldMid = (w.a + w.b) / 2;
 			T newMid = (w1.a + w1.b) / 2;
 			T currDiff = abs(oldMid - newMid);
-			finished = (currDiff > diff);
+			//finished = (currDiff >= diff);
+			T tmpDiff  = diff - currDiff;
 			diff = currDiff;
 			if ((abs(w.a - w1.a) / abs(w.a) < eps)
 					&& (abs(w.b - w1.b) / abs(w.b) < eps)) {
@@ -648,6 +651,19 @@ Interval<T> IExp(const Interval<T>& x) {
 			} else {
 				w = w1;
 				k = k + 1;
+				if (k>100000)
+								{
+									T wdth = w.GetWidth();
+
+									tmp.IEndsToStrings(left, right);
+									cout << "x=[" << left << "," << right << "]" << endl;
+									w.IEndsToStrings(left, right);
+									cout << "[" << left << "," << right << "]" << endl;
+												cout << "      width =  " << std::setprecision(17) << wdth
+														<< endl << " diff = " << diff
+														<< endl << " tmpDiff = " << tmpDiff
+														<< endl << "eps = " << eps << endl;
+								}
 			}
 		} while (!(finished || (k > INT_MAX / 2)));
 		if (!finished)
