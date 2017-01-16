@@ -1,12 +1,12 @@
 /*
- * GPDESolver.h
+ * PoissonSolver.h
  *
  *  Created on: 25-01-2014
  *      Author: thof
  */
 
-#ifndef GPDESOLVER_H_
-#define GPDESOLVER_H_
+#ifndef POISSONSOLVER_H_
+#define POISSONSOLVER_H_
 
 #include "Solver.h"
 #include "THashMap.h"
@@ -27,7 +27,7 @@ namespace interval_arithmetic
 {
 
 template<typename T>
-class GPDESolver: public Solver<T>
+class PoissonSolver: public Solver<T>
 {
 using Solver<T>::bc;
 using Solver<T>::params;
@@ -38,8 +38,8 @@ using Solver<T>::maxN;
 using Solver<T>::_initparams;
 
 public:
-	GPDESolver();
-	virtual ~GPDESolver();
+	PoissonSolver();
+	virtual ~PoissonSolver();
 	int SolveFP();
 	int SolvePIA();
 	int SolveDIA();
@@ -51,11 +51,11 @@ public:
 } /* namespace intervalarth */
 
 template<typename T>
-inline void interval_arithmetic::GPDESolver<T>::WriteFPResultsToCsv() {
+inline void interval_arithmetic::PoissonSolver<T>::WriteFPResultsToCsv() {
 }
 
 template<typename T>
-inline void interval_arithmetic::GPDESolver<T>::WriteIntervalResultsToCsv() {
+inline void interval_arithmetic::PoissonSolver<T>::WriteIntervalResultsToCsv() {
 }
 
-#endif /* GPDESOLVER_H_ */
+#endif /* POISSONSOLVER_H_ */

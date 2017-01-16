@@ -68,6 +68,9 @@ void Experiment<T>::SetSolver(Parameters<long double> p)
 	case GPDE_SOLVER:
 		solver = new GPDESolver<T>();
 		break;
+	case POISSON:
+			solver = new PoissonSolver<T>();
+			break;
 	default:
 		solver = NULL;
 		break;

@@ -166,7 +166,7 @@ void ConfigReader<T>::readConfigFile(string fileName)
 			po::value<T>(&alpha2))("experiment.beta1",
 			po::value<T>(&beta1))("experiment.beta2",
 			po::value<T>(&beta2))("solver.name",
-			po::value<string>(&output_file))("solver.output",
+			po::value<string>(&solver_name))("solver.output",
 			po::value<string>(&output_file));
 	po::variables_map vm;
 
@@ -194,6 +194,8 @@ void ConfigReader<T>::readConfigFile(string fileName)
 
 	if (solver_name == "gpde")
 		this->SetSolverId(GPDE_SOLVER);
+	if (solver_name == "poisson")
+			this->SetSolverId(POISSON);
 
 	this->SetFileName(output_file);
 	this->SetAlpha1(alpha1);

@@ -1,27 +1,27 @@
 /*
- * GPDESolver.cpp
+ * PoissonSolver.cpp
  *
  *  Created on: 25-01-2014
  *      Author: thof
  */
 
-#include "GPDESolver.h"
+#include "PoissonSolver.h"
 
 namespace interval_arithmetic {
 
 template<typename T>
-GPDESolver<T>::GPDESolver() {
+PoissonSolver<T>::PoissonSolver() {
 	// TODO Auto-generated constructor stub
 
 }
 
 template<typename T>
-GPDESolver<T>::~GPDESolver() {
+PoissonSolver<T>::~PoissonSolver() {
 	// TODO Auto-generated destructor stub
 }
 
 template<typename T>
-int GPDESolver<T>::SetExample(int eid) {
+int PoissonSolver<T>::SetExample(int eid) {
 	switch (eid) {
 	case 1:
 		//bc = new Example01();
@@ -61,7 +61,7 @@ int GPDESolver<T>::SetExample(int eid) {
 }
 
 template<typename T>
-int GPDESolver<T>::SolveFP() {
+int PoissonSolver<T>::SolveFP() {
 	int i, j, jh, j1, k, kh, l, lh, l1, l2, n1, n2, p, q, rh, st;
 	long double af, cf, h1, k1, hh1, kk1, max, s, tmpM, tmpN;
 
@@ -125,8 +125,8 @@ int GPDESolver<T>::SolveFP() {
 			kk1 = beta + j * k1;
 
 			//changed - in order to generalize to elliptic PDE
-			af = bc->a(hh1, kk1) / h1; //1 / h1;
-			cf = bc->c(hh1, kk1) / k1; //1 / k1;
+			af = 1 / h1; //bc->a(hh1, kk1) / h1; //1 / h1;
+			cf = 1 / k1; //bc->c(hh1, kk1) / k1; //1 / k1;
 
 			if (i > 1)
 				a1[l1 - 1] = af / h1;
@@ -290,7 +290,7 @@ int GPDESolver<T>::SolveFP() {
 }
 
 template<typename T>
-int GPDESolver<T>::SolvePIA() {
+int PoissonSolver<T>::SolvePIA() {
 //	fstream filestr;
 //	string fname = "tmpLog.txt";
 //	filestr.open(fname.c_str(), fstream::out);
@@ -668,7 +668,7 @@ int GPDESolver<T>::SolvePIA() {
 }
 
 template<typename T>
-int GPDESolver<T>::SolveDIA() {
+int PoissonSolver<T>::SolveDIA() {
 	if (!_initparams)
 		throw runtime_error("Parameters not initialized!");
 	int st = 0;
@@ -1037,8 +1037,8 @@ int GPDESolver<T>::SolveDIA() {
 
 
 //The explicit instantiation part
-template class GPDESolver<long double> ;
-template class GPDESolver<mpreal> ;
+template class PoissonSolver<long double> ;
+template class PoissonSolver<mpreal> ;
 
 }
 /* namespace intervalarth */

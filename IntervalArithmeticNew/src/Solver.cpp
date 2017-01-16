@@ -183,10 +183,10 @@ void Solver<T>::WriteIntervalResultsToFile() {
 	if (st != 0)
 		return;
 
-	h = alpha / n;
-	k = beta / m;
-	HH = intalpha / NN;
-	KK = intbeta / MM;
+	h = (delta - alpha) / n;
+	k = (gamma - beta) / m;
+	HH = (DELTA - intalpha) / NN;
+	KK = (GAMMA - intbeta) / MM;
 	l = 0;
 	imod = n / 10;
 	jmod = m / 10;

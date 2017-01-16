@@ -24,6 +24,7 @@
 #include "ConfigReader.h"
 //#include "Solver.h"
 #include "GPDESolver.h"
+#include "PoissonSolver.h"
 #include "Utils.h"
 
 using namespace std;

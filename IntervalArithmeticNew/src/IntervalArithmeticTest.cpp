@@ -34,7 +34,7 @@ int main(int ac, char *av[]) {
 //	d = ione /b;
 
 	//experiment for the Generalized Poisson Equation
-	Experiment<mpreal>* exper = new Experiment<mpreal>(ac, av);
+	Experiment<long double>* exper = new Experiment<long double>(ac, av);
 	exper->Initialize();
 	exper->Execute();
 	delete exper;
