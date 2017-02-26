@@ -196,6 +196,8 @@ void ConfigReader<T>::readConfigFile(string fileName)
 		this->SetSolverId(GPDE_SOLVER);
 	if (solver_name == "poisson")
 			this->SetSolverId(POISSON);
+	if (solver_name == "poisson4")
+				this->SetSolverId(POISSON4);
 
 	this->SetFileName(output_file);
 	this->SetAlpha1(alpha1);

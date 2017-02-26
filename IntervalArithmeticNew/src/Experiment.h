@@ -25,6 +25,7 @@
 //#include "Solver.h"
 #include "GPDESolver.h"
 #include "PoissonSolver.h"
+#include "PoissonSolver4Order.h"
 #include "Utils.h"
 
 using namespace std;
