@@ -44,7 +44,7 @@ ConfigReader<T>::ConfigReader(int ac, char* av[])
 	this->arth_mode = PINT_MODE;
 	this->m = 20; //default grid size m=n=20
 	this->n = 20;
-	this->e = 4; //default example_id = 1
+	this->e = 8; //default example_id = 1
 	this->alpha1 = 1;
 	this->alpha2 = 2;
 	this->beta1 = 1;

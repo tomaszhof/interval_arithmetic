@@ -88,6 +88,7 @@ public:
 	Interval Projection();
 	Interval Opposite();
 	Interval Inverse();
+	T Mid();
 	T GetWidth();
 	static void Initialize();
 	static Interval<T> ISqr2();
@@ -328,6 +329,11 @@ inline T Interval<T>::GetWidth() {
 	default:
 		return IntWidth(x);
 	}
+}
+
+template<typename T>
+inline T Interval<T>::Mid() {
+	return (this->b + this->a) / 2.0;
 }
 
 template<typename T>
