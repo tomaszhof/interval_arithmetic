@@ -63,7 +63,8 @@ int PoissonSolver4Order<T>::SetExample(int eid) {
 template<typename T>
 int PoissonSolver4Order<T>::SolveFP() {
 	int i, j, jh, j1, k, kh, l, lh, l1, l2, n1, n2, p, q, rh, st;
-	long double af, cf, h1, k1, hh1, kk1, max, s, tmpM, tmpN, h2d12, k2d12, hhp1, hhm1, kkp1, kkm1;
+	long double af, cf, h1, k1, hh1, kk1, max, s, tmpM, tmpN, h2d12, k2d12,
+			hhp1, hhm1, kkp1, kkm1;
 
 	if (!Solver<T>::_initparams)
 		throw runtime_error("Parameters not initialized!");
@@ -115,7 +116,7 @@ int PoissonSolver4Order<T>::SolveFP() {
 		j = 0;
 //
 		ofstream rowFile;
-		rowFile.open ("row.txt");
+		rowFile.open("row.txt");
 
 		do {
 			k = k + 1;
@@ -128,10 +129,10 @@ int PoissonSolver4Order<T>::SolveFP() {
 			l2 = l1 + m - 1;
 			hh1 = alpha + i * h1;
 			kk1 = beta + j * k1;
-			hhp1 = alpha + (i+1) * h1;
-			kkp1 = beta + (j+1) * k1;
-			hhm1 = alpha + (i-1) * h1;
-			kkm1 = beta + (j-1) * k1;
+			hhp1 = alpha + (i + 1) * h1;
+			kkp1 = beta + (j + 1) * k1;
+			hhm1 = alpha + (i - 1) * h1;
+			kkm1 = beta + (j - 1) * k1;
 
 			//changed - in order to generalize to elliptic PDE
 
@@ -333,18 +334,14 @@ int PoissonSolver4Order<T>::SolveFP() {
 //				}
 //			}
 
-
 			//fourth order method - option 6 (Zhang)
-			if (i > 1)
-			{
-				a1[l1 - 1] = 4.0* (af / h1); //af / h1;
+			if (i > 1) {
+				a1[l1 - 1] = 4.0 * (af / h1); //af / h1;
 
-				if (j > 1)
-				{
+				if (j > 1) {
 					a1[l1 - 2] = af / h1;
 				}
-				if (j < m - 1)
-				{
+				if (j < m - 1) {
 					a1[l1] = af / h1;
 				}
 
@@ -352,23 +349,19 @@ int PoissonSolver4Order<T>::SolveFP() {
 
 			a1[l2 - 1] = (-20.0) * (af / h1); //-2 * (af / h1 + cf / k1);
 
-			if (j > 1)
-			{
-				a1[l2 - 2] = 4.0* (af / h1); //cf / k1;
+			if (j > 1) {
+				a1[l2 - 2] = 4.0 * (af / h1); //cf / k1;
 			}
 			if (j < m - 1)
-				a1[l2] = 4.0* (af / h1); //cf / k1;
+				a1[l2] = 4.0 * (af / h1); //cf / k1;
 
 			l1 = l2 + m - 1;
-			if (i < n - 1)
-			{
-				a1[l1 - 1] = 4.0* (af / h1);
-				if (j > 1)
-				{
+			if (i < n - 1) {
+				a1[l1 - 1] = 4.0 * (af / h1);
+				if (j > 1) {
 					a1[l1 - 2] = af / h1;
 				}
-				if (j < m - 1)
-				{
+				if (j < m - 1) {
 					a1[l1] = af / h1;
 				}
 			}
@@ -387,7 +380,6 @@ int PoissonSolver4Order<T>::SolveFP() {
 //			if (i < n - 1)
 //				a1[l1 - 1] = af / h1;
 
-
 //---- BOUNDARY CONDITIONS
 //          Fortuna Macukow option 4
 //			s =  - bc->f(hh1, kk1);
@@ -396,9 +388,10 @@ int PoissonSolver4Order<T>::SolveFP() {
 
 //		    Fortuna Macukow option 5
 			s = 4.0 * bc->f(hh1, kk1);
-			s = s + (1.0/2.0) * (bc->f(hhp1, kk1) + bc->f(hhm1, kk1) + bc->f(hh1, kkp1) + bc->f(hh1, kkm1));//bc->f(hh1, kk1);
-
-
+			s = s
+					+ (1.0 / 2.0)
+							* (bc->f(hhp1, kk1) + bc->f(hhm1, kk1)
+									+ bc->f(hh1, kkp1) + bc->f(hh1, kkm1)); //bc->f(hh1, kk1);
 
 //			if (i == 1) {
 //				s = s - af * bc->phi1(kk1) / h1;
@@ -529,64 +522,57 @@ int PoissonSolver4Order<T>::SolveFP() {
 
 			//Zhang- option 6
 			if (i == 1) {
-				s = s - 4.0* (af / h1)*bc->phi1(kk1);
+				s = s - 4.0 * (af / h1) * bc->phi1(kk1);
 				if (j < m)
-					s = s - (af / h1)*bc->phi1(kkp1);
+					s = s - (af / h1) * bc->phi1(kkp1);
 				if (j > 0)
-					s = s - (af / h1)*bc->phi1(kkm1);
-				if (j == 1)
-				{
-					s = s - 4.0* (af / h1)*bc->phi2(hh1);
-					s = s - (af / h1)*bc->phi2(hhp1);
+					s = s - (af / h1) * bc->phi1(kkm1);
+				if (j == 1) {
+					s = s - 4.0 * (af / h1) * bc->phi2(hh1);
+					s = s - (af / h1) * bc->phi2(hhp1);
 
 					//s = s - (1.0/12.0)*(af/h1 + cf/k1)*bc->phi1(hhm1);//?
 				}
-				if (j == m - 1)
-				{
-					s = s - 4.0* (af / h1)*bc->phi4(hh1);
+				if (j == m - 1) {
+					s = s - 4.0 * (af / h1) * bc->phi4(hh1);
 					s = s - (af / h1) * bc->phi4(hhp1);
 
 					//s = s - (1.0/12.0)*(af/h1 + cf/k1)*bc->phi1(hhm1);//?
 				}
 			} else if (i == n - 1) {
-				s = s - 4.0* (af / h1)*bc->phi3(kk1);
+				s = s - 4.0 * (af / h1) * bc->phi3(kk1);
 				if (j < m)
-					s = s - (af / h1)*bc->phi3(kkp1);
+					s = s - (af / h1) * bc->phi3(kkp1);
 				if (j > 0)
-					s = s - (af / h1)*bc->phi3(kkm1);
-				if (j == 1)
-				{
-					s = s - 4.0* (af / h1)*bc->phi2(hh1);
-					s = s - (af / h1)*bc->phi2(hhm1);
+					s = s - (af / h1) * bc->phi3(kkm1);
+				if (j == 1) {
+					s = s - 4.0 * (af / h1) * bc->phi2(hh1);
+					s = s - (af / h1) * bc->phi2(hhm1);
 					//s = s - (1.0/12.0)*(af/h1 + cf/k1)*bc->phi2(hhm1);
 				}
-				if (j == m - 1)
-				{
-					s = s - 4.0* (af / h1)*bc->phi4(hh1);
-					s = s - (af / h1)*bc->phi4(hhm1);
+				if (j == m - 1) {
+					s = s - 4.0 * (af / h1) * bc->phi4(hh1);
+					s = s - (af / h1) * bc->phi4(hhm1);
 					//s = s - (1.0/12.0)*(af/h1 + cf/k1)*bc->phi4(hhm1);
 				}
 			} else {
-				if (j == 1)
-				{
-					s = s - 4.0* (af / h1)*bc->phi2(hh1);
-					s = s - (af / h1)*bc->phi2(hhp1);
-					s = s - (af / h1)*bc->phi2(hhm1);
+				if (j == 1) {
+					s = s - 4.0 * (af / h1) * bc->phi2(hh1);
+					s = s - (af / h1) * bc->phi2(hhp1);
+					s = s - (af / h1) * bc->phi2(hhm1);
 				}
-				if (j == m - 1)
-				{
-					s = s - 4.0* (af / h1)*bc->phi4(hh1);
-					s = s - (af / h1)*bc->phi4(hhp1);
-					s = s - (af / h1)*bc->phi4(hhm1);
+				if (j == m - 1) {
+					s = s - 4.0 * (af / h1) * bc->phi4(hh1);
+					s = s - (af / h1) * bc->phi4(hhp1);
+					s = s - (af / h1) * bc->phi4(hhm1);
 				}
 			}
 			a1[n2 - 1] = s;
 
-			for (int i = 1; i <= n1; i++)
-			{
+			for (int i = 1; i <= n1; i++) {
 				rowFile << a1[i - 1] << ";";
 			}
-			rowFile << s  << "\n";
+			rowFile << s << "\n";
 
 			for (int i = 1; i <= n1; i++) {
 				rh = r[i - 1];
@@ -740,14 +726,16 @@ int PoissonSolver4Order<T>::SolvePIA() {
 	const Interval<T> ione = { 1, 1 };
 	const Interval<T> itwo = { 2, 2 };
 	const Interval<T> ithree = { 3, 3 };
+	const Interval<T> ifour = { 4, 4 };
 	const Interval<T> itwelve = { 12, 12 };
+	const Interval<T> imtwenty = { -20, -20 };
 
 	Interval<T> tmpi = { 0, 0 };
 	int i, j, jh, j1, k, kh, l, lh, l1, l2, n1, n2, n3, p, q, rh;
 	int num;
 	Interval<T> AF, BB0, BB1, CF, H1, HH, HH1, II, JJ, K1, KK, KK1, MAX, MM, AA,
 			CC, MMconst, NNconst, NN, S, S1, S2, S3, S4, S5, H1POW2, K1POW2,
-			H1POW2K1POW2;
+			IIP1, IIM1, JJP1, JJM1, KKP1, KKM1, HHP1, HHM1, H1POW2K1POW2;
 	bool list_exists;
 	Interval<T> aij;
 	int* r;
@@ -864,115 +852,321 @@ int PoissonSolver4Order<T>::SolvePIA() {
 			II.b = i;
 			JJ.a = j;
 			JJ.b = j;
+			IIP1.a = i + 1;
+			IIP1.b = i + 1;
+			JJP1.a = j + 1;
+			JJP1.b = j + 1;
+			IIM1.a = i - 1;
+			IIM1.b = i - 1;
+			JJM1.a = j - 1;
+			JJM1.b = j - 1;
+
 			HH1 = ALPHA + (II * H1);
 			KK1 = BETA + (JJ * K1);
+
+			HHM1 = ALPHA + (IIM1 * H1);
+			KKM1 = BETA + (JJM1 * K1);
+
+			HHP1 = ALPHA + (IIP1 * H1);
+			KKP1 = BETA + (JJP1 * K1);
 			AA = bc->A(HH1, KK1, st);
 			CC = bc->C(HH1, KK1, st);
-			AF = AA * K1;
-			CF = CC * H1;
-			S1 = AF * K1;
+			AF = AA / H1;
+			CF = CC / K1;
+			S1 = imtwenty * AF / H1;
+
+			//fourth order method - option 6 (Zhang)
+//			if (i > 1)
+//			{
+//				a1[l1 - 1] = 4.0* (af / h1); //af / h1;
+//
+//				if (j > 1)
+//				{
+//					a1[l1 - 2] = af / h1;
+//				}
+//				if (j < m - 1)
+//				{
+//					a1[l1] = af / h1;
+//				}
+//
+//			}
+//
+//			a1[l2 - 1] = (-20.0) * (af / h1); //-2 * (af / h1 + cf / k1);
+//
+//			if (j > 1)
+//			{
+//				a1[l2 - 2] = 4.0* (af / h1); //cf / k1;
+//			}
+//			if (j < m - 1)
+//				a1[l2] = 4.0* (af / h1); //cf / k1;
+//
+//			l1 = l2 + m - 1;
+//			if (i < n - 1)
+//			{
+//				a1[l1 - 1] = 4.0* (af / h1);
+//				if (j > 1)
+//				{
+//					a1[l1 - 2] = af / h1;
+//				}
+//				if (j < m - 1)
+//				{
+//					a1[l1] = af / h1;
+//				}
+//			}
+
 			if (i > 1) {
-				bm.ToMap(l1 - 1, S1);
-			}
-			if (j > 1) {
-				bm.ToMap(l2 - 2, (CF * H1));
-			}
+				bm.ToMap(l1 - 1, ifour * AF / H1);
 
-			S = S1 + (CF * H1);
-			S = itwo * S;
-			aij.a = -S.b;
-			aij.b = -S.a;
-			bm.ToMap(l2 - 1, aij);
-
-			S = CF * H1;
-			if (j < m - 1) {
-				bm.ToMap(l2, S);
-			}
-			l1 = l2 + m - 1;
-			if (i < n - 1) {
-				bm.ToMap(l1 - 1, S1);
-			}
-
-			S = H1POW2K1POW2 * bc->F(HH1, KK1, st);
-//			filestr << k << " B: S= [" << S.a << " ; " << S.b << "]" << endl;
-			if (st == 0) {
-				//S1 = ia.IMul(H1, H1);
-				//S2 = ia.IMul(K1, K1);
-				//S4 = ia.IMul(S1, S2);
-
-				S5 = ((AA * H1POW2) * H1POW2K1POW2) * MMconst;
-				S3 = ((CC * K1POW2) * H1POW2K1POW2) * NNconst;
-				//S5 = ia.IMul(S1, S5);
-				//S3 = ia.IMul(S2, S3);
-
-				if (st == 0) {
-					//S4 = bc->OMEGA(HH1, ia.IAdd(KK1, KK), st);
-					if (st == 0) {
-						//S1 = ia.IMul(S1, S3);
-						//S2 = ia.IMul(S2, S4);
-						S1 = S3 + S5; //ia.IAdd(ia.DIAdd(S1, S2), S5);
-						S = S + (S1 / itwelve);
-
-						if (i == 1) {
-							S1 = bc->PHI1(KK1, st);
-							if (st == 0) {
-								S1 = (AF * S1) * K1;
-								S = S - S1;
-								if (j == 1) {
-									S1 = bc->PHI2(HH1, st);
-									if (st == 0) {
-										S1 = (CF * S1) * H1;
-										S = S - S1;
-									}
-								}
-								if (j == m - 1) {
-									S1 = bc->PHI4(HH1, st);
-									if (st == 0) {
-										S1 = (CF * S1) * H1;
-										S = S - S1;
-									}
-								}
-							}
-						} else if (i == n - 1) {
-							S1 = bc->PHI3(KK1, st);
-							if (st == 0) {
-								S1 = (AF * S1) * H1;
-								S = S - S1;
-
-								if (j == 1) {
-									S1 = bc->PHI2(HH1, st);
-									if (st == 0) {
-										S1 = (CF * S1) * H1;
-										S = S - S1;
-									}
-								}
-								if (j == m - 1) {
-									S1 = bc->PHI4(HH1, st);
-									if (st == 0) {
-										S1 = (CF * S1) * H1;
-										S = S - S1;
-									}
-								}
-							}
-						} else {
-							if (j == 1) {
-								S1 = bc->PHI2(HH1, st);
-								if (st == 0) {
-									S1 = (CF * S1) * H1;
-									S = S - S1;
-								}
-							}
-							if (j == m - 1) {
-								S1 = bc->PHI4(HH1, st);
-								if (st == 0) {
-									S1 = (CF * S1) * H1;
-									S = S - S1;
-								}
-							}
-						}
-
-					}
+				if (j > 1) {
+					bm.ToMap(l1 - 2, AF / H1);
 				}
+				if (j < m - 1) {
+					bm.ToMap(l1, AF / H1);
+				}
+
+			}
+
+			bm.ToMap(l2 - 1, S1);
+
+			if (j > 1) {
+				bm.ToMap(l2 - 2, ifour * (AF / H1));
+			}
+			if (j < m - 1)
+				bm.ToMap(l2, ifour * (AF / H1));
+
+			l1 = l2 + m - 1;
+
+			if (i < n - 1) {
+				bm.ToMap(l1 - 1, ifour * (AF / H1));
+				if (j > 1) {
+					bm.ToMap(l1 - 2, (AF / H1));
+				}
+				if (j < m - 1) {
+					bm.ToMap(l1, (AF / H1));
+				}
+			}
+
+			//right site
+
+			//Zhang- option 6
+//			if (i == 1) {
+//				s = s - 4.0* (af / h1)*bc->phi1(kk1);
+//				if (j < m)
+//					s = s - (af / h1)*bc->phi1(kkp1);
+//				if (j > 0)
+//					s = s - (af / h1)*bc->phi1(kkm1);
+//				if (j == 1)
+//				{
+//					s = s - 4.0* (af / h1)*bc->phi2(hh1);
+//					s = s - (af / h1)*bc->phi2(hhp1);
+//
+//					//s = s - (1.0/12.0)*(af/h1 + cf/k1)*bc->phi1(hhm1);//?
+//				}
+//				if (j == m - 1)
+//				{
+//					s = s - 4.0* (af / h1)*bc->phi4(hh1);
+//					s = s - (af / h1) * bc->phi4(hhp1);
+//
+//					//s = s - (1.0/12.0)*(af/h1 + cf/k1)*bc->phi1(hhm1);//?
+//				}
+//			} else if (i == n - 1) {
+//				s = s - 4.0* (af / h1)*bc->phi3(kk1);
+//				if (j < m)
+//					s = s - (af / h1)*bc->phi3(kkp1);
+//				if (j > 0)
+//					s = s - (af / h1)*bc->phi3(kkm1);
+//				if (j == 1)
+//				{
+//					s = s - 4.0* (af / h1)*bc->phi2(hh1);
+//					s = s - (af / h1)*bc->phi2(hhm1);
+//					//s = s - (1.0/12.0)*(af/h1 + cf/k1)*bc->phi2(hhm1);
+//				}
+//				if (j == m - 1)
+//				{
+//					s = s - 4.0* (af / h1)*bc->phi4(hh1);
+//					s = s - (af / h1)*bc->phi4(hhm1);
+//					//s = s - (1.0/12.0)*(af/h1 + cf/k1)*bc->phi4(hhm1);
+//				}
+//			} else {
+//				if (j == 1)
+//				{
+//					s = s - 4.0* (af / h1)*bc->phi2(hh1);
+//					s = s - (af / h1)*bc->phi2(hhp1);
+//					s = s - (af / h1)*bc->phi2(hhm1);
+//				}
+//				if (j == m - 1)
+//				{
+//					s = s - 4.0* (af / h1)*bc->phi4(hh1);
+//					s = s - (af / h1)*bc->phi4(hhp1);
+//					s = s - (af / h1)*bc->phi4(hhm1);
+//				}
+//			}
+//			a1[n2 - 1] = s;
+			S = ifour * bc->F(HH1, KK1, st);
+			S = S
+					+ (ione / itwo)
+							* (bc->F(HHP1, KK1, st) + bc->F(HHM1, KK1, st)
+									+ bc->F(HH1, KKP1, st)
+									+ bc->F(HH1, KKM1, st));
+//			filestr << k << " B: S= [" << S.a << " ; " << S.b << "]" << endl;
+
+			if (st == 0) {
+
+				if (i == 1) {
+//							s = s - 4.0* (af / h1)*bc->phi1(kk1);
+//							if (j < m)
+//								s = s - (af / h1)*bc->phi1(kkp1);
+//							if (j > 0)
+//								s = s - (af / h1)*bc->phi1(kkm1);
+//							if (j == 1)
+//							{
+//								s = s - 4.0* (af / h1)*bc->phi2(hh1);
+//								s = s - (af / h1)*bc->phi2(hhp1);
+//							}
+//							if (j == m - 1)
+//							{
+//								s = s - 4.0* (af / h1)*bc->phi4(hh1);
+//								s = s - (af / h1) * bc->phi4(hhp1);
+//							}
+					S1 = ifour * (AF / H1) * bc->PHI1(KK1, st);
+					S = S - S1;
+
+					if (j < m) {
+						S1 = (AF / H1) * bc->PHI1(KKP1, st);
+						S = S - S1;
+					}
+					if (j > 0) {
+						S1 = (AF / H1) * bc->PHI1(KKM1, st);
+						S = S - S1;
+					}
+
+					if (j == 1) {
+						S1 = ifour * (AF / H1) * bc->PHI2(HH1, st);
+						S = S - S1;
+
+						S1 = (AF / H1) * bc->PHI2(HHP1, st);
+						S = S - S1;
+					}
+
+					if (j == m - 1) {
+						S1 = ifour * (AF / H1) * bc->PHI4(HH1, st);
+						S = S - S1;
+
+						S1 = (AF / H1) * bc->PHI4(HHP1, st);
+						S = S - S1;
+					}
+
+				} else if (i == n - 1) {
+//							s = s - 4.0* (af / h1)*bc->phi3(kk1);
+//							if (j < m)
+//								s = s - (af / h1)*bc->phi3(kkp1);
+//							if (j > 0)
+//								s = s - (af / h1)*bc->phi3(kkm1);
+//							if (j == 1)
+//							{
+//								s = s - 4.0* (af / h1)*bc->phi2(hh1);
+//								s = s - (af / h1)*bc->phi2(hhm1);
+//								//s = s - (1.0/12.0)*(af/h1 + cf/k1)*bc->phi2(hhm1);
+//							}
+//							if (j == m - 1)
+//							{
+//								s = s - 4.0* (af / h1)*bc->phi4(hh1);
+//								s = s - (af / h1)*bc->phi4(hhm1);
+//								//s = s - (1.0/12.0)*(af/h1 + cf/k1)*bc->phi4(hhm1);
+//							}
+
+					S1 = ifour * (AF / H1) * bc->PHI3(KK1, st);
+					S = S - S1;
+					if (j < m) {
+						S1 = (AF / H1) * bc->PHI3(KKP1, st);
+						S = S - S1;
+					}
+					if (j > 0) {
+						S1 = (AF / H1) * bc->PHI3(KKM1, st);
+						S = S - S1;
+					}
+
+					if (j == 1) {
+						S1 = ifour * (AF / H1) * bc->PHI2(HH1, st);
+						S = S - S1;
+						S1 = (AF / H1) * bc->PHI2(HHM1, st);
+						S = S - S1;
+					}
+
+					if (j == m - 1) {
+						S1 = ifour * (AF / H1) * bc->PHI4(HH1, st);
+						S = S - S1;
+						S1 = (AF / H1) * bc->PHI4(HHM1, st);
+						S = S - S1;
+					}
+
+//							if (st == 0) {
+//								S1 = (AF * S1) * H1;
+//								S = S - S1;
+//
+//								if (j == 1) {
+//									S1 = bc->PHI2(HH1, st);
+//									if (st == 0) {
+//										S1 = (CF * S1) * H1;
+//										S = S - S1;
+//									}
+//								}
+//								if (j == m - 1) {
+//									S1 = bc->PHI4(HH1, st);
+//									if (st == 0) {
+//										S1 = (CF * S1) * H1;
+//										S = S - S1;
+//									}
+//								}
+//							}
+				} else {
+//							if (j == 1)
+//							{
+//								s = s - 4.0* (af / h1)*bc->phi2(hh1);
+//								s = s - (af / h1)*bc->phi2(hhp1);
+//								s = s - (af / h1)*bc->phi2(hhm1);
+//							}
+//							if (j == m - 1)
+//							{
+//								s = s - 4.0* (af / h1)*bc->phi4(hh1);
+//								s = s - (af / h1)*bc->phi4(hhp1);
+//								s = s - (af / h1)*bc->phi4(hhm1);
+//							}
+
+					if (j == 1) {
+						S1 = ifour * (AF / H1) * bc->PHI2(HH1, st);
+						S = S - S1;
+						S1 = (AF / H1) * bc->PHI2(HHP1, st);
+						S = S - S1;
+						S1 = (AF / H1) * bc->PHI2(HHM1, st);
+						S = S - S1;
+					}
+
+					if (j == m - 1) {
+						S1 = ifour * (AF / H1) * bc->PHI4(HH1, st);
+						S = S - S1;
+						S1 = (AF / H1) * bc->PHI4(HHP1, st);
+						S = S - S1;
+						S1 = (AF / H1) * bc->PHI4(HHM1, st);
+						S = S - S1;
+					}
+
+//							if (j == 1) {
+//								S1 = bc->PHI2(HH1, st);
+//								if (st == 0) {
+//									S1 = (CF * S1) * H1;
+//									S = S - S1;
+//								}
+//							}
+//							if (j == m - 1) {
+//								S1 = bc->PHI4(HH1, st);
+//								if (st == 0) {
+//									S1 = (CF * S1) * H1;
+//									S = S - S1;
+//								}
+//							}
+				}
+
 			}
 
 //			filestr << k << " E: S= [" << S.a << " ; " << S.b << "]" << endl;
@@ -1114,12 +1308,15 @@ int PoissonSolver4Order<T>::SolveDIA() {
 	const Interval<T> itwo = { 2, 2 };
 	const Interval<T> ithree = { 3, 3 };
 	const Interval<T> itwelve = { 12, 12 };
+	const Interval<T> ifour = { 4, 4 };
+	const Interval<T> imtwenty = { -20, -20 };
 
 	Interval<T> tmpi = { 0, 0 };
 	int i, j, jh, j1, k, kh, l, lh, l1, l2, n1, n2, n3, p, q, rh;
 	int num;
-	Interval<T> AF, BB0, BB1, CF, H1, HH, HH1, II, JJ, K1, KK, KK1, MAX, MM, AA,
-			CC, MMconst, NNconst, NN, S, S1, S2, S3, S4, S5;
+	Interval<T> AF, BB0, BB1, CF, H1, HH, HH1, II, JJ, IIM1, JJM1, IIP1, JJP1,
+			K1, KK, KK1, MAX, MM, AA, CC, MMconst, NNconst, NN, S, S1, S2, S3,
+			S4, S5, KKP1, KKM1, HHP1, HHM1;
 	bool list_exists;
 	Interval<T> aij;
 	int* r;
@@ -1233,6 +1430,20 @@ int PoissonSolver4Order<T>::SolveDIA() {
 			II.b = i;
 			JJ.a = j;
 			JJ.b = j;
+			IIP1.a = i + 1;
+			IIP1.b = i + 1;
+			JJP1.a = j + 1;
+			JJP1.b = j + 1;
+			IIM1.a = i - 1;
+			IIM1.b = i - 1;
+			JJM1.a = j - 1;
+			JJM1.b = j - 1;
+
+			HHM1 = ALPHA + (IIM1 * H1);
+			KKM1 = BETA + (JJM1 * K1);
+
+			HHP1 = ALPHA + (IIP1 * H1);
+			KKP1 = BETA + (JJP1 * K1);
 			HH1 = (ALPHA + (II * H1));
 			KK1 = (BETA + (JJ * K1));
 			AA = bc->A(HH1, KK1, st);
@@ -1241,106 +1452,228 @@ int PoissonSolver4Order<T>::SolveDIA() {
 			CF = CC / K1;
 			S1 = AF / H1;
 			if (i > 1) {
-				bm.ToMap(l1 - 1, S1);
+				bm.ToMap(l1 - 1, ifour * AF);
+
+				if (j > 1) {
+					bm.ToMap(l1 - 2, AF);
+				}
+				if (j < m - 1) {
+					bm.ToMap(l1, AF);
+				}
+
 			}
+
+			bm.ToMap(l2 - 1, S1);
+
 			if (j > 1) {
-				bm.ToMap(l2 - 2, (CF / K1));
+				bm.ToMap(l2 - 2, ifour * AF);
 			}
+			if (j < m - 1)
+				bm.ToMap(l2, ifour * AF);
 
-			S = S1 + (CF / K1);
-			S = itwo * S;
-			aij.a = -S.b;
-			aij.b = -S.a;
-			bm.ToMap(l2 - 1, aij);
-
-			S = (CF / K1);
-			if (j < m - 1) {
-				bm.ToMap(l2, S);
-			}
 			l1 = l2 + m - 1;
+
 			if (i < n - 1) {
-				bm.ToMap(l1 - 1, S1);
+				bm.ToMap(l1, ifour * AF);
+				if (j > 1) {
+					bm.ToMap(l1 - 2, AF);
+				}
+				if (j < m - 1) {
+					bm.ToMap(l1, AF);
+				}
 			}
 
 			S = bc->F(HH1, KK1, st);
 			if (st == 0) {
-				S1 = (H1 * H1);
-				S2 = (K1 * K1);
+				//S1 = ia.IMul(H1, H1);
+				//S2 = ia.IMul(K1, K1);
+				//S4 = ia.IMul(S1, S2);
 
-				S5 = ((AA * S1) * MMconst);
-				S3 = ((CC * S2) * NNconst);
+				//S5 = ((AA * H1POW2) * H1POW2K1POW2) * MMconst;
+				//S3 = ((CC * K1POW2) * H1POW2K1POW2) * NNconst;
+				//S5 = ia.IMul(S1, S5);
+				//S3 = ia.IMul(S2, S3);
 
 				if (st == 0) {
-					S1 = (S3 + S5);
-					S = S - (S1 / itwelve);
+					//S4 = bc->OMEGA(HH1, ia.IAdd(KK1, KK), st);
+					if (st == 0) {
+						//S1 = ia.IMul(S1, S3);
+						//S2 = ia.IMul(S2, S4);
+						//			S1 = S3 + S5; //ia.IAdd(ia.DIAdd(S1, S2), S5);
+						//			S = S + (S1 / itwelve);
 
-					if (i == 1) {
-						S1 = bc->PHI1(KK1, st);
-						S1 = S1.Opposite();
-						if (st == 0) {
-							S1 = (AF * S1) / H1;
-							S = S + S1;
-							if (j == 1) {
-								S1 = bc->PHI2(HH1, st);
-								S1 = S1.Opposite();
-								if (st == 0) {
-									S1 = ((CF * S1) / K1);
-									S = (S + S1);
-								}
-							}
-							if (j == m - 1) {
-								S1 = bc->PHI4(HH1, st);
-								S1 = S1.Opposite();
-
-								if (st == 0) {
-									S1 = (CF * S1) / K1;
-									S = S + S1;
-								}
-							}
-						}
-					} else if (i == n - 1) {
-						S1 = bc->PHI3(KK1, st);
-						S1 = S1.Opposite();
-						if (st == 0) {
-							S1 = (AF * S1) / K1;
+						if (i == 1) {
+//							s = s - 4.0* (af / h1)*bc->phi1(kk1);
+//							if (j < m)
+//								s = s - (af / h1)*bc->phi1(kkp1);
+//							if (j > 0)
+//								s = s - (af / h1)*bc->phi1(kkm1);
+//							if (j == 1)
+//							{
+//								s = s - 4.0* (af / h1)*bc->phi2(hh1);
+//								s = s - (af / h1)*bc->phi2(hhp1);
+//							}
+//							if (j == m - 1)
+//							{
+//								s = s - 4.0* (af / h1)*bc->phi4(hh1);
+//								s = s - (af / h1) * bc->phi4(hhp1);
+//							}
+							S1 = ifour * AF * bc->PHI1(KK1, st);
+							S1 = S1.Opposite();
 							S = S + S1;
 
+							if (j < m) {
+								S1 = AF * bc->PHI1(KKP1, st);
+								S1 = S1.Opposite();
+								S = S + S1;
+							}
+							if (j > 0) {
+								S1 = AF * bc->PHI1(KKM1, st);
+								S1 = S1.Opposite();
+								S = S + S1;
+							}
+
 							if (j == 1) {
-								S1 = bc->PHI2(HH1, st);
+								S1 = ifour * AF * bc->PHI2(HH1, st);
 								S1 = S1.Opposite();
-								if (st == 0) {
-									S1 = (CF * S1) / K1;
-									S = S + S1;
-								}
+								S = S + S1;
+
+								S1 = AF * bc->PHI2(HHP1, st);
 							}
+
 							if (j == m - 1) {
-								S1 = bc->PHI4(HH1, st);
+								S1 = ifour * AF * bc->PHI4(HH1, st);
 								S1 = S1.Opposite();
-								if (st == 0) {
-									S1 = (CF * S1) / K1;
-									S = S + S1;
-								}
+								S = S + S1;
+
+								S1 = AF * bc->PHI4(HHP1, st);
 							}
-						}
-					} else {
-						if (j == 1) {
-							S1 = bc->PHI2(HH1, st);
+
+						} else if (i == n - 1) {
+//							s = s - 4.0* (af / h1)*bc->phi3(kk1);
+//							if (j < m)
+//								s = s - (af / h1)*bc->phi3(kkp1);
+//							if (j > 0)
+//								s = s - (af / h1)*bc->phi3(kkm1);
+//							if (j == 1)
+//							{
+//								s = s - 4.0* (af / h1)*bc->phi2(hh1);
+//								s = s - (af / h1)*bc->phi2(hhm1);
+//								//s = s - (1.0/12.0)*(af/h1 + cf/k1)*bc->phi2(hhm1);
+//							}
+//							if (j == m - 1)
+//							{
+//								s = s - 4.0* (af / h1)*bc->phi4(hh1);
+//								s = s - (af / h1)*bc->phi4(hhm1);
+//								//s = s - (1.0/12.0)*(af/h1 + cf/k1)*bc->phi4(hhm1);
+//							}
+
+							S1 = ifour * AF * bc->PHI3(KK1, st);
 							S1 = S1.Opposite();
-							if (st == 0) {
-								S1 = (CF * S1) / K1;
+							S = S + S1;
+							if (j < m) {
+								S1 = AF * bc->PHI3(KKP1, st);
+								S1 = S1.Opposite();
 								S = S + S1;
 							}
-						}
-						if (j == m - 1) {
-							S1 = bc->PHI4(HH1, st);
-							S1 = S1.Opposite();
-							if (st == 0) {
-								S1 = (CF * S1) / K1;
+							if (j > 0) {
+								S1 = AF * bc->PHI3(KKM1, st);
+								S1 = S1.Opposite();
 								S = S + S1;
 							}
+
+							if (j == 1) {
+								S1 = ifour * AF * bc->PHI2(HH1, st);
+								S1 = S1.Opposite();
+								S = S + S1;
+								S1 = AF * bc->PHI2(HHM1, st);
+								S1 = S1.Opposite();
+								S = S + S1;
+							}
+
+							if (j == m - 1) {
+								S1 = ifour * AF * bc->PHI4(HH1, st);
+								S1 = S1.Opposite();
+								S = S + S1;
+								S1 = AF * bc->PHI4(HHM1, st);
+								S1 = S1.Opposite();
+								S = S + S1;
+							}
+
+//							if (st == 0) {
+//								S1 = (AF * S1) * H1;
+//								S = S - S1;
+//
+//								if (j == 1) {
+//									S1 = bc->PHI2(HH1, st);
+//									if (st == 0) {
+//										S1 = (CF * S1) * H1;
+//										S = S - S1;
+//									}
+//								}
+//								if (j == m - 1) {
+//									S1 = bc->PHI4(HH1, st);
+//									if (st == 0) {
+//										S1 = (CF * S1) * H1;
+//										S = S - S1;
+//									}
+//								}
+//							}
+						} else {
+//							if (j == 1)
+//							{
+//								s = s - 4.0* (af / h1)*bc->phi2(hh1);
+//								s = s - (af / h1)*bc->phi2(hhp1);
+//								s = s - (af / h1)*bc->phi2(hhm1);
+//							}
+//							if (j == m - 1)
+//							{
+//								s = s - 4.0* (af / h1)*bc->phi4(hh1);
+//								s = s - (af / h1)*bc->phi4(hhp1);
+//								s = s - (af / h1)*bc->phi4(hhm1);
+//							}
+
+							if (j == 1) {
+								S1 = ifour * AF * bc->PHI2(HH1, st);
+								S1 = S1.Opposite();
+								S = S + S1;
+								S1 = AF * bc->PHI2(HHP1, st);
+								S1 = S1.Opposite();
+								S = S + S1;
+								S1 = AF * bc->PHI2(HHM1, st);
+								S1 = S1.Opposite();
+								S = S + S1;
+							}
+
+							if (j == m - 1) {
+								S1 = ifour * AF * bc->PHI4(HH1, st);
+								S1 = S1.Opposite();
+								S = S + S1;
+								S1 = AF * bc->PHI4(HHP1, st);
+								S1 = S1.Opposite();
+								S = S + S1;
+								S1 = AF * bc->PHI4(HHM1, st);
+								S1 = S1.Opposite();
+								S = S + S1;
+							}
+
+//							if (j == 1) {
+//								S1 = bc->PHI2(HH1, st);
+//								if (st == 0) {
+//									S1 = (CF * S1) * H1;
+//									S = S - S1;
+//								}
+//							}
+//							if (j == m - 1) {
+//								S1 = bc->PHI4(HH1, st);
+//								if (st == 0) {
+//									S1 = (CF * S1) * H1;
+//									S = S - S1;
+//								}
+//							}
 						}
+
 					}
-
 				}
 			}
 
@@ -1461,9 +1794,6 @@ int PoissonSolver4Order<T>::SolveDIA() {
 	}
 	return 0;
 }
-
-
-
 
 //The explicit instantiation part
 template class PoissonSolver4Order<long double> ;
