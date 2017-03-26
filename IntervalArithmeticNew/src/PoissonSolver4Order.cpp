@@ -628,7 +628,7 @@ int PoissonSolver4Order<T>::SolveFP() {
 					if (i != lh) {
 						jh = jh + 1;
 						x[jh - 1] = a1[i - 1];
-						cout << jh-1 << ": x= " << x[jh-1] << endl;
+						//cout << jh-1 << ": x= " << x[jh-1] << endl;
 					}
 				}
 				p = p - 1;
@@ -1016,6 +1016,10 @@ int PoissonSolver4Order<T>::SolvePIA() {
 //			filestr << k << " B: S= [" << S.a << " ; " << S.b << "]" << endl;
 
 			if (st == 0) {
+				S5 = ((AA * H1POW2) * H1POW2K1POW2) * MMconst;
+				S3 = ((CC * K1POW2) * H1POW2K1POW2) * NNconst;
+				S1 = S3 + S5;
+				S = S + (S1 / itwelve);
 
 				if (i == 1) {
 //							s = s - 4.0* (af / h1)*bc->phi1(kk1);
@@ -1264,7 +1268,7 @@ int PoissonSolver4Order<T>::SolvePIA() {
 							tmpi = bm.FromMap(i - 1);
 							this->X[jh - 1] = tmpi;
 							//filestr << jh-1 << ": X= [" << this->X[jh - 1].a << " ; " << this->X[jh - 1].b << "]" << endl;
-							cout << jh-1 << ": X= [" << this->X[jh - 1].a << " ; " << this->X[jh - 1].b << "]" << endl;
+							//cout << jh-1 << ": X= [" << this->X[jh - 1].a << " ; " << this->X[jh - 1].b << "]" << endl;
 						}
 					}
 					p = p - 1;
@@ -1346,10 +1350,10 @@ int PoissonSolver4Order<T>::SolveDIA() {
 		NN.b = n;
 		MM.a = m;
 		MM.b = m;
-		MMconst.a = -bc->GetConstM();
-		MMconst.b = bc->GetConstM();
-		NNconst.a = -bc->GetConstN();
-		NNconst.b = bc->GetConstN();
+		MMconst.a = bc->GetConstM();
+		MMconst.b = -bc->GetConstM();
+		NNconst.a = bc->GetConstN();
+		NNconst.b = -bc->GetConstN();
 
 		if ((n < 2) || (m < 2))
 			st = 1;
@@ -1628,31 +1632,31 @@ int PoissonSolver4Order<T>::SolveDIA() {
 	//								s = s - (af / h1) * bc->phi4(hhp1);
 	//							}
 						S1 = ifour * (AF / H1) * bc->PHI1(KK1, st);
-						S = S + S1.Opposite();
+						S = S - S1.Dual();
 
 						if (j < m) {
 							S1 = (AF / H1) * bc->PHI1(KKP1, st);
-							S = S + S1.Opposite();
+							S = S - S1.Dual();
 						}
 						if (j > 0) {
 							S1 = (AF / H1) * bc->PHI1(KKM1, st);
-							S = S + S1.Opposite();
+							S = S - S1.Dual();
 						}
 
 						if (j == 1) {
 							S1 = ifour * (AF / H1) * bc->PHI2(HH1, st);
-							S = S + S1.Opposite();
+							S = S - S1.Dual();
 
 							S1 = (AF / H1) * bc->PHI2(HHP1, st);
-							S = S + S1.Opposite();
+							S = S - S1.Dual();
 						}
 
 						if (j == m - 1) {
 							S1 = ifour * (AF / H1) * bc->PHI4(HH1, st);
-							S = S + S1.Opposite();
+							S = S - S1.Dual();
 
 							S1 = (AF / H1) * bc->PHI4(HHP1, st);
-							S = S + S1.Opposite();
+							S = S - S1.Dual();
 						}
 
 					} else if (i == n - 1) {
@@ -1675,28 +1679,28 @@ int PoissonSolver4Order<T>::SolveDIA() {
 	//							}
 
 						S1 = ifour * (AF / H1) * bc->PHI3(KK1, st);
-						S = S + S1.Opposite();
+						S = S - S1.Dual();
 						if (j < m) {
 							S1 = (AF / H1) * bc->PHI3(KKP1, st);
-							S = S + S1.Opposite();
+							S = S - S1.Dual();
 						}
 						if (j > 0) {
 							S1 = (AF / H1) * bc->PHI3(KKM1, st);
-							S = S + S1.Opposite();
+							S = S - S1.Dual();
 						}
 
 						if (j == 1) {
 							S1 = ifour * (AF / H1) * bc->PHI2(HH1, st);
-							S = S + S1.Opposite();
+							S = S - S1.Dual();
 							S1 = (AF / H1) * bc->PHI2(HHM1, st);
-							S = S + S1.Opposite();
+							S = S - S1.Dual();
 						}
 
 						if (j == m - 1) {
 							S1 = ifour * (AF / H1) * bc->PHI4(HH1, st);
-							S = S + S1.Opposite();
+							S = S - S1.Dual();
 							S1 = (AF / H1) * bc->PHI4(HHM1, st);
-							S = S + S1.Opposite();
+							S = S - S1.Dual();
 						}
 
 	//							if (st == 0) {
@@ -1734,20 +1738,20 @@ int PoissonSolver4Order<T>::SolveDIA() {
 
 						if (j == 1) {
 							S1 = ifour * (AF / H1) * bc->PHI2(HH1, st);
-							S = S + S1.Opposite();
+							S = S - S1.Dual();
 							S1 = (AF / H1) * bc->PHI2(HHP1, st);
-							S = S + S1.Opposite();
+							S = S - S1.Dual();
 							S1 = (AF / H1) * bc->PHI2(HHM1, st);
-							S = S + S1.Opposite();
+							S = S - S1.Dual();
 						}
 
 						if (j == m - 1) {
 							S1 = ifour * (AF / H1) * bc->PHI4(HH1, st);
-							S = S + S1.Opposite();
+							S = S - S1.Dual();
 							S1 = (AF / H1) * bc->PHI4(HHP1, st);
-							S = S + S1.Opposite();
+							S = S - S1.Dual();
 							S1 = (AF / H1) * bc->PHI4(HHM1, st);
-							S = S + S1.Opposite();
+							S = S - S1.Dual();
 						}
 
 	//							if (j == 1) {
@@ -1770,6 +1774,10 @@ int PoissonSolver4Order<T>::SolveDIA() {
 
 	//			filestr << k << " E: S= [" << S.a << " ; " << S.b << "]" << endl;
 				if (st == 0) {
+					S5 = ((AA * H1POW2) * H1POW2K1POW2) * MMconst;
+					S3 = ((CC * K1POW2) * H1POW2K1POW2) * NNconst;
+					S1 = S3 + S5;
+					S = S + (S1 / itwelve);
 					bm.ToMap(n2 - 1, S);
 	//				if (i < 10) cout << "S.Mid() = " << S.Mid() << endl;
 
@@ -1800,7 +1808,8 @@ int PoissonSolver4Order<T>::SolveDIA() {
 	//								S = S - (BB1 * this->X[q - 1]);
 	//							if ((k > m - 1) && (i - 1 == k - m))
 	//								S = S - (BB0 * this->X[q - 1]);
-								S = S + (B1M->FromMap(i-1) * this->X[q - 1]).Opposite();
+								S = S - (B1M->FromMap(i-1) * this->X[q - 1]);
+							//	S = S.Projection();.
 								q = q + p;
 							}
 							if (!((S.a >= 0) && (S.b <= 0)))
@@ -1830,7 +1839,7 @@ int PoissonSolver4Order<T>::SolveDIA() {
 						st = 5;
 					else {
 						tmpi = bm.FromMap(lh - 1);
-						MAX = (ione / tmpi);
+						MAX = (ione * tmpi.Inverse());
 						r[jh - 1] = k;
 						for (int i = 1; i <= p; i++) {
 							tmpi = bm.FromMap(i - 1);
@@ -1858,7 +1867,7 @@ int PoissonSolver4Order<T>::SolveDIA() {
 								tmpi = bm.FromMap(i - 1);
 								this->X[jh - 1] = tmpi;
 								//filestr << jh-1 << ": X= [" << this->X[jh - 1].a << " ; " << this->X[jh - 1].b << "]" << endl;
-								cout << jh-1 << ": X= [" << this->X[jh - 1].a << " ; " << this->X[jh - 1].b << "]" << endl;
+								//cout << jh-1 << ": X= [" << this->X[jh - 1].a << " ; " << this->X[jh - 1].b << "]" << endl;
 							}
 						}
 						p = p - 1;
@@ -1886,7 +1895,7 @@ int PoissonSolver4Order<T>::SolveDIA() {
 							rh = i;
 							i = r[rh - 1];
 						}
-						this->X[rh - 1] = S;
+						this->X[rh - 1] = S.Projection();
 						r[rh - 1] = rh;
 					}
 				}

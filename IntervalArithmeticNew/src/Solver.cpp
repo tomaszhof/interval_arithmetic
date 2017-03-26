@@ -159,6 +159,7 @@ void Solver<T>::WriteIntervalResultsToFile() {
 	Interval<T> GAMMA = { params.gamma, params.gamma };
 	Interval<T> DELTA = { params.delta, params.delta };
 	T eps = params.eps;
+	dint_mode = (params.ia_mode == IAMode::DINT_MODE);
 	NN.a = n;
 	NN.b = n;
 	MM.a = m;

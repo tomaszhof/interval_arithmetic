@@ -87,6 +87,7 @@ public:
 	Interval operator/(const Interval<T>& i);
 	Interval Projection();
 	Interval Opposite();
+	Interval Dual();
 	Interval Inverse();
 	T Mid();
 	T GetWidth();
@@ -290,6 +291,15 @@ inline Interval<T> Interval<T>::Opposite() {
 	Interval<T> r;
 	r.a = -x.a;
 	r.b = -x.b;
+	return r;
+}
+
+template<typename T>
+inline Interval<T> Interval<T>::Dual() {
+	Interval<T> x(this->a, this->b);
+	Interval<T> r;
+	r.a = x.b;
+	r.b = x.a;
 	return r;
 }
 
