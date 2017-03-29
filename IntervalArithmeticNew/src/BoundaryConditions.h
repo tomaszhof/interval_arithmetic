@@ -30,6 +30,14 @@ public:
 			int& st);
 	virtual Interval<T> OMEGA(const Interval<T>& ix, const Interval<T>& iy,
 			int& st);
+	virtual Interval<T> PSI1(const Interval<T>& ix, const Interval<T>& iy,
+				int& st);
+	virtual Interval<T> PSI2(const Interval<T>& ix, const Interval<T>& iy,
+				int& st);
+	virtual Interval<T> PSI3(const Interval<T>& ix, const Interval<T>& iy,
+				int& st);
+	virtual Interval<T> PSI4(const Interval<T>& ix, const Interval<T>& iy,
+				int& st);
 	virtual Interval<T> A(const Interval<T>& ix, const Interval<T>& iy,
 			int& st);
 	virtual Interval<T> C(const Interval<T>& ix, const Interval<T>& iy,
@@ -176,6 +184,41 @@ Interval<T> BoundaryConditions<T>::OMEGA(const Interval<T>& ix,
 	return r;
 }
 
+template<typename T>
+Interval<T> BoundaryConditions<T>::PSI1(const Interval<T>& ix,
+		const Interval<T>& iy, int& st) {
+	Interval<T> r = { 0, 0 };
+	st = 0;
+
+	return r;
+}
+
+template<typename T>
+Interval<T> BoundaryConditions<T>::PSI2(const Interval<T>& ix,
+		const Interval<T>& iy, int& st) {
+	Interval<T> r = { 0, 0 };
+	st = 0;
+
+	return r;
+}
+
+template<typename T>
+Interval<T> BoundaryConditions<T>::PSI3(const Interval<T>& ix,
+		const Interval<T>& iy, int& st) {
+	Interval<T> r = { 0, 0 };
+	st = 0;
+
+	return r;
+}
+
+template<typename T>
+Interval<T> BoundaryConditions<T>::PSI4(const Interval<T>& ix,
+		const Interval<T>& iy, int& st) {
+	Interval<T> r = { 0, 0 };
+	st = 0;
+
+	return r;
+}
 template<typename T>
 Interval<T> BoundaryConditions<T>::A(const Interval<T>& ix,
 		const Interval<T>& iy, int& st) {

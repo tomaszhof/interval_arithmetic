@@ -30,6 +30,10 @@ public:
 	Interval<T> PHI4(const Interval<T>& ix, int& st);
 	Interval<T> PSI(const Interval<T>& ix, const Interval<T>& iy, int& st);
 	Interval<T> OMEGA(const Interval<T>& ix, const Interval<T>& iy, int& st);
+	Interval<T> PSI1(const Interval<T>& ix, const Interval<T>& iy, int& st);
+	Interval<T> PSI2(const Interval<T>& ix, const Interval<T>& iy, int& st);
+	Interval<T> PSI3(const Interval<T>& ix, const Interval<T>& iy, int& st);
+	Interval<T> PSI4(const Interval<T>& ix, const Interval<T>& iy, int& st);
 	Interval<T> A(const Interval<T>& ix, const Interval<T>& iy, int& st);
 	Interval<T> C(const Interval<T>& ix, const Interval<T>& iy, int& st);
 
@@ -364,6 +368,46 @@ Interval<T> Example04<T>::OMEGA(const Interval<T>& ix, const Interval<T>& iy, in
 	Interval<T> r =
 	{ 0, 0 };
 
+	st = 0;
+
+	return r;
+}
+
+template<typename T>
+Interval<T> Example04<T>::PSI1(const Interval<T>& ix, const Interval<T>& iy, int& st)
+{
+	Interval<T> r =
+	{ 0, 0 };
+	st = 0;
+
+	return r;
+}
+
+template<typename T>
+Interval<T> Example04<T>::PSI2(const Interval<T>& ix, const Interval<T>& iy, int& st)
+{
+	Interval<T> r =
+	{ 0, 0 };
+	st = 0;
+
+	return r;
+}
+
+template<typename T>
+Interval<T> Example04<T>::PSI3(const Interval<T>& ix, const Interval<T>& iy, int& st)
+{
+	Interval<T> r =
+	{ 0, 0 };
+	st = 0;
+
+	return r;
+}
+
+template<typename T>
+Interval<T> Example04<T>::PSI4(const Interval<T>& ix, const Interval<T>& iy, int& st)
+{
+	Interval<T> r =
+	{ 0, 0 };
 	st = 0;
 
 	return r;
