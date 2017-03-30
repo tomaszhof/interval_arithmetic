@@ -442,7 +442,8 @@ Interval<T> ISin(const Interval<T>& x) {
 	bool is_even, finished;
 	int k;
 	int st = 0;
-	Interval<T> d, s, w, w1, x2;
+	Interval<T> d, s, w, w1, x2, tmp;
+	string left, right;
 	T eps = 2*Interval<T>::GetEpsilon();
 	T diff = std::numeric_limits<T>::max();
 	if (x.a > x.b)
@@ -507,11 +508,21 @@ Interval<T> ISin(const Interval<T>& x) {
 				w = w1;
 				k = k + 2;
 				is_even = !is_even;
-//				if ((w.a <= 0.0)&&(w.b >=0.0))
+				if ((w.a <= 0.0)&&(w.b >=0.0))
+				{
+					finished = true;
+					w = {0,0};
+					return w;
+				}
+//				if (k>10000)
 //				{
-//					finished = true;
-//					w = {0,0};
-//					return w;
+//					T wdth = w.GetWidth();
+//					tmp.IEndsToStrings(left, right);
+//					cout << "x=[" << left << "," << right << "]" << endl;
+//					w.IEndsToStrings(left, right);
+//					cout << "[" << left << "," << right << "]" << endl;
+//								cout << "      width =  " << std::setprecision(17) << wdth
+//										<< endl;
 //				}
 			}
 		} while (!(finished || (k > INT_MAX / 2)));
@@ -606,16 +617,16 @@ Interval<T> ICos(const Interval<T>& x) {
 //									w = {0,0};
 //									return w;
 //								}
-//				if (k>100000)
-//				{
-//					T wdth = w.GetWidth();
-//					tmp.IEndsToStrings(left, right);
-//					cout << "x=[" << left << "," << right << "]" << endl;
-//					w.IEndsToStrings(left, right);
-//					cout << "[" << left << "," << right << "]" << endl;
-//								cout << "      width =  " << std::setprecision(17) << wdth
-//										<< endl;
-//				}
+				if (k>100000)
+				{
+					T wdth = w.GetWidth();
+					tmp.IEndsToStrings(left, right);
+					cout << "x=[" << left << "," << right << "]" << endl;
+					w.IEndsToStrings(left, right);
+					cout << "[" << left << "," << right << "]" << endl;
+								cout << "      width =  " << std::setprecision(17) << wdth
+										<< endl;
+				}
 			}
 		} while (!(finished || (k > INT_MAX / 2)));
 	}

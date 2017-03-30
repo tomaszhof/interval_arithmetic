@@ -186,7 +186,7 @@ void ConfigReader<T>::readConfigFile(string fileName)
 
 	if (exp_mode == "interval_exp")
 		this->SetExperimentMode(INTERVAL_EXP);
-	else if (exp_mode == "cont_m_exp")
+	else if (exp_mode == "const_m_exp")
 		this->SetExperimentMode(CONST_M_EXP);
 	else
 		this->SetExperimentMode(CLASSICAL_EXP);

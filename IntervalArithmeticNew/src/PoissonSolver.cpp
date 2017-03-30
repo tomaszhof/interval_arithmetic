@@ -27,7 +27,7 @@ int PoissonSolver<T>::SetExample(int eid) {
 		//bc = new Example01();
 		break;
 	case 2:
-		//bc = new Example02();
+		bc = new Example02<T>();
 		break;
 	case 3:
 		bc = new Example03<T>();

@@ -12,7 +12,7 @@
 #include "THashMap.h"
 //#include "BoundaryConditions.h"
 //#include "Example01.h"
-//#include "Example02.h"
+#include "Example02.h"
 #include "Example03.h"
 #include "Example04.h"
 #include "Example05.h"
