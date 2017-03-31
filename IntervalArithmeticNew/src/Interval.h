@@ -443,6 +443,7 @@ Interval<T> ISin(const Interval<T>& x) {
 	int k;
 	int st = 0;
 	Interval<T> d, s, w, w1, x2, tmp;
+	Interval<T> izero (0, 0);
 	string left, right;
 	T eps = 1E-18; //Interval<T>::GetEpsilon();
 	T diff = std::numeric_limits<T>::max();
@@ -466,11 +467,15 @@ Interval<T> ISin(const Interval<T>& x) {
 			else
 				w1 = IAdd(w, s);
 
-			T oldMid = (w.a + w.b) / 2;
-			T newMid = (w1.a + w1.b) / 2;
-			T currDiff = abs(oldMid - newMid);
-			finished = (currDiff > diff);
-			diff = currDiff;
+//			T oldMid = (w.a + w.b) / 2;
+//			T newMid = (w1.a + w1.b) / 2;
+//			T currDiff = abs(oldMid - newMid);
+//			finished = (currDiff > diff);
+//			diff = currDiff;
+
+			if ((w.a == 0) && (w.b == 0)) {
+				return izero;
+			}
 
 			if ((w.a != 0) && (w.b != 0)) {
 				if ((abs(w.a - w1.a) / abs(w.a) < eps)
@@ -508,12 +513,12 @@ Interval<T> ISin(const Interval<T>& x) {
 				w = w1;
 				k = k + 2;
 				is_even = !is_even;
-				if ((w.a <= 0.0)&&(w.b >=0.0))
-				{
-					finished = true;
-					w = {0,0};
-					return w;
-				}
+//				if ((w.a <= 0.0)&&(w.b >=0.0))
+//				{
+//					finished = true;
+//					w = {0,0};
+//					return w;
+//				}
 //				if (k>10000)
 //				{
 //					T wdth = w.GetWidth();

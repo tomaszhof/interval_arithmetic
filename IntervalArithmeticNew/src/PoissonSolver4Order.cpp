@@ -198,6 +198,7 @@ int PoissonSolver4Order<T>::SolveFP() {
 							* (bc->f(hhp1, kk1) + bc->f(hhm1, kk1)
 									+ bc->f(hh1, kkp1) + bc->f(hh1, kkm1)); //bc->f(hh1, kk1);
 
+			cout << "k = " << k << "; s = " << s << endl;
 //			if (i == 1) {
 //				s = s - af * bc->phi1(kk1) / h1;
 //				if (j == 1)
@@ -538,6 +539,8 @@ int PoissonSolver4Order<T>::SolvePIA() {
 	const Interval<T> ifour = { 4, 4 };
 	const Interval<T> itwelve = { 12, 12 };
 	const Interval<T> imtwenty = { -20, -20 };
+	const Interval<T> ithreesixty = { 360, 360 };
+	const Interval<T> ininety = { 90, 90 };
 
 	Interval<T> tmpi = { 0, 0 };
 	int i, j, jh, j1, k, kh, l, lh, l1, l2, n1, n2, n3, p, q, rh;
@@ -727,13 +730,25 @@ int PoissonSolver4Order<T>::SolvePIA() {
 							* (bc->F(HHP1, KK1, st) + bc->F(HHM1, KK1, st)
 									+ bc->F(HH1, KKP1, st)
 									+ bc->F(HH1, KKM1, st));
+			cout << "k = " << k << "; S= [" << S.a << " ; " << S.b << "]" << endl;
 //			filestr << k << " B: S= [" << S.a << " ; " << S.b << "]" << endl;
 
 			if (st == 0) {
-				S5 = ((AA * H1POW2) * H1POW2K1POW2) * MMconst;
-				S3 = ((CC * K1POW2) * H1POW2K1POW2) * NNconst;
-				S1 = S3 + S5;
-				S = S + (S1 / itwelve);
+				//second order truncation error
+//				S5 = ((AA * H1POW2) * H1POW2K1POW2) * MMconst;
+//				S3 = ((CC * K1POW2) * H1POW2K1POW2) * NNconst;
+//				S1 = S3 + S5;
+//				S = S + (S1 / itwelve);
+
+				//fourth order truncation error
+				S5 = H1POW2 * H1POW2  / ithreesixty;
+				S3 = (bc->PSI1(HH1, KK1, st) + bc->PSI2(HH1, KK1, st));
+				S1 = S5 * S3;
+				S = S + S1;
+				S5 = H1POW2 * H1POW2 / ininety;
+				S3 = bc->PSI3(HH1, KK1, st);
+				S1 = S5 * S3;
+				S = S + S1;
 
 				if (i == 1) {
 					S1 = ifour * (AF / H1) * bc->PHI1(KK1, st);
@@ -956,6 +971,8 @@ int PoissonSolver4Order<T>::SolveDIA() {
 		const Interval<T> ifour = { 4, 4 };
 		const Interval<T> itwelve = { 12, 12 };
 		const Interval<T> imtwenty = { -20, -20 };
+		const Interval<T> ithreesixty = { 360, 360 };
+		const Interval<T> ininety = { 90, 90 };
 
 		Interval<T> tmpi = { 0, 0 };
 		int i, j, jh, j1, k, kh, l, lh, l1, l2, n1, n2, n3, p, q, rh;
@@ -1145,7 +1162,24 @@ int PoissonSolver4Order<T>::SolveDIA() {
 								* (bc->F(HHP1, KK1, st) + bc->F(HHM1, KK1, st)
 										+ bc->F(HH1, KKP1, st)
 										+ bc->F(HH1, KKM1, st));
+				cout << "k = " << k << "; S= [" << S.a << " ; " << S.b << "]" << endl;
 	//			filestr << k << " B: S= [" << S.a << " ; " << S.b << "]" << endl;
+
+				//second order truncation error
+//				S5 = H1POW2 / itwelve;
+//				S3 = S5 * bc->PSI(HH1, KK1, st) * bc->OMEGA(HH1, KK1, st) - itwo*MMconst;
+//				S1 = S5 * S3;
+//				S = S + S1;
+
+				//fourth order truncation error
+				S5 = H1POW2 * H1POW2  / ithreesixty;
+				S3 = (bc->PSI1(HH1, KK1, st) + bc->PSI2(HH1, KK1, st));
+				S1 = S5 * S3;
+				S = S + S1;
+				S5 = H1POW2 * H1POW2 / ininety;
+				S3 = bc->PSI3(HH1, KK1, st);
+				S1 = S5 * S3;
+				S = S + S1;
 
 				if (st == 0) {
 

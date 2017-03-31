@@ -68,43 +68,43 @@ Example02<T>::~Example02()
 template<typename T>
 long double Example02<T>::f(const long double& x, const long double& y)
 {
-	return x * y * (y*std::pow(x, 2) - 3 * x + x*std::pow(y, 2) - 3 * y);
+	return -2.0 * M_PI*M_PI *(std::sin(M_PI*x) * std::sin(M_PI*y));
 }
 
 template<typename T>
 long double Example02<T>::phi1(const long double& y)
 {
-	return y * std::exp((-1)*(1 + std::pow(y, 2)) / 2);
+	return 0.0;
 }
 
 template<typename T>
 long double Example02<T>::phi2(const long double& x)
 {
-	return x * std::exp((-1)*(1 + std::pow(x, 2)) / 2);
+	return 0.0;
 }
 
 template<typename T>
 long double Example02<T>::phi3(const long double& y)
 {
-	return 2 * y * std::exp((-1)*(4 + std::pow(y, 2)) / 2);
+	return 0.0;
 }
 
 template<typename T>
 long double Example02<T>::phi4(const long double& x)
 {
-	return 2 * x * std::exp((-1)*(4 + std::pow(x, 2)) / 2);
+	return 0.0;
 }
 
 template<typename T>
 long double Example02<T>::a(const long double& x, const long double& y)
 {
-	return y * std::exp((std::pow(x, 2) + std::pow(y, 2)) / 2);
+	return 0.0;
 }
 
 template<typename T>
 long double Example02<T>::c(const long double& x, const long double& y)
 {
-	return x * std::exp((std::pow(x, 2) + std::pow(y, 2)) / 2);
+	return 0.0;
 }
 
 template<typename T>
@@ -318,132 +318,21 @@ Interval<T> Example02<T>::PSI4(const Interval<T>& ix, const Interval<T>& iy, int
 template<typename T>
 Interval<T> Example02<T>::A(const Interval<T>& ix, const Interval<T>& iy, int& st)
 {
-	// a(x,y) = y * exp((pow(x, 2) + pow(y, 2)) / 2);
-//
-//	a:=iadd(imul(ix,ix),imul(iy,iy));
-//	a:=iexp(idiv(a,itwo),st);
-//	Result:=imul(iy,a)
-
-	Interval<T> powx2, powy2, iexp, tmp;
 	Interval<T> r =
-	{ 0, 0 };
-	Interval<T> itwo =
-	{ 2, 2 };
-	int status = 0;
-	int mode = Interval<T>::GetMode();
+		{ 1, 1 };
+		st = 0;
 
-	if (mode == PINT_MODE)
-	{
-		powy2 = (iy * iy);
-		powx2 = (ix * ix);
-		tmp = (powx2 + powy2);
-		tmp = (tmp / itwo);
-		iexp = IExp(tmp);
-		if (status == 0)
-		{
-			st = 0;
-			r = (iy * iexp);
-			return r;
-		}
-		else
-		{
-			st = 3;
-			return r;
-		}
-	}
-	else
-	{
-		//	a:=iadd(imul(ix,ix),imul(iy,iy));
-		//	a:=iexp(idiv(a,itwo),st);
-		//	Result:=imul(iy,a)
-		r = ((ix * ix)+ (iy* iy));
-		r = IExp((r / itwo));
-		r = (iy * r);
-
-//		powy2 = ia.DIMul(iy, iy);
-//		powx2 = ia.DIMul(ix, ix);
-//		tmp = ia.DIAdd(powx2, powy2);
-//		tmp = ia.DIDiv(tmp, itwo);
-//		iexp = ia.DIExp(tmp, status);
-//		if (status == 0)
-//		{
-//			st = 0;
-//			r = ia.DIMul(iy, iexp);
-//			return r;
-//		}
-//		else
-//		{
-//			st = 3;
-//			return r;
-//		}
-	}
-
-	return r;
+		return r;
 }
 
 template<typename T>
 Interval<T> Example02<T>::C(const Interval<T>& ix, const Interval<T>& iy, int& st)
 {
-	//c(x,y) = x*exp((pow(x,2)+pow(y,2))/2);
-	Interval<T> powx2, powy2, iexp, tmp;
 	Interval<T> r =
-	{ 0, 0 };
-	Interval<T> itwo =
-	{ 2, 2 };
-	int status = 0;
+		{ 1, 1 };
+		st = 0;
 
-	//b:=iadd(imul(ix,ix),imul(iy,iy));
-	//b:=iexp(idiv(b,itwo),st);
-	//Result:=imul(ix,b)
-
-
-	if (Interval<T>::GetMode() == PINT_MODE)
-	{
-		powy2 = (iy * iy);
-		powx2 = (ix * ix);
-		tmp = (powx2 + powy2);
-		tmp = (tmp / itwo);
-		iexp = IExp(tmp);
-		if (status == 0)
-		{
-			st = 0;
-			r = (ix * iexp);
-			return r;
-		}
-		else
-		{
-			st = 3;
-			return r;
-		}
-	}
-	else
-	{
-		//b:=iadd(imul(ix,ix),imul(iy,iy));
-	    //b:=iexp(idiv(b,itwo),st);
-		//Result:=imul(ix,b)
-		r = ((ix * ix) + (iy *iy));
-		r = IExp((r / itwo));
-		r = (ix * r);
-
-//		powy2 = ia.DIMul(iy, iy);
-//		powx2 = ia.DIMul(ix, ix);
-//		tmp = ia.DIAdd(powx2, powy2);
-//		tmp = ia.DIDiv(tmp, itwo);
-//		iexp = ia.DIExp(tmp, status);
-//		if (status == 0)
-//		{
-//			st = 0;
-//			r = ia.DIMul(ix, iexp);
-//			return r;
-//		}
-//		else
-//		{
-//			st = 3;
-//			return r;
-//		}
-	}
-
-	return r;
+		return r;
 }
 
 template<typename T>
