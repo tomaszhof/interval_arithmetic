@@ -444,7 +444,7 @@ Interval<T> ISin(const Interval<T>& x) {
 	int st = 0;
 	Interval<T> d, s, w, w1, x2, tmp;
 	string left, right;
-	T eps = 2*Interval<T>::GetEpsilon();
+	T eps = 1E-18; //Interval<T>::GetEpsilon();
 	T diff = std::numeric_limits<T>::max();
 	if (x.a > x.b)
 		st = 1;
