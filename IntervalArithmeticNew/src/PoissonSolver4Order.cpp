@@ -115,8 +115,8 @@ int PoissonSolver4Order<T>::SolveFP() {
 		k = 0;
 		j = 0;
 //
-		ofstream rowFile;
-		rowFile.open("row.txt");
+//		ofstream rowFile;
+//		rowFile.open("row.txt");
 
 		do {
 			k = k + 1;
@@ -198,7 +198,7 @@ int PoissonSolver4Order<T>::SolveFP() {
 							* (bc->f(hhp1, kk1) + bc->f(hhm1, kk1)
 									+ bc->f(hh1, kkp1) + bc->f(hh1, kkm1)); //bc->f(hh1, kk1);
 
-			cout << "k = " << k << "; s = " << s << endl;
+//			cout << "k = " << k << "; s = " << s << endl;
 //			if (i == 1) {
 //				s = s - af * bc->phi1(kk1) / h1;
 //				if (j == 1)
@@ -378,10 +378,10 @@ int PoissonSolver4Order<T>::SolveFP() {
 
 			a1[n2 - 1] = s;
 
-			for (int i = 1; i <= n1; i++) {
-				rowFile << a1[i - 1] << ";";
-			}
-			rowFile << s << "\n";
+//			for (int i = 1; i <= n1; i++) {
+//				rowFile << a1[i - 1] << ";";
+//			}
+//			rowFile << s << "\n";
 
 			for (int i = 1; i <= n1; i++) {
 				rh = r[i - 1];
@@ -443,7 +443,7 @@ int PoissonSolver4Order<T>::SolveFP() {
 				j = 0;
 		} while ((k != n1) && (st != 5));
 
-		rowFile.close();
+//		rowFile.close();
 
 		delete[] a1;
 		delete[] b1;
@@ -485,18 +485,21 @@ int PoissonSolver4Order<T>::SolveFP() {
 			maxN = 0;
 			if (this->_estimateMN) {
 
-				for (int i = 2; i <= n - 2; i++)
-					for (int j = 2; j <= m - 2; j++) {
+				for (int i = 3; i <= n - 3; i++)
+					for (int j = 3; j <= m - 3; j++) {
 						tmpM = abs(
-								6 * u[i][j] - 4 * u[i - 1][j] - 4 * u[i + 1][j]
-										+ u[i - 2][j] + u[i + 2][j]);
-						tmpM = (1 / (h1 * h1 * h1 * h1)) * tmpM;
+								-20 * u[i][j] + 15 * u[i - 1][j] + 15 * u[i + 1][j]
+										- 6 * u[i - 2][j] -6 * u[i + 2][j] + u[i + 3][j] + u[i - 3][j]);
+						tmpM = (1 / (h1 * h1 * h1 * h1 * h1 * h1)) * tmpM;
 						if (tmpM > maxM)
 							maxM = tmpM;
 						tmpN = abs(
-								6 * u[i][j] - 4 * u[i][j - 1] - 4 * u[i][j + 1]
-										+ u[i][j - 2] + u[i][j + 2]);
-						tmpN = (1 / (k1 * k1 * k1 * k1)) * tmpN;
+								-12 * u[i][j] + 8 * u[i+1][j] + 8 * u[i-1][j]
+										+ 6 * u[i][j - 1] + 6 * u[i][j + 1])
+										- 4 * u[i+1][j+1] - 4 * u[i+1][j-1]
+										- 4 * u[i-1][j+1] - 4 * u[i-1][j-1]
+										- 2 * u[i + 2][j] + u[i+2][j+1] + u[i+2][j-1];
+						tmpN = (1 / (h1 * h1 * h1 * h1 * k1 * k1)) * tmpN;
 						if (tmpN > maxN)
 							maxN = tmpN;
 					}
