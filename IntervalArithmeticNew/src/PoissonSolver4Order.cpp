@@ -752,6 +752,7 @@ int PoissonSolver4Order<T>::SolvePIA() {
 				S3 = bc->PSI3(HH1, KK1, st);
 				S1 = S5 * S3;
 				S = S + S1;
+				S = S + S5 * (MMconst + NNconst);
 
 				if (i == 1) {
 					S1 = ifour * (AF / H1) * bc->PHI1(KK1, st);

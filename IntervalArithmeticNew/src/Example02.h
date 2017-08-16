@@ -345,7 +345,7 @@ long double Example02<T>::ExactSol(long double x, long double y)
 template<typename T>
 long double Example02<T>::GetConstM()
 {
-	long double constM = 97.5;
+	long double constM = 970;
 
 	return constM;
 }
@@ -353,7 +353,7 @@ long double Example02<T>::GetConstM()
 template<typename T>
 long double Example02<T>::GetConstN()
 {
-	long double constN = 97.5;
+	long double constN = 970;
 
 	return constN;
 }
