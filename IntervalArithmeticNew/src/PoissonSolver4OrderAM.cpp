@@ -64,8 +64,11 @@ int PoissonSolver4OrderAM<T>::SetExample(int eid) {
 template<typename T>
 int PoissonSolver4OrderAM<T>::SolveFP() {
 	int i, j, jh, j1, k, kh, l, lh, l1, l2, n1, n2, p, q, rh, st;
-	long double af, cf, h1, k1, hh1, kk1, max, s, tmpM, tmpN, h2d12, k2d12,
+	long double af, cf, h1, k1, h2, k2, h4, k4,hh1, kk1, max, s, tmpM, tmpN, h2d12, k2d12,
 			hhp1, hhm1, kkp1, kkm1;
+
+	//coefficients
+	long double ca, cb, cc;
 
 	if (!Solver<T>::_initparams)
 		throw runtime_error("Parameters not initialized!");
@@ -96,9 +99,18 @@ int PoissonSolver4OrderAM<T>::SolveFP() {
 			}
 		}
 	}
+
+
 	if (st == 0) {
 		h1 = (gamma - alpha) / n;
 		k1 = (delta - beta) / m;
+		h2 = h1 * h1;
+		k2 = k1 * k1;
+		h4 = h2 * h2;
+		k4 = k2 * k2;
+		ca = h2 + k2;
+		cb = 2*(5*h2-k2);
+		cc = 2*(5*k2-h2);
 		h2d12 = h1 * h1 / 12.0;
 		k2d12 = k1 * k1 / 12.0;
 		n1 = (n - 1) * (m - 1);
@@ -638,11 +650,11 @@ int PoissonSolver4OrderAM<T>::SolvePIA() {
 		K1 = (DELTA - BETA) / MM;
 		HH.a = -H1.b;
 		HH.b = H1.a;
+		KK.a = -K1.b;
+		KK.b = K1.a;
 		H1POW2 = H1 * H1;
 		K1POW2 = K1 * K1;
 		H1POW2K1POW2 = H1POW2 * K1POW2;
-		KK.a = -K1.b;
-		KK.b = K1.a;
 		n1 = (n - 1) * (m - 1);
 		n2 = n1 + 1;
 		p = n2;
