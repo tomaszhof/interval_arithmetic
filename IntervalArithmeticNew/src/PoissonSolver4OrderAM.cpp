@@ -68,7 +68,7 @@ int PoissonSolver4OrderAM<T>::SolveFP() {
 			hhp1, hhm1, kkp1, kkm1;
 
 	//coefficients
-	long double ca, cb, cc;
+	long double ca, cb, cc, s1, s2;
 
 	if (!Solver<T>::_initparams)
 		throw runtime_error("Parameters not initialized!");
@@ -111,8 +111,6 @@ int PoissonSolver4OrderAM<T>::SolveFP() {
 		ca = h2 + k2;
 		cb = 2*(5*h2-k2);
 		cc = 2*(5*k2-h2);
-		h2d12 = h1 * h1 / 12.0;
-		k2d12 = k1 * k1 / 12.0;
 		n1 = (n - 1) * (m - 1);
 		n2 = n1 + 1;
 		p = n2;
@@ -154,236 +152,109 @@ int PoissonSolver4OrderAM<T>::SolveFP() {
 
 			//fourth order method - option 6 (Zhang)
 			if (i > 1) {
-				a1[l1 - 1] = 4.0 * (af / h1); //af / h1;
+				a1[l1 - 1] = cc; //af / h1;
 
 				if (j > 1) {
-					a1[l1 - 2] = af / h1;
+					a1[l1 - 2] = ca;
 				}
 				if (j < m - 1) {
-					a1[l1] = af / h1;
+					a1[l1] = ca;
 				}
 
 			}
 
-			a1[l2 - 1] = (-20.0) * (af / h1); //-2 * (af / h1 + cf / k1);
+			a1[l2 - 1] = (-20.0) * ca; //-2 * (af / h1 + cf / k1);
 
 			if (j > 1) {
-				a1[l2 - 2] = 4.0 * (af / h1); //cf / k1;
+				a1[l2 - 2] = cb; //cf / k1;
 			}
 			if (j < m - 1)
-				a1[l2] = 4.0 * (af / h1); //cf / k1;
+				a1[l2] = cb; //cf / k1;
 
 			l1 = l2 + m - 1;
 			if (i < n - 1) {
-				a1[l1 - 1] = 4.0 * (af / h1);
+				a1[l1 - 1] = cc;
 				if (j > 1) {
-					a1[l1 - 2] = af / h1;
+					a1[l1 - 2] = ca;
 				}
 				if (j < m - 1) {
-					a1[l1] = af / h1;
+					a1[l1] = ca;
 				}
 			}
 
-			//----second order method
-//			if (i > 1)
-//				a1[l1 - 1] = af / h1;
-//			a1[l2 - 1] = -2 * (af / h1 + cf / k1);
-//
-//			if (j > 1)
-//				a1[l2 - 2] = cf / k1;
-//			if (j < m - 1)
-//				a1[l2] = cf / k1;
-//			l1 = l2 + m - 1;
-//
-//			if (i < n - 1)
-//				a1[l1 - 1] = af / h1;
-
-//---- BOUNDARY CONDITIONS
-//          Fortuna Macukow option 4
-//			s =  - bc->f(hh1, kk1);
-//			s = s - (1.0/12.0) * (bc->f(hhp1, kk1) - 2.0 * bc->f(hh1, kk1) + bc->f(hhm1, kk1));//bc->f(hh1, kk1);
-//			s = s - (1.0/12.0) * (bc->f(hh1, kkp1) - 2.0 * bc->f(hh1, kk1) + bc->f(hh1, kkm1));
-
 //		    Fortuna Macukow option 5
-			s = 4.0 * bc->f(hh1, kk1);
+			s = 8.0 * bc->f(hh1, kk1);
 			s = s
-					+ (1.0 / 2.0)
-							* (bc->f(hhp1, kk1) + bc->f(hhm1, kk1)
-									+ bc->f(hh1, kkp1) + bc->f(hh1, kkm1)); //bc->f(hh1, kk1);
+					+ (bc->f(hhp1, kk1) + bc->f(hhm1, kk1)
+									+ bc->f(hh1, kkp1) + bc->f(hh1, kkm1));
 
 //			cout << "k = " << k << "; s = " << s << endl;
-//			if (i == 1) {
-//				s = s - af * bc->phi1(kk1) / h1;
-//				if (j == 1)
-//					s = s - cf * bc->phi2(hh1) / k1;
-//				if (j == m - 1)
-//					s = s - cf * bc->phi4(hh1) / k1;
-//			} else if (i == n - 1) {
-//				s = s - af * bc->phi3(kk1) / k1;
-//				if (j == 1)
-//					s = s - cf * bc->phi2(hh1) / k1;
-//				if (j == m - 1)
-//					s = s - cf * bc->phi4(hh1) / k1;
-//			} else {
-//				if (j == 1)
-//					s = s - cf * bc->phi2(hh1) / k1;
-//				if (j == m - 1)
-//					s = s - cf * bc->phi4(hh1) / k1;
-//			}
-
-//			//Fortuna Macukow - option 4
-//			if (i == 1) {
-//				s = s - (1.0/6.0)*(5.0*(af/h1) - cf/k1)*bc->phi1(kk1);
-//				//if (j < m - 1)
-//					s = s - (1.0/12.0)*(af/h1 + cf/k1)*bc->phi1(kkp1);
-//				//if (j > 1)
-//					s = s - (1.0/12.0)*(af/h1 + cf/k1)*bc->phi1(kkm1);
-//				if (j == 1)
-//				{
-//					s = s - (1.0/6.0)*(af/h1 + 5.0 * cf/k1)*bc->phi2(hh1);
-//					s = s - (1.0/12.0)*(af/h1 + cf/k1)*bc->phi2(hhp1);
-//
-//					//s = s - (1.0/12.0)*(af/h1 + cf/k1)*bc->phi1(hhm1);//?
-//				}
-//				if (j == m - 1)
-//				{
-//					s = s - (1.0/6.0)*(af/h1 + 5.0 * cf/k1)*bc->phi4(hh1);
-//					s = s - (1.0/12.0)*(af/h1 + cf/k1) * bc->phi4(hhp1);
-//
-//					//s = s - (1.0/12.0)*(af/h1 + cf/k1)*bc->phi1(hhm1);//?
-//				}
-//			} else if (i == n - 1) {
-//				s = s - (1.0/6.0)*(5.0*(af/h1) - cf/k1)*bc->phi3(kk1);
-//				//if (j < m - 1)
-//					s = s - (1.0/12.0)*(af/h1 + cf/k1)*bc->phi3(kkp1);
-//				//if (j > 1)
-//					s = s - (1.0/12.0)*(af/h1 + cf/k1)*bc->phi3(kkm1);
-//				if (j == 1)
-//				{
-//					s = s - (1.0/6.0)*(af/h1 + 5.0 * cf/k1)*bc->phi2(hh1);
-//					s = s - (1.0/12.0)*(af/h1 + cf/k1)*bc->phi2(hhm1);
-//					//s = s - (1.0/12.0)*(af/h1 + cf/k1)*bc->phi2(hhm1);
-//				}
-//				if (j == m - 1)
-//				{
-//					s = s - (1.0/6.0)*(af/h1 + 5.0 * cf/k1)*bc->phi4(hh1);
-//					s = s - (1.0/12.0)*(af/h1 + cf/k1)*bc->phi4(hhm1);
-//					//s = s - (1.0/12.0)*(af/h1 + cf/k1)*bc->phi4(hhm1);
-//				}
-//			} else {
-//				if (j == 1)
-//				{
-//					s = s - (1.0/6.0)*(af/h1 + 5.0 * cf/k1)*bc->phi2(hh1);
-//					s = s - (1.0/12.0)*(af/h1 + cf/k1)*bc->phi2(hhp1);
-//					s = s - (1.0/12.0)*(af/h1 + cf/k1)*bc->phi2(hhm1);
-//				}
-//				if (j == m - 1)
-//				{
-//					s = s - (1.0/6.0)*(af/h1 + 5.0 * cf/k1)*bc->phi4(hh1);
-//					s = s - (1.0/12.0)*(af/h1 + cf/k1)*bc->phi4(hhp1);
-//					s = s - (1.0/12.0)*(af/h1 + cf/k1)*bc->phi4(hhm1);
-//				}
-//			}
-
-//			//Fortuna Macukow - option 5
-//			if (i == 1) {
-//				s = s - (5.0*(af/h1) - cf/k1)*bc->phi1(kk1);
-//				if (j < m)
-//					s = s - (1.0/2.0)*(af/h1 + cf/k1)*bc->phi1(kkp1);
-//				if (j > 0)
-//					s = s - (1.0/2.0)*(af/h1 + cf/k1)*bc->phi1(kkm1);
-//				if (j == 1)
-//				{
-//					s = s - (af/h1 + 5.0 * cf/k1)*bc->phi2(hh1);
-//					s = s - (1.0/2.0)*(af/h1 + cf/k1)*bc->phi2(hhp1);
-//
-//					//s = s - (1.0/12.0)*(af/h1 + cf/k1)*bc->phi1(hhm1);//?
-//				}
-//				if (j == m - 1)
-//				{
-//					s = s - (af/h1 + 5.0 * cf/k1)*bc->phi4(hh1);
-//					s = s - (1.0/2.0)*(af/h1 + cf/k1) * bc->phi4(hhp1);
-//
-//					//s = s - (1.0/12.0)*(af/h1 + cf/k1)*bc->phi1(hhm1);//?
-//				}
-//			} else if (i == n - 1) {
-//				s = s - (5.0*(af/h1) - cf/k1)*bc->phi3(kk1);
-//				if (j < m)
-//					s = s - (1.0/2.0)*(af/h1 + cf/k1)*bc->phi3(kkp1);
-//				if (j > 0)
-//					s = s - (1.0/2.0)*(af/h1 + cf/k1)*bc->phi3(kkm1);
-//				if (j == 1)
-//				{
-//					s = s - (af/h1 + 5.0 * cf/k1)*bc->phi2(hh1);
-//					s = s - (1.0/2.0)*(af/h1 + cf/k1)*bc->phi2(hhm1);
-//					//s = s - (1.0/12.0)*(af/h1 + cf/k1)*bc->phi2(hhm1);
-//				}
-//				if (j == m - 1)
-//				{
-//					s = s - (af/h1 + 5.0 * cf/k1)*bc->phi4(hh1);
-//					s = s - (1.0/2.0)*(af/h1 + cf/k1)*bc->phi4(hhm1);
-//					//s = s - (1.0/12.0)*(af/h1 + cf/k1)*bc->phi4(hhm1);
-//				}
-//			} else {
-//				if (j == 1)
-//				{
-//					s = s - (af/h1 + 5.0 * cf/k1)*bc->phi2(hh1);
-//					s = s - (1.0/2.0)*(af/h1 + cf/k1)*bc->phi2(hhp1);
-//					s = s - (1.0/2.0)*(af/h1 + cf/k1)*bc->phi2(hhm1);
-//				}
-//				if (j == m - 1)
-//				{
-//					s = s - (af/h1 + 5.0 * cf/k1)*bc->phi4(hh1);
-//					s = s - (1.0/2.0)*(af/h1 + cf/k1)*bc->phi4(hhp1);
-//					s = s - (1.0/2.0)*(af/h1 + cf/k1)*bc->phi4(hhm1);
-//				}
-//			}
 
 			//Zhang- option 6
 			if (i == 1) {
-				s = s - 4.0 * (af / h1) * bc->phi1(kk1);
-				if (j < m)
-					s = s - (af / h1) * bc->phi1(kkp1);
-				if (j > 0)
-					s = s - (af / h1) * bc->phi1(kkm1);
+				s1 = bc->phi1(kkm1);
+				s2 = bc->phi1(kkp1);
+				s1 = ca * (s1 + s2);
+				s2 = bc->phi1(kk1);
+				s1 = s1 + ca*s2;
+				s = s -s1;
+//				if (j < m)
+//				{
+//					s = s - (af / h1) * bc->phi1(kkp1);
+//				}
+//				if (j > 0)
+//					s = s - (af / h1) * bc->phi1(kkm1);
 				if (j == 1) {
-					s = s - 4.0 * (af / h1) * bc->phi2(hh1);
-					s = s - (af / h1) * bc->phi2(hhp1);
-
-					//s = s - (1.0/12.0)*(af/h1 + cf/k1)*bc->phi1(hhm1);//?
+					s1 = bc->phi2(hhp1);
+					s = s-ca*s1;
+					s1 = bc->phi2(hh1);
+					s = s-cb*s1;
 				}
 				if (j == m - 1) {
-					s = s - 4.0 * (af / h1) * bc->phi4(hh1);
-					s = s - (af / h1) * bc->phi4(hhp1);
-
-					//s = s - (1.0/12.0)*(af/h1 + cf/k1)*bc->phi1(hhm1);//?
+				    s1 = bc->phi4(hhp1);
+				    s =s-ca*s1;
+				    s1 =bc->phi4(hh1);
+				    s =s-cb*s1;
 				}
 			} else if (i == n - 1) {
-				s = s - 4.0 * (af / h1) * bc->phi3(kk1);
-				if (j < m)
-					s = s - (af / h1) * bc->phi3(kkp1);
-				if (j > 0)
-					s = s - (af / h1) * bc->phi3(kkm1);
+				s1 = bc->phi3(kk1);
+				s2 = bc->phi3(kkp1);
+				s1 = ca*(s1+s2);
+				s2 = bc->phi3(kk1);
+				s1 = s1+cc*s2;
+				s = s - s1;
+//				if (j < m)
+//					s = s - (af / h1) * bc->phi3(kkp1);
+//				if (j > 0)
+//					s = s - (af / h1) * bc->phi3(kkm1);
 				if (j == 1) {
-					s = s - 4.0 * (af / h1) * bc->phi2(hh1);
-					s = s - (af / h1) * bc->phi2(hhm1);
-					//s = s - (1.0/12.0)*(af/h1 + cf/k1)*bc->phi2(hhm1);
+					s1 = bc-> phi2(hhm1);
+					s = s-ca*s1;
+					s1 = bc->phi2(hh1);
+					s = s-cb*s1;
 				}
 				if (j == m - 1) {
-					s = s - 4.0 * (af / h1) * bc->phi4(hh1);
-					s = s - (af / h1) * bc->phi4(hhm1);
-					//s = s - (1.0/12.0)*(af/h1 + cf/k1)*bc->phi4(hhm1);
+				  s1 = bc-> phi4(hhm1);
+				  s=s-ca*s1;
+				  s1=bc->phi4(hh1);
+				  s=s-cb*s1;
 				}
 			} else {
 				if (j == 1) {
-					s = s - 4.0 * (af / h1) * bc->phi2(hh1);
-					s = s - (af / h1) * bc->phi2(hhp1);
-					s = s - (af / h1) * bc->phi2(hhm1);
+					s1 =bc->phi2(hhm1);
+					  s2=bc->phi2(hhp1);
+					  s1=s1+s2;
+					  s=s-ca*s1;
+					  s1=bc->phi2(hh1);
+					  s=s-cb*s1;
 				}
 				if (j == m - 1) {
-					s = s - 4.0 * (af / h1) * bc->phi4(hh1);
-					s = s - (af / h1) * bc->phi4(hhp1);
-					s = s - (af / h1) * bc->phi4(hhm1);
+				  s1 = bc->phi4(hhm1);
+				  s2 = bc->phi4(hhp1);
+				  s1 = s1+s2;
+				  s = s-ca*s1;
+				  s1 = bc->phi4(hh1);
+				  s = s-cb*s1;
 				}
 			}
 
@@ -553,7 +424,9 @@ int PoissonSolver4OrderAM<T>::SolvePIA() {
 	const Interval<T> itwo = { 2, 2 };
 	const Interval<T> ithree = { 3, 3 };
 	const Interval<T> ifour = { 4, 4 };
+	const Interval<T> ifive = { 5, 5 };
 	const Interval<T> itwelve = { 12, 12 };
+	const Interval<T> itwenty = { 20, 20 };
 	const Interval<T> imtwenty = { -20, -20 };
 	const Interval<T> ithreesixty = { 360, 360 };
 	const Interval<T> ininety = { 90, 90 };
@@ -562,8 +435,9 @@ int PoissonSolver4OrderAM<T>::SolvePIA() {
 	int i, j, jh, j1, k, kh, l, lh, l1, l2, n1, n2, n3, p, q, rh;
 	int num;
 	Interval<T> AF, BB0, BB1, CF, H1, HH, HH1, II, JJ, K1, KK, KK1, MAX, MM, AA,
-			CC, MMconst, NNconst, NN, S, S1, S2, S3, S4, S5, H1POW2, K1POW2,
+			CC, PPconst, QQconst, NN, S, S1, S2, S3, S4, S5, H1POW2, K1POW2,
 			IIP1, IIM1, JJP1, JJM1, KKP1, KKM1, HHP1, HHM1, H1POW2K1POW2;
+	Interval<T> H2, H4, K2, K4, PQ,CA, CB, CC;
 	bool list_exists;
 	Interval<T> aij;
 	int* r;
@@ -576,10 +450,10 @@ int PoissonSolver4OrderAM<T>::SolvePIA() {
 	NN.b = n;
 	MM.a = m;
 	MM.b = m;
-	MMconst.a = -bc->GetConstM();
-	MMconst.b = bc->GetConstM();
-	NNconst.a = -bc->GetConstN();
-	NNconst.b = bc->GetConstN();
+	PPconst.a = -bc->GetConstM();
+	PPconst.b = bc->GetConstM();
+	QQconst.a = -bc->GetConstN();
+	QQconst.b = bc->GetConstN();
 
 	if ((n < 2) || (m < 2))
 		st = 1;
@@ -648,6 +522,10 @@ int PoissonSolver4OrderAM<T>::SolvePIA() {
 	if (st == 0) {
 		H1 = (GAMMA - ALPHA) / NN;
 		K1 = (DELTA - BETA) / MM;
+		H2 = H1 * H1;
+		H4 = H2 * H2;
+		K2 = K1 * K1;
+		K4 = K2 * K2;
 		HH.a = -H1.b;
 		HH.b = H1.a;
 		KK.a = -K1.b;
@@ -655,6 +533,21 @@ int PoissonSolver4OrderAM<T>::SolvePIA() {
 		H1POW2 = H1 * H1;
 		K1POW2 = K1 * K1;
 		H1POW2K1POW2 = H1POW2 * K1POW2;
+
+        CA=H2+K2;     // interval h^2+k^2
+        CB=(ifive*H2)- K2;
+        CB =itwo*CB;   // interval 2*(5*h^2-k^2)
+        CC=(ifive*K2)-H2;
+        CC=itwo*CC;   // interval 2*(5*k^2-h^2);
+        PQ=H4*PPconst;
+        PQ=PQ+K4*QQconst;
+        PQ=PQ/itwenty;
+        PPconst= PPconst+ QQconst;
+        PPconst=(H2*K2)*PPconst;
+        PPconst=PPconst/itwelve;
+        PQ=PQ+PPconst;
+		 // PQ = (h^4*[-P,P]+k^4*[-Q,Q])/20
+		 //       +h^2*k^2*([-P,P]+{-Q,Q])/12
 		n1 = (n - 1) * (m - 1);
 		n2 = n1 + 1;
 		p = n2;
