@@ -74,6 +74,9 @@ void Experiment<T>::SetSolver(Parameters<long double> p)
 	case POISSON4:
 			solver = new PoissonSolver4Order<T>();
 			break;
+	case POISSON4AM:
+				solver = new PoissonSolver4Order<T>();
+				break;
 	default:
 		solver = NULL;
 		break;

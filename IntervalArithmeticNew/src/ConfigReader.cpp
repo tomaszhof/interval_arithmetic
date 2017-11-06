@@ -198,6 +198,8 @@ void ConfigReader<T>::readConfigFile(string fileName)
 			this->SetSolverId(POISSON);
 	if (solver_name == "poisson4")
 				this->SetSolverId(POISSON4);
+	if (solver_name == "poisson4am")
+					this->SetSolverId(POISSON4AM);
 
 	this->SetFileName(output_file);
 	this->SetAlpha1(alpha1);
