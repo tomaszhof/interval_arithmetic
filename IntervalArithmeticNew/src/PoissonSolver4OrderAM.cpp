@@ -372,17 +372,24 @@ int PoissonSolver4OrderAM<T>::SolveFP() {
 				for (int i = 3; i <= n - 3; i++)
 					for (int j = 3; j <= m - 3; j++) {
 						tmpM = abs(
-								-20 * u[i][j] + 15 * u[i - 1][j] + 15 * u[i + 1][j]
-										- 6 * u[i - 2][j] -6 * u[i + 2][j] + u[i + 3][j] + u[i - 3][j]);
-						tmpM = (1 / (h1 * h1 * h1 * h1 * h1 * h1)) * tmpM;
+								-12 * u[i][j] + 6 * (u[i][j-1] + u[i][j+1])
+										+ 8 * (u[i-1][j] + u[i+1][j])
+										- 4 * (u[i-1][j-1] + u[i-1][j+1]
+										+ u[i+1][j-1] + u[i+1][j+1])
+										- 2 * (u[i-2][j] + u[i+2][j])
+										+ u[i-2][j-1] + u[i-2][j+1]
+										+ u[i+2][j-1] + u[i+2][j+1]);
+						tmpM = (1 / (h1 * h1 * h1 * h1 * k1 * k1)) * tmpM;
 						if (tmpM > maxM)
 							maxM = tmpM;
 						tmpN = abs(
-								-12 * u[i][j] + 8 * u[i+1][j] + 8 * u[i-1][j]
-										+ 6 * u[i][j - 1] + 6 * u[i][j + 1])
-										- 4 * u[i+1][j+1] - 4 * u[i+1][j-1]
-										- 4 * u[i-1][j+1] - 4 * u[i-1][j-1]
-										- 2 * u[i + 2][j] + u[i+2][j+1] + u[i+2][j-1];
+								-12 * u[i][j] + 6 * (u[i-1][j] + u[i+1][j])
+										+ 8 * (u[i][j - 1] + u[i][j + 1])
+										- 4 * (u[i-1][j-1] + u[i+1][j-1]
+										+ u[i-1][j+1] + u[i+1][j+1])
+										- 2 * (u[i][j-2] + u[i][j+2])
+										+ u[i-1][j-2] + u[i+1][j-2]
+										+ u[i-1][j+2] + u[i+1][j+2]);
 						tmpN = (1 / (h1 * h1 * h1 * h1 * k1 * k1)) * tmpN;
 						if (tmpN > maxN)
 							maxN = tmpN;
@@ -437,7 +444,7 @@ int PoissonSolver4OrderAM<T>::SolvePIA() {
 	Interval<T> AF, BB0, BB1, CF, H1, HH, HH1, II, JJ, K1, KK, KK1, MAX, MM, AA,
 			CC, PPconst, QQconst, NN, S, S1, S2, S3, S4, S5, H1POW2, K1POW2,
 			IIP1, IIM1, JJP1, JJM1, KKP1, KKM1, HHP1, HHM1, H1POW2K1POW2;
-	Interval<T> H2, H4, K2, K4, PQ,CA, CB, CC;
+	Interval<T> H2, H4, K2, K4, PQ,CA, CB;
 	bool list_exists;
 	Interval<T> aij;
 	int* r;
@@ -658,7 +665,7 @@ int PoissonSolver4OrderAM<T>::SolvePIA() {
 				S3 = bc->PSI3(HH1, KK1, st);
 				S1 = S5 * S3;
 				S = S + S1;
-				S = S + S5 * (MMconst + NNconst);
+				S = S + S5 * (PPconst + QQconst);
 
 				if (i == 1) {
 					S1 = ifour * (AF / H1) * bc->PHI1(KK1, st);
