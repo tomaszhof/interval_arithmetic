@@ -295,6 +295,8 @@ int Solver<T>::ConstMExperiment() {
 		this->SolveFP();
 		this->vecConstM.push_back(this->GetMaxM());
 		this->vecConstN.push_back(this->GetMaxN());
+		cout << "M = " << this->GetMaxM() << endl;
+		cout << "N = " << this->GetMaxN() << endl;
 	}
 	return 0;
 }

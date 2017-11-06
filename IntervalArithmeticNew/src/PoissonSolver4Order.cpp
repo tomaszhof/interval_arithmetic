@@ -488,9 +488,19 @@ int PoissonSolver4Order<T>::SolveFP() {
 				for (int i = 3; i <= n - 3; i++)
 					for (int j = 3; j <= m - 3; j++) {
 						tmpM = abs(
+<<<<<<< Updated upstream
 								-20 * u[i][j] + 15 * u[i - 1][j] + 15 * u[i + 1][j]
 										- 6 * u[i - 2][j] -6 * u[i + 2][j] + u[i + 3][j] + u[i - 3][j]);
 						tmpM = (1 / (h1 * h1 * h1 * h1 * h1 * h1)) * tmpM;
+=======
+								-12 * u[i][j] + 6 * u[i - 1][j] + 6 * u[i + 1][j]
+				                        + 8 * u[i][j-1] + 8 * u[i][j+1]
+										- 4 * u[i + 1][j-1] - 4 * u[i + 1][j+1]
+										- 4 * u[i - 1][j-1] - 4 * u[i - 1][j+1]
+										+ u[i - 1][j + 2] -2 * u[i][j+2] + u[i -1][j + 2]
+										+ u[i - 1][j - 2] -2 * u[i][j-2] + u[i -1][j - 2]);
+						tmpM = (1 / (h1 * h1 * k1 * k1 * k1 * k1)) * tmpM;
+>>>>>>> Stashed changes
 						if (tmpM > maxM)
 							maxM = tmpM;
 						tmpN = abs(
@@ -508,6 +518,8 @@ int PoissonSolver4Order<T>::SolveFP() {
 					delete[] u[i];
 				delete[] u;
 			}
+			cout << "M = " << maxM << endl;
+			cout << "N = " << maxN << endl;
 
 		}
 		delete[] x;
@@ -738,12 +750,13 @@ int PoissonSolver4Order<T>::SolvePIA() {
 
 			if (st == 0) {
 				//second order truncation error
-//				S5 = ((AA * H1POW2) * H1POW2K1POW2) * MMconst;
-//				S3 = ((CC * K1POW2) * H1POW2K1POW2) * NNconst;
-//				S1 = S3 + S5;
-//				S = S + (S1 / itwelve);
+				S5 = ((AA * H1POW2) * H1POW2K1POW2) * MMconst;
+				S3 = ((CC * K1POW2) * H1POW2K1POW2) * NNconst;
+				S1 = S3 + S5;
+				S = S + (S1 / itwelve);
 
 				//fourth order truncation error
+<<<<<<< Updated upstream
 				S5 = H1POW2 * H1POW2  / ithreesixty;
 				S3 = (bc->PSI1(HH1, KK1, st) + bc->PSI2(HH1, KK1, st));
 				S1 = S5 * S3;
@@ -753,6 +766,16 @@ int PoissonSolver4Order<T>::SolvePIA() {
 				S1 = S5 * S3;
 				S = S + S1;
 				S = S + S5 * (MMconst + NNconst);
+=======
+//				S5 = H1POW2 * H1POW2  / ithreesixty;
+//				S3 = (bc->PSI1(HH1, KK1, st) + bc->PSI2(HH1, KK1, st));
+//				S1 = S5 * S3;
+//				S = S + S1;
+//				S5 = H1POW2 * H1POW2 / ininety;
+//				S3 = bc->PSI3(HH1, KK1, st);
+//				S1 = S5 * S3;
+//				S = S + S1;
+>>>>>>> Stashed changes
 
 				if (i == 1) {
 					S1 = ifour * (AF / H1) * bc->PHI1(KK1, st);
@@ -1007,7 +1030,6 @@ int PoissonSolver4Order<T>::SolveDIA() {
 			st = 2;
 
 		if (st == 0)
-
 		{
 			S = bc->PHI1(ALPHA, st);
 			if (st == 0)
@@ -1170,10 +1192,10 @@ int PoissonSolver4Order<T>::SolveDIA() {
 	//			filestr << k << " B: S= [" << S.a << " ; " << S.b << "]" << endl;
 
 				//second order truncation error
-//				S5 = H1POW2 / itwelve;
-//				S3 = S5 * bc->PSI(HH1, KK1, st) * bc->OMEGA(HH1, KK1, st) - itwo*MMconst;
-//				S1 = S5 * S3;
-//				S = S + S1;
+				S5 = H1POW2 / itwelve;
+				S3 = S5 * bc->PSI(HH1, KK1, st) * bc->OMEGA(HH1, KK1, st) - itwo*MMconst;
+				S1 = S5 * S3;
+				S = S + S1;
 
 				//fourth order truncation error
 				S5 = H1POW2 * H1POW2  / ithreesixty;
