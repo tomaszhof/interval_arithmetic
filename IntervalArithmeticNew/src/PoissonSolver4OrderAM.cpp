@@ -64,7 +64,7 @@ int PoissonSolver4OrderAM<T>::SetExample(int eid) {
 template<typename T>
 int PoissonSolver4OrderAM<T>::SolveFP() {
 	int i, j, jh, j1, k, kh, l, lh, l1, l2, n1, n2, p, q, rh, st;
-	long double af, cf, h1, k1, h2, k2, h4, k4,hh1, kk1, max, s, tmpM, tmpN, h2d12, k2d12,
+	long double h1, k1, h2, k2, h4, k4,hh1, kk1, max, s, tmpM, tmpN, h2d12, k2d12,
 			hhp1, hhm1, kkp1, kkm1;
 
 	//coefficients
@@ -125,11 +125,12 @@ int PoissonSolver4OrderAM<T>::SolveFP() {
 			r[i - 1] = 0;
 		k = 0;
 		j = 0;
-//
+
 //		ofstream rowFile;
 //		rowFile.open("row.txt");
 
 		do {
+
 			k = k + 1;
 			for (int i = 1; i <= n1; i++)
 				a1[i - 1] = 0;
@@ -145,14 +146,11 @@ int PoissonSolver4OrderAM<T>::SolveFP() {
 			hhm1 = alpha + (i - 1) * h1;
 			kkm1 = beta + (j - 1) * k1;
 
-			//changed - in order to generalize to elliptic PDE
 
-			af = 1.0 / h1; //bc->a(hh1, kk1) / h1; //1 / h1;
-			cf = 1.0 / k1; //bc->c(hh1, kk1) / k1; //1 / k1;
 
 			//fourth order method - option 6 (Zhang)
 			if (i > 1) {
-				a1[l1 - 1] = cc; //af / h1;
+				a1[l1 - 1] = cc;
 
 				if (j > 1) {
 					a1[l1 - 2] = ca;
@@ -163,13 +161,13 @@ int PoissonSolver4OrderAM<T>::SolveFP() {
 
 			}
 
-			a1[l2 - 1] = (-20.0) * ca; //-2 * (af / h1 + cf / k1);
+			a1[l2 - 1] = (-20.0) * ca;
 
 			if (j > 1) {
-				a1[l2 - 2] = cb; //cf / k1;
+				a1[l2 - 2] = cb;
 			}
 			if (j < m - 1)
-				a1[l2] = cb; //cf / k1;
+				a1[l2] = cb;
 
 			l1 = l2 + m - 1;
 			if (i < n - 1) {
@@ -183,10 +181,16 @@ int PoissonSolver4OrderAM<T>::SolveFP() {
 			}
 
 //		    Fortuna Macukow option 5
-			s = 8.0 * bc->f(hh1, kk1);
-			s = s
-					+ (bc->f(hhp1, kk1) + bc->f(hhm1, kk1)
-									+ bc->f(hh1, kkp1) + bc->f(hh1, kkm1));
+			s = bc->f(hhm1, kk1);
+			s1 = bc->f(hhp1, kk1);
+			s = s + s1;
+			s1 = bc->f(hh1, kk1);
+			s = s + 8*s1;
+			s1 = bc->f(hh1, kkm1);
+			s = s + s1;
+			s1 = bc->f(hhp1, kkp1);
+			s = s + s1;
+			s = h2*k2*s;
 
 //			cout << "k = " << k << "; s = " << s << endl;
 
@@ -196,8 +200,8 @@ int PoissonSolver4OrderAM<T>::SolveFP() {
 				s2 = bc->phi1(kkp1);
 				s1 = ca * (s1 + s2);
 				s2 = bc->phi1(kk1);
-				s1 = s1 + ca*s2;
-				s = s -s1;
+				s1 = s1 + cc*s2;
+				s = s-s1;
 //				if (j < m)
 //				{
 //					s = s - (af / h1) * bc->phi1(kkp1);
@@ -217,7 +221,7 @@ int PoissonSolver4OrderAM<T>::SolveFP() {
 				    s =s-cb*s1;
 				}
 			} else if (i == n - 1) {
-				s1 = bc->phi3(kk1);
+				s1 = bc->phi3(kkm1);
 				s2 = bc->phi3(kkp1);
 				s1 = ca*(s1+s2);
 				s2 = bc->phi3(kk1);
@@ -390,7 +394,7 @@ int PoissonSolver4OrderAM<T>::SolveFP() {
 										- 2 * (u[i][j-2] + u[i][j+2])
 										+ u[i-1][j-2] + u[i+1][j-2]
 										+ u[i-1][j+2] + u[i+1][j+2]);
-						tmpN = (1 / (h1 * h1 * h1 * h1 * k1 * k1)) * tmpN;
+						tmpN = (1 / (h1 * h1 * k1 * k1 * k1 * k1)) * tmpN;
 						if (tmpN > maxN)
 							maxN = tmpN;
 					}
