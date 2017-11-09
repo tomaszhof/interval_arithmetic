@@ -853,67 +853,59 @@ int PoissonSolver<T>::SolveDIA() {
 
 					if (i == 1) {
 						S1 = bc->PHI1(KK1, st);
-						S1 = S1.Opposite();
 						if (st == 0) {
 							S1 = (AF * S1) / H1;
-							S = S + S1;
+							S = S - S1;
 							if (j == 1) {
 								S1 = bc->PHI2(HH1, st);
-								S1 = S1.Opposite();
 								if (st == 0) {
 									S1 = ((CF * S1) / K1);
-									S = (S + S1);
+									S = (S - S1);
 								}
 							}
 							if (j == m - 1) {
 								S1 = bc->PHI4(HH1, st);
-								S1 = S1.Opposite();
 
 								if (st == 0) {
 									S1 = (CF * S1) / K1;
-									S = S + S1;
+									S = S - S1;
 								}
 							}
 						}
 					} else if (i == n - 1) {
 						S1 = bc->PHI3(KK1, st);
-						S1 = S1.Opposite();
 						if (st == 0) {
 							S1 = (AF * S1) / K1;
-							S = S + S1;
+							S = S - S1;
 
 							if (j == 1) {
 								S1 = bc->PHI2(HH1, st);
-								S1 = S1.Opposite();
 								if (st == 0) {
 									S1 = (CF * S1) / K1;
-									S = S + S1;
+									S = S - S1;
 								}
 							}
 							if (j == m - 1) {
 								S1 = bc->PHI4(HH1, st);
-								S1 = S1.Opposite();
 								if (st == 0) {
 									S1 = (CF * S1) / K1;
-									S = S + S1;
+									S = S - S1;
 								}
 							}
 						}
 					} else {
 						if (j == 1) {
 							S1 = bc->PHI2(HH1, st);
-							S1 = S1.Opposite();
 							if (st == 0) {
 								S1 = (CF * S1) / K1;
-								S = S + S1;
+								S = S - S1;
 							}
 						}
 						if (j == m - 1) {
 							S1 = bc->PHI4(HH1, st);
-							S1 = S1.Opposite();
 							if (st == 0) {
 								S1 = (CF * S1) / K1;
-								S = S + S1;
+								S = S - S1;
 							}
 						}
 					}
