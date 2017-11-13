@@ -7,12 +7,10 @@
 
 #include "Experiment.h"
 
-namespace interval_arithmetic
-{
+namespace interval_arithmetic {
 
 template<typename T>
-Experiment<T>::Experiment()
-{
+Experiment<T>::Experiment() {
 	_param_initialized = false;
 	_solver_initialized = false;
 	_example = NULL;
@@ -20,15 +18,12 @@ Experiment<T>::Experiment()
 }
 
 template<typename T>
-Experiment<T>::~Experiment()
-{
+Experiment<T>::~Experiment() {
 }
 
 template<typename T>
-void Experiment<T>::SetExample(int eid, int arth_mode)
-{
-	switch (eid)
-	{
+void Experiment<T>::SetExample(int eid, int arth_mode) {
+	switch (eid) {
 	case 1:
 		//_example = new Example01();
 		break;
@@ -49,10 +44,8 @@ void Experiment<T>::SetExample(int eid, int arth_mode)
 	}
 }
 
-
 template<typename T>
-Experiment<T>::Experiment(int ac, char* av[])
-{
+Experiment<T>::Experiment(int ac, char* av[]) {
 	_example = NULL;
 	solver = NULL;
 	_param_initialized = false;
@@ -63,44 +56,43 @@ Experiment<T>::Experiment(int ac, char* av[])
 }
 
 template<typename T>
-void Experiment<T>::SetSolver(Parameters<long double> p)
-{
-	switch (p.selected_solver)
-	{
+void Experiment<T>::SetSolver(Parameters<long double> p) {
+	switch (p.selected_solver) {
 	case GPDE_SOLVER:
 		solver = new GPDESolver<T>();
 		break;
 	case POISSON:
-			solver = new PoissonSolver<T>();
-			break;
+		solver = new PoissonSolver<T>();
+		break;
+	case POISSONAM:
+		solver = new PoissonSolverAM<T>();
+		break;
+
 	case POISSON4:
-			solver = new PoissonSolver4Order<T>();
-			break;
+		solver = new PoissonSolver4Order<T>();
+		break;
 	case POISSON4AM:
-				solver = new PoissonSolver4OrderAM<T>();
-				break;
+		solver = new PoissonSolver4OrderAM<T>();
+		break;
 	default:
 		solver = NULL;
 		break;
 	}
 	_solver_initialized = (solver != NULL);
 
-	if (_solver_initialized)
-	{
+	if (_solver_initialized) {
 		solver->SetParameters(parameters);
 	}
 }
 
 template<typename T>
-void Experiment<T>::SetParameters(Parameters<long double> p)
-{
+void Experiment<T>::SetParameters(Parameters<long double> p) {
 	this->parameters = p;
 	_param_initialized = true;
 }
 
 template<typename T>
-void Experiment<T>::Initialize()
-{
+void Experiment<T>::Initialize() {
 	Interval<T>::Initialize();
 	if (!_param_initialized)
 		return;
@@ -108,24 +100,21 @@ void Experiment<T>::Initialize()
 }
 
 template<typename T>
-void Experiment<T>::SetExampleForSolver(int eid)
-{
+void Experiment<T>::SetExampleForSolver(int eid) {
 	if (_solver_initialized)
 		solver->SetExample(eid);
 }
 
 template<typename T>
-void Experiment<T>::Execute()
-{
-	if (_solver_initialized)
-	{
+void Experiment<T>::Execute() {
+	if (_solver_initialized) {
 		solver->Execute();
 		solver->WriteResults();
 	}
 }
 
 //The explicit instantiation part
-template class Experiment<long double>;
-template class Experiment<mpreal>;
+template class Experiment<long double> ;
+template class Experiment<mpreal> ;
 }
 

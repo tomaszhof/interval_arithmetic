@@ -26,6 +26,7 @@
 //#include "Solver.h"
 #include "GPDESolver.h"
 #include "PoissonSolver.h"
+#include "PoissonSolverAM.h"
 #include "PoissonSolver4Order.h"
 #include "PoissonSolver4OrderAM.h"
 #include "Utils.h"
