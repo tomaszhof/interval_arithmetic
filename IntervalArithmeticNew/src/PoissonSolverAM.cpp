@@ -445,23 +445,23 @@ int PoissonSolverAM<T>::SolvePIA() {
 			KK1 = BETA + (JJ * K1);
 			AA = bc->A(HH1, KK1, st);
 			CC = bc->C(HH1, KK1, st);
-			AF = AA * K1;
-			CF = CC * H1;
-			S1 = AF * K1;
+			AF = AA / K1;
+			CF = CC / H1;
+			S1 = AF / K1;
 			if (i > 1) {
 				bm.ToMap(l1 - 1, S1);
 			}
 			if (j > 1) {
-				bm.ToMap(l2 - 2, (CF * H1));
+				bm.ToMap(l2 - 2, (CF / H1));
 			}
 
-			S = S1 + (CF * H1);
+			S = S1 + (CF / K1);
 			S = itwo * S;
 			aij.a = -S.b;
 			aij.b = -S.a;
 			bm.ToMap(l2 - 1, aij);
 
-			S = CF * H1;
+			S = CF / H1;
 			if (j < m - 1) {
 				bm.ToMap(l2, S);
 			}
@@ -470,42 +470,42 @@ int PoissonSolverAM<T>::SolvePIA() {
 				bm.ToMap(l1 - 1, S1);
 			}
 
-			S = H1POW2K1POW2 * bc->F(HH1, KK1, st);
+			S = bc->F(HH1, KK1, st);
 //			filestr << k << " B: S= [" << S.a << " ; " << S.b << "]" << endl;
 			if (st == 0) {
-				//S1 = ia.IMul(H1, H1);
-				//S2 = ia.IMul(K1, K1);
+				S1 = H1POW2;
+				S2 = K1POW2;
 				//S4 = ia.IMul(S1, S2);
 
-				S5 = ((AA * H1POW2) * H1POW2K1POW2) * MMconst;
-				S3 = ((CC * K1POW2) * H1POW2K1POW2) * NNconst;
+				S5 = (H1POW2 + K1POW2) * MMconst;
+				S3 = bc->PSI((HH1+HH), KK1, st);
 				//S5 = ia.IMul(S1, S5);
 				//S3 = ia.IMul(S2, S3);
 
 				if (st == 0) {
-					//S4 = bc->OMEGA(HH1, ia.IAdd(KK1, KK), st);
+					S4 = bc->OMEGA(HH1, (KK1+ KK), st);
 					if (st == 0) {
-						//S1 = ia.IMul(S1, S3);
-						//S2 = ia.IMul(S2, S4);
-						S1 = S3 + S5; //ia.IAdd(ia.DIAdd(S1, S2), S5);
+						S1 = S1 * S3;
+					    S2 = S2 * S4;
+						S1 = S1 + S2 + S5; //ia.IAdd(ia.DIAdd(S1, S2), S5);
 						S = S + (S1 / itwelve);
 
 						if (i == 1) {
 							S1 = bc->PHI1(KK1, st);
 							if (st == 0) {
-								S1 = (AF * S1) * K1;
+								S1 = (AF * S1) / H1;
 								S = S - S1;
 								if (j == 1) {
 									S1 = bc->PHI2(HH1, st);
 									if (st == 0) {
-										S1 = (CF * S1) * H1;
+										S1 = (CF * S1) / K1;
 										S = S - S1;
 									}
 								}
 								if (j == m - 1) {
 									S1 = bc->PHI4(HH1, st);
 									if (st == 0) {
-										S1 = (CF * S1) * H1;
+										S1 = (CF * S1) / K1;
 										S = S - S1;
 									}
 								}
@@ -513,20 +513,20 @@ int PoissonSolverAM<T>::SolvePIA() {
 						} else if (i == n - 1) {
 							S1 = bc->PHI3(KK1, st);
 							if (st == 0) {
-								S1 = (AF * S1) * H1;
+								S1 = (AF * S1) / K1;
 								S = S - S1;
 
 								if (j == 1) {
 									S1 = bc->PHI2(HH1, st);
 									if (st == 0) {
-										S1 = (CF * S1) * H1;
+										S1 = (CF * S1) / K1;
 										S = S - S1;
 									}
 								}
 								if (j == m - 1) {
 									S1 = bc->PHI4(HH1, st);
 									if (st == 0) {
-										S1 = (CF * S1) * H1;
+										S1 = (CF * S1) / K1;
 										S = S - S1;
 									}
 								}
@@ -535,14 +535,14 @@ int PoissonSolverAM<T>::SolvePIA() {
 							if (j == 1) {
 								S1 = bc->PHI2(HH1, st);
 								if (st == 0) {
-									S1 = (CF * S1) * H1;
+									S1 = (CF * S1) / K1;
 									S = S - S1;
 								}
 							}
 							if (j == m - 1) {
 								S1 = bc->PHI4(HH1, st);
 								if (st == 0) {
-									S1 = (CF * S1) * H1;
+									S1 = (CF * S1) / K1;
 									S = S - S1;
 								}
 							}
@@ -553,6 +553,7 @@ int PoissonSolverAM<T>::SolvePIA() {
 			}
 
 //			filestr << k << " E: S= [" << S.a << " ; " << S.b << "]" << endl;
+			cout << " E: S= [" << S.a << " ; " << S.b << "]" << endl;
 			if (st == 0) {
 				bm.ToMap(n2 - 1, S);
 
