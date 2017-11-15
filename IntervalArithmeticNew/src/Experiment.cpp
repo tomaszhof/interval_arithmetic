@@ -88,6 +88,7 @@ void Experiment<T>::SetSolver(Parameters<long double> p) {
 template<typename T>
 void Experiment<T>::SetParameters(Parameters<long double> p) {
 	this->parameters = p;
+	Interval<T>::SetMode(p.ia_mode);
 	_param_initialized = true;
 }
 

@@ -297,9 +297,12 @@ int PoissonSolverAM<T>::SolveFP() {
 
 template<typename T>
 int PoissonSolverAM<T>::SolvePIA() {
-//	fstream filestr;
-//	string fname = "tmpLog.txt";
-//	filestr.open(fname.c_str(), fstream::out);
+	fstream filestr;
+	string fname = "tmpLog.txt";
+	filestr.open(fname.c_str(), fstream::out);
+
+	int dprec = Interval<T>::GetOutDigits();
+	std::setprecision(dprec);
 
 	if (!_initparams)
 		throw runtime_error("Parameters not initialized!");
@@ -330,6 +333,7 @@ int PoissonSolverAM<T>::SolvePIA() {
 	int* r;
 	T z;
 	THashMap<T> bm;
+	THashMap<T>* B1M = new THashMap<T>();
 
 	st = 0;
 	NN.a = n;
@@ -475,9 +479,9 @@ int PoissonSolverAM<T>::SolvePIA() {
 			if (st == 0) {
 				S1 = H1POW2;
 				S2 = K1POW2;
-				//S4 = ia.IMul(S1, S2);
+				S5 = S1 + S2;
 
-				S5 = (H1POW2 + K1POW2) * MMconst;
+				S5 = S5 * MMconst;
 				S3 = bc->PSI((HH1+HH), KK1, st);
 				//S5 = ia.IMul(S1, S5);
 				//S3 = ia.IMul(S2, S3);
@@ -487,9 +491,10 @@ int PoissonSolverAM<T>::SolvePIA() {
 					if (st == 0) {
 						S1 = S1 * S3;
 					    S2 = S2 * S4;
+//					    cout  << std::setprecision(dprec) <<  " E: S1= [" << S1.a << " ; " << S1.b << "]" << endl;
 						S1 = S1 + S2 + S5; //ia.IAdd(ia.DIAdd(S1, S2), S5);
 						S = S + (S1 / itwelve);
-
+//						cout  << std::setprecision(dprec) <<  " E: S= [" << S.a << " ; " << S.b << "]" << endl;
 						if (i == 1) {
 							S1 = bc->PHI1(KK1, st);
 							if (st == 0) {
@@ -553,19 +558,19 @@ int PoissonSolverAM<T>::SolvePIA() {
 			}
 
 //			filestr << k << " E: S= [" << S.a << " ; " << S.b << "]" << endl;
-			cout << " E: S= [" << S.a << " ; " << S.b << "]" << endl;
+			//cout  << std::setprecision(dprec) <<  " E: S= [" << S.a << " ; " << S.b << "]" << endl;
 			if (st == 0) {
 				bm.ToMap(n2 - 1, S);
 
 				for (int i = 1; i <= n1; i++) {
+					S5 = bm.FromMap(i - 1);
+					filestr << S5.a << "; ";
 					rh = r[i - 1];
-					if ((k > 1) && (rh == k - 1)) {
-						BB1 = bm.FromMap(i - 1);
-					}
-					if ((k > m - 1) && (rh == k - m + 1)) {
-						BB0 = bm.FromMap(i - 1);
+					if (rh != 0){
+						B1M->ToMap(rh -1, bm.FromMap(i-1));
 					}
 				}
+				filestr << endl;
 				kh = k - 1;
 				l = 0;
 				MAX.a = 0;
@@ -576,10 +581,7 @@ int PoissonSolverAM<T>::SolvePIA() {
 						l = l + 1;
 						q = l;
 						for (int i = 1; i <= kh; i++) {
-							if ((k > 1) && (i == k - 1))
-								S = S - (BB1 * this->X[q - 1]);
-							if ((k > m - 1) && (i - 1 == k - m))
-								S = S - (BB0 * this->X[q - 1]);
+							S = S - (B1M->FromMap(i-1) * this->X[q - 1]);
 							q = q + p;
 						}
 						if (!((S.a == 0) && (S.b == 0)))
@@ -670,7 +672,7 @@ int PoissonSolverAM<T>::SolvePIA() {
 			}
 		}
 	}
-//	filestr.close();
+	filestr.close();
 	return 0;
 }
 

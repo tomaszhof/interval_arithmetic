@@ -25,14 +25,6 @@ int main(int ac, char *av[]) {
 //	tester->ArithmeticTestNew();
 //	delete tester;
 
-//	Interval<mpreal> ione = {1, 1};
-//	Interval<mpreal> a = {-2, -1};
-//	Interval<mpreal> b = {-3, -1};
-//	Interval<mpreal> c, d;
-//
-//	c = ione /a;
-//	d = ione /b;
-
 	//experiment for the Generalized Poisson Equation
 	Experiment<long double>* exper = new Experiment<long double>(ac, av);
 	exper->Initialize();

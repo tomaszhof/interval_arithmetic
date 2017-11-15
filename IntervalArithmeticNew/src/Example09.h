@@ -180,81 +180,24 @@ Interval<T> Example09<T>::PHI4(const Interval<T>& ix, int& st)
 template<typename T>
 Interval<T> Example09<T>::PSI(const Interval<T>& ix, const Interval<T>& iy, int& st)
 {
-	//psi(x,y) = 14*y*x^2 - 6*y - 3*y^2
+	//psi(x,y) = 0
 
-	Interval<T> powx2, powy2, tmp;
-	Interval<T> ifourteen =
-	{ 14, 14 };
-	Interval<T> isix =
-	{ 6, 6 };
-	Interval<T> ithree =
-	{ 3, 3 };
 	Interval<T> r =
 	{ 0, 0 };
 
 	st = 0;
-	int status = 0;
-	int mode = Interval<T>::GetMode();
-
-	if (mode == PINT_MODE)
-	{
-		powx2 = (ix * ix);
-		powy2 = (iy * iy);
-		r = ifourteen *(iy * powx2);
-		tmp = (isix * iy);
-		r = (r - tmp);
-		tmp = (ithree * powy2);
-		r = (r - tmp);
-	}
-	else
-	{
-		powx2 = (ix * ix);
-		powy2 = (iy * iy);
-		r = (ifourteen* (iy * powx2));
-		tmp = (isix * iy);
-		r = (r - tmp);
-		tmp = (ithree * powy2);
-		r = (r - tmp);
-	}
 	return r;
 }
 
 template<typename T>
 Interval<T> Example09<T>::OMEGA(const Interval<T>& ix, const Interval<T>& iy, int& st)
 {
-	//omega(x,y) = 14*x*y^2 - 6*x - 3*x^2
-	Interval<T> powx2, powy2, tmp;
-	Interval<T> ifourteen =
-	{ 14, 14 };
-	Interval<T> isix =
-	{ 6, 6 };
-	Interval<T> ithree =
-	{ 3, 3 };
+	//omega(x,y) = 0
 	Interval<T> r =
 	{ 0, 0 };
 
 	st = 0;
 
-	if (Interval<T>::GetMode() == PINT_MODE)
-	{
-		powx2 = (ix * ix);
-		powy2 = (iy * iy);
-		r = (ifourteen *(ix * powy2));
-		tmp = (isix * ix);
-		r = (r - tmp);
-		tmp = (ithree * powx2);
-		r = (r - tmp);
-	}
-	else
-	{
-		powx2 = (ix * ix);
-		powy2 = (iy * iy);
-		r = (ifourteen * (ix * powy2));
-		tmp = (isix * ix);
-		r = (r - tmp);
-		tmp = (ithree * powx2);
-		r = (r - tmp);
-	}
 	return r;
 }
 

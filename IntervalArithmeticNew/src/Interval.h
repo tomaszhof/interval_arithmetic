@@ -34,7 +34,7 @@ using namespace mpfr;
 namespace interval_arithmetic {
 
 enum IAPrecision {
-	LONGDOUBLE_PREC = 80, DOUBLE_PREC = 64, FLOAT_PREC = 32, MPREAL_PREC = 40
+	LONGDOUBLE_PREC = 63, DOUBLE_PREC = 53, FLOAT_PREC = 32, MPREAL_PREC = 40
 };
 
 enum IAOutDigits {
@@ -547,7 +547,7 @@ Interval<T> ICos(const Interval<T>& x) {
 	int k;
 	int st = 0;
 	string left, right;
-	T eps = Interval<T>::GetEpsilon();
+	T eps = 1E-18; //Interval<T>::GetEpsilon();
 	T diff = std::numeric_limits<T>::max();
 
 	Interval<T> d, c, w, w1, x2, tmp;
@@ -652,7 +652,7 @@ Interval<T> IExp(const Interval<T>& x) {
 	Interval<T> d, e, w, w1;
 	string left, right;
 	Interval<T> tmp = x;
-	T eps = 2*Interval<T>::GetEpsilon();
+	T eps = 1E-18; //2*Interval<T>::GetEpsilon();
 	T diff = std::numeric_limits<T>::max();
 	if ((x.a < 0) && (x.b > 0))
 		return {1,1};

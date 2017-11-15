@@ -216,11 +216,11 @@ void Solver<T>::WriteIntervalResultsToFile() {
 			filestr << " " << endl;
 			filestr << std::setprecision(2) << " u(" << alpha + ui * h << ","
 					<< beta + j * k << ") = ";
-			filestr << "[" << left << "," << right << "]" << endl;
+			filestr << "[" << left << ", " << right << "]" << endl;
 			filestr << "      width =  " << std::setprecision(dprec) << w
 					<< endl;
 			filestr << std::setprecision(2) << "eu(" << alpha + ui * h << ","
-					<< beta + j * k << ") =" << std::setprecision(dprec)
+					<< beta + j * k << ") = " << std::setprecision(dprec)
 					<< exact << endl;
 		}
 	}
@@ -242,11 +242,11 @@ void Solver<T>::WriteIntervalResultsToFile() {
 			filestr << " " << endl;
 			filestr << std::setprecision(2) << " u(" << alpha + i * h << ","
 					<< beta + uj * k << ") = ";
-			filestr << "[" << left << "," << right << "]" << endl;
+			filestr << "[" << left << ", " << right << "]" << endl;
 			filestr << "      width =  " << std::setprecision(dprec) << w
 					<< endl;
 			filestr << std::setprecision(2) << "eu(" << alpha + i * h << ","
-					<< beta + uj * k << ") =" << std::setprecision(dprec)
+					<< beta + uj * k << ") = " << std::setprecision(dprec)
 					<< exact << endl;
 		}
 	}
