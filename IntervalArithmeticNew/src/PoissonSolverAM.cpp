@@ -63,7 +63,8 @@ int PoissonSolverAM<T>::SetExample(int eid) {
 template<typename T>
 int PoissonSolverAM<T>::SolveFP() {
 	int i, j, jh, j1, k, kh, l, lh, l1, l2, n1, n2, p, q, rh, st;
-	long double af, cf, h1, k1, hh1, kk1, max, s, tmpM, tmpN, h2d12, hhm1, kkm1, hhp1, kkp1;
+	long double af, cf, h1, k1, hh1, kk1, max, s, tmpM, tmpN, h2d12, hhm1, kkm1,
+			hhp1, kkp1;
 
 	if (!Solver<T>::_initparams)
 		throw runtime_error("Parameters not initialized!");
@@ -124,10 +125,10 @@ int PoissonSolverAM<T>::SolveFP() {
 			hh1 = alpha + i * h1;
 			kk1 = beta + j * k1;
 
-			hhp1 = alpha + (i+1) * h1;
-			kkp1 = beta + (j+1) * k1;
-			hhm1 = alpha + (i-1) * h1;
-			kkm1 = beta + (j-1) * k1;
+			hhp1 = alpha + (i + 1) * h1;
+			kkp1 = beta + (j + 1) * k1;
+			hhm1 = alpha + (i - 1) * h1;
+			kkm1 = beta + (j - 1) * k1;
 
 			//changed - in order to generalize to elliptic PDE
 			af = 1 / h1; //bc->a(hh1, kk1) / h1; //1 / h1;
@@ -304,6 +305,7 @@ int PoissonSolverAM<T>::SolvePIA() {
 	int dprec = Interval<T>::GetOutDigits();
 	std::setprecision(dprec);
 
+	cout << "AM SOLVER 2ND ORDER PROPER INTERVAL ARTH" << endl;
 	if (!_initparams)
 		throw runtime_error("Parameters not initialized!");
 
@@ -482,15 +484,15 @@ int PoissonSolverAM<T>::SolvePIA() {
 				S5 = S1 + S2;
 
 				S5 = S5 * MMconst;
-				S3 = bc->PSI((HH1+HH), KK1, st);
+				S3 = bc->PSI((HH1 + HH), KK1, st);
 				//S5 = ia.IMul(S1, S5);
 				//S3 = ia.IMul(S2, S3);
 
 				if (st == 0) {
-					S4 = bc->OMEGA(HH1, (KK1+ KK), st);
+					S4 = bc->OMEGA(HH1, (KK1 + KK), st);
 					if (st == 0) {
 						S1 = S1 * S3;
-					    S2 = S2 * S4;
+						S2 = S2 * S4;
 //					    cout  << std::setprecision(dprec) <<  " E: S1= [" << S1.a << " ; " << S1.b << "]" << endl;
 						S1 = S1 + S2 + S5; //ia.IAdd(ia.DIAdd(S1, S2), S5);
 						S = S + (S1 / itwelve);
@@ -566,8 +568,8 @@ int PoissonSolverAM<T>::SolvePIA() {
 					S5 = bm.FromMap(i - 1);
 					filestr << S5.a << "; ";
 					rh = r[i - 1];
-					if (rh != 0){
-						B1M->ToMap(rh -1, bm.FromMap(i-1));
+					if (rh != 0) {
+						B1M->ToMap(rh - 1, bm.FromMap(i - 1));
 					}
 				}
 				filestr << endl;
@@ -581,7 +583,7 @@ int PoissonSolverAM<T>::SolvePIA() {
 						l = l + 1;
 						q = l;
 						for (int i = 1; i <= kh; i++) {
-							S = S - (B1M->FromMap(i-1) * this->X[q - 1]);
+							S = S - (B1M->FromMap(i - 1) * this->X[q - 1]);
 							q = q + p;
 						}
 						if (!((S.a == 0) && (S.b == 0)))
@@ -705,6 +707,7 @@ int PoissonSolverAM<T>::SolveDIA() {
 	int* r;
 	T z;
 	THashMap<T> bm;
+	THashMap<T>* B1M = new THashMap<T>();
 
 	st = 0;
 	NN.a = n;
@@ -921,11 +924,8 @@ int PoissonSolverAM<T>::SolveDIA() {
 
 				for (int i = 1; i <= n1; i++) {
 					rh = r[i - 1];
-					if ((k > 1) && (rh == k - 1)) {
-						BB1 = bm.FromMap(i - 1);
-					}
-					if ((k > m - 1) && (rh == k - m + 1)) {
-						BB0 = bm.FromMap(i - 1);
+					if (rh != 0) {
+						B1M->ToMap(rh - 1, bm.FromMap(i - 1));
 					}
 				}
 				kh = k - 1;
@@ -938,10 +938,7 @@ int PoissonSolverAM<T>::SolveDIA() {
 						l = l + 1;
 						q = l;
 						for (int i = 1; i <= kh; i++) {
-							if ((k > 1) && (i == k - 1))
-								S = S - (BB1 * this->X[q - 1]);
-							if ((k > m - 1) && (i - 1 == k - m))
-								S = S - (BB0 * this->X[q - 1]);
+							S = S - (B1M->FromMap(i - 1) * this->X[q - 1]);
 							q = q + p;
 						}
 						if (!((S.a == 0) && (S.b == 0)))
@@ -1033,9 +1030,6 @@ int PoissonSolverAM<T>::SolveDIA() {
 	}
 	return 0;
 }
-
-
-
 
 //The explicit instantiation part
 template class PoissonSolverAM<long double> ;

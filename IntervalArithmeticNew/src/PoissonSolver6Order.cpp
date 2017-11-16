@@ -1,28 +1,26 @@
 /*
- * PoissonSolver4OrderAM.cpp
+ * PoissonSolver6Order.cpp
  *
- *  Created on: 4 wrz 2017
+ *  Created on: 16 lis 2017
  *      Author: tomhof
  */
 
-#include "PoissonSolver4OrderAM.h"
+#include "PoissonSolver6Order.h"
 
 namespace interval_arithmetic {
-
-
 template<typename T>
-PoissonSolver4OrderAM<T>::PoissonSolver4OrderAM() {
+PoissonSolver6Order<T>::PoissonSolver6Order() {
 	// TODO Auto-generated constructor stub
 
 }
 
 template<typename T>
-PoissonSolver4OrderAM<T>::~PoissonSolver4OrderAM() {
+PoissonSolver6Order<T>::~PoissonSolver6Order() {
 	// TODO Auto-generated destructor stub
 }
 
 template<typename T>
-int PoissonSolver4OrderAM<T>::SetExample(int eid) {
+int PoissonSolver6Order<T>::SetExample(int eid) {
 	switch (eid) {
 	case 1:
 		//bc = new Example01();
@@ -62,13 +60,10 @@ int PoissonSolver4OrderAM<T>::SetExample(int eid) {
 }
 
 template<typename T>
-int PoissonSolver4OrderAM<T>::SolveFP() {
+int PoissonSolver6Order<T>::SolveFP() {
 	int i, j, jh, j1, k, kh, l, lh, l1, l2, n1, n2, p, q, rh, st;
-	long double h1, k1, h2, k2, h4, k4,hh1, kk1, max, s, tmpM, tmpN, h2d12, k2d12,
+	long double af, cf, h1, k1, hh1, kk1, max, s, tmpM, tmpN, h2d12, k2d12,
 			hhp1, hhm1, kkp1, kkm1;
-
-	//coefficients
-	long double ca, cb, cc, s1, s2;
 
 	if (!Solver<T>::_initparams)
 		throw runtime_error("Parameters not initialized!");
@@ -99,18 +94,11 @@ int PoissonSolver4OrderAM<T>::SolveFP() {
 			}
 		}
 	}
-
-
 	if (st == 0) {
 		h1 = (gamma - alpha) / n;
 		k1 = (delta - beta) / m;
-		h2 = h1 * h1;
-		k2 = k1 * k1;
-		h4 = h2 * h2;
-		k4 = k2 * k2;
-		ca = h2 + k2;
-		cb = 2*(5*h2-k2);
-		cc = 2*(5*k2-h2);
+		h2d12 = h1 * h1 / 12.0;
+		k2d12 = k1 * k1 / 12.0;
 		n1 = (n - 1) * (m - 1);
 		n2 = n1 + 1;
 		p = n2;
@@ -125,12 +113,11 @@ int PoissonSolver4OrderAM<T>::SolveFP() {
 			r[i - 1] = 0;
 		k = 0;
 		j = 0;
-
+//
 //		ofstream rowFile;
 //		rowFile.open("row.txt");
 
 		do {
-
 			k = k + 1;
 			for (int i = 1; i <= n1; i++)
 				a1[i - 1] = 0;
@@ -146,119 +133,243 @@ int PoissonSolver4OrderAM<T>::SolveFP() {
 			hhm1 = alpha + (i - 1) * h1;
 			kkm1 = beta + (j - 1) * k1;
 
+			//changed - in order to generalize to elliptic PDE
 
+			af = 1.0 / h1; //bc->a(hh1, kk1) / h1; //1 / h1;
+			cf = 1.0 / k1; //bc->c(hh1, kk1) / k1; //1 / k1;
 
 			//fourth order method - option 6 (Zhang)
 			if (i > 1) {
-				a1[l1 - 1] = cc;
+				a1[l1 - 1] = 4.0 * (af / h1); //af / h1;
 
 				if (j > 1) {
-					a1[l1 - 2] = ca;
+					a1[l1 - 2] = af / h1;
 				}
 				if (j < m - 1) {
-					a1[l1] = ca;
+					a1[l1] = af / h1;
 				}
 
 			}
 
-			a1[l2 - 1] = (-20.0) * ca;
+			a1[l2 - 1] = (-20.0) * (af / h1); //-2 * (af / h1 + cf / k1);
 
 			if (j > 1) {
-				a1[l2 - 2] = cb;
+				a1[l2 - 2] = 4.0 * (af / h1); //cf / k1;
 			}
 			if (j < m - 1)
-				a1[l2] = cb;
+				a1[l2] = 4.0 * (af / h1); //cf / k1;
 
 			l1 = l2 + m - 1;
 			if (i < n - 1) {
-				a1[l1 - 1] = cc;
+				a1[l1 - 1] = 4.0 * (af / h1);
 				if (j > 1) {
-					a1[l1 - 2] = ca;
+					a1[l1 - 2] = af / h1;
 				}
 				if (j < m - 1) {
-					a1[l1] = ca;
+					a1[l1] = af / h1;
 				}
 			}
 
+			//----second order method
+//			if (i > 1)
+//				a1[l1 - 1] = af / h1;
+//			a1[l2 - 1] = -2 * (af / h1 + cf / k1);
+//
+//			if (j > 1)
+//				a1[l2 - 2] = cf / k1;
+//			if (j < m - 1)
+//				a1[l2] = cf / k1;
+//			l1 = l2 + m - 1;
+//
+//			if (i < n - 1)
+//				a1[l1 - 1] = af / h1;
+
+//---- BOUNDARY CONDITIONS
+//          Fortuna Macukow option 4
+//			s =  - bc->f(hh1, kk1);
+//			s = s - (1.0/12.0) * (bc->f(hhp1, kk1) - 2.0 * bc->f(hh1, kk1) + bc->f(hhm1, kk1));//bc->f(hh1, kk1);
+//			s = s - (1.0/12.0) * (bc->f(hh1, kkp1) - 2.0 * bc->f(hh1, kk1) + bc->f(hh1, kkm1));
+
 //		    Fortuna Macukow option 5
-			s = bc->f(hhm1, kk1);
-			s1 = bc->f(hhp1, kk1);
-			s = s + s1;
-			s1 = bc->f(hh1, kk1);
-			s = s + 8*s1;
-			s1 = bc->f(hh1, kkm1);
-			s = s + s1;
-			s1 = bc->f(hhp1, kkp1);
-			s = s + s1;
-			s = h2*k2*s;
+			s = 4.0 * bc->f(hh1, kk1);
+			s = s
+					+ (1.0 / 2.0)
+							* (bc->f(hhp1, kk1) + bc->f(hhm1, kk1)
+									+ bc->f(hh1, kkp1) + bc->f(hh1, kkm1)); //bc->f(hh1, kk1);
 
 //			cout << "k = " << k << "; s = " << s << endl;
+//			if (i == 1) {
+//				s = s - af * bc->phi1(kk1) / h1;
+//				if (j == 1)
+//					s = s - cf * bc->phi2(hh1) / k1;
+//				if (j == m - 1)
+//					s = s - cf * bc->phi4(hh1) / k1;
+//			} else if (i == n - 1) {
+//				s = s - af * bc->phi3(kk1) / k1;
+//				if (j == 1)
+//					s = s - cf * bc->phi2(hh1) / k1;
+//				if (j == m - 1)
+//					s = s - cf * bc->phi4(hh1) / k1;
+//			} else {
+//				if (j == 1)
+//					s = s - cf * bc->phi2(hh1) / k1;
+//				if (j == m - 1)
+//					s = s - cf * bc->phi4(hh1) / k1;
+//			}
+
+//			//Fortuna Macukow - option 4
+//			if (i == 1) {
+//				s = s - (1.0/6.0)*(5.0*(af/h1) - cf/k1)*bc->phi1(kk1);
+//				//if (j < m - 1)
+//					s = s - (1.0/12.0)*(af/h1 + cf/k1)*bc->phi1(kkp1);
+//				//if (j > 1)
+//					s = s - (1.0/12.0)*(af/h1 + cf/k1)*bc->phi1(kkm1);
+//				if (j == 1)
+//				{
+//					s = s - (1.0/6.0)*(af/h1 + 5.0 * cf/k1)*bc->phi2(hh1);
+//					s = s - (1.0/12.0)*(af/h1 + cf/k1)*bc->phi2(hhp1);
+//
+//					//s = s - (1.0/12.0)*(af/h1 + cf/k1)*bc->phi1(hhm1);//?
+//				}
+//				if (j == m - 1)
+//				{
+//					s = s - (1.0/6.0)*(af/h1 + 5.0 * cf/k1)*bc->phi4(hh1);
+//					s = s - (1.0/12.0)*(af/h1 + cf/k1) * bc->phi4(hhp1);
+//
+//					//s = s - (1.0/12.0)*(af/h1 + cf/k1)*bc->phi1(hhm1);//?
+//				}
+//			} else if (i == n - 1) {
+//				s = s - (1.0/6.0)*(5.0*(af/h1) - cf/k1)*bc->phi3(kk1);
+//				//if (j < m - 1)
+//					s = s - (1.0/12.0)*(af/h1 + cf/k1)*bc->phi3(kkp1);
+//				//if (j > 1)
+//					s = s - (1.0/12.0)*(af/h1 + cf/k1)*bc->phi3(kkm1);
+//				if (j == 1)
+//				{
+//					s = s - (1.0/6.0)*(af/h1 + 5.0 * cf/k1)*bc->phi2(hh1);
+//					s = s - (1.0/12.0)*(af/h1 + cf/k1)*bc->phi2(hhm1);
+//					//s = s - (1.0/12.0)*(af/h1 + cf/k1)*bc->phi2(hhm1);
+//				}
+//				if (j == m - 1)
+//				{
+//					s = s - (1.0/6.0)*(af/h1 + 5.0 * cf/k1)*bc->phi4(hh1);
+//					s = s - (1.0/12.0)*(af/h1 + cf/k1)*bc->phi4(hhm1);
+//					//s = s - (1.0/12.0)*(af/h1 + cf/k1)*bc->phi4(hhm1);
+//				}
+//			} else {
+//				if (j == 1)
+//				{
+//					s = s - (1.0/6.0)*(af/h1 + 5.0 * cf/k1)*bc->phi2(hh1);
+//					s = s - (1.0/12.0)*(af/h1 + cf/k1)*bc->phi2(hhp1);
+//					s = s - (1.0/12.0)*(af/h1 + cf/k1)*bc->phi2(hhm1);
+//				}
+//				if (j == m - 1)
+//				{
+//					s = s - (1.0/6.0)*(af/h1 + 5.0 * cf/k1)*bc->phi4(hh1);
+//					s = s - (1.0/12.0)*(af/h1 + cf/k1)*bc->phi4(hhp1);
+//					s = s - (1.0/12.0)*(af/h1 + cf/k1)*bc->phi4(hhm1);
+//				}
+//			}
+
+//			//Fortuna Macukow - option 5
+//			if (i == 1) {
+//				s = s - (5.0*(af/h1) - cf/k1)*bc->phi1(kk1);
+//				if (j < m)
+//					s = s - (1.0/2.0)*(af/h1 + cf/k1)*bc->phi1(kkp1);
+//				if (j > 0)
+//					s = s - (1.0/2.0)*(af/h1 + cf/k1)*bc->phi1(kkm1);
+//				if (j == 1)
+//				{
+//					s = s - (af/h1 + 5.0 * cf/k1)*bc->phi2(hh1);
+//					s = s - (1.0/2.0)*(af/h1 + cf/k1)*bc->phi2(hhp1);
+//
+//					//s = s - (1.0/12.0)*(af/h1 + cf/k1)*bc->phi1(hhm1);//?
+//				}
+//				if (j == m - 1)
+//				{
+//					s = s - (af/h1 + 5.0 * cf/k1)*bc->phi4(hh1);
+//					s = s - (1.0/2.0)*(af/h1 + cf/k1) * bc->phi4(hhp1);
+//
+//					//s = s - (1.0/12.0)*(af/h1 + cf/k1)*bc->phi1(hhm1);//?
+//				}
+//			} else if (i == n - 1) {
+//				s = s - (5.0*(af/h1) - cf/k1)*bc->phi3(kk1);
+//				if (j < m)
+//					s = s - (1.0/2.0)*(af/h1 + cf/k1)*bc->phi3(kkp1);
+//				if (j > 0)
+//					s = s - (1.0/2.0)*(af/h1 + cf/k1)*bc->phi3(kkm1);
+//				if (j == 1)
+//				{
+//					s = s - (af/h1 + 5.0 * cf/k1)*bc->phi2(hh1);
+//					s = s - (1.0/2.0)*(af/h1 + cf/k1)*bc->phi2(hhm1);
+//					//s = s - (1.0/12.0)*(af/h1 + cf/k1)*bc->phi2(hhm1);
+//				}
+//				if (j == m - 1)
+//				{
+//					s = s - (af/h1 + 5.0 * cf/k1)*bc->phi4(hh1);
+//					s = s - (1.0/2.0)*(af/h1 + cf/k1)*bc->phi4(hhm1);
+//					//s = s - (1.0/12.0)*(af/h1 + cf/k1)*bc->phi4(hhm1);
+//				}
+//			} else {
+//				if (j == 1)
+//				{
+//					s = s - (af/h1 + 5.0 * cf/k1)*bc->phi2(hh1);
+//					s = s - (1.0/2.0)*(af/h1 + cf/k1)*bc->phi2(hhp1);
+//					s = s - (1.0/2.0)*(af/h1 + cf/k1)*bc->phi2(hhm1);
+//				}
+//				if (j == m - 1)
+//				{
+//					s = s - (af/h1 + 5.0 * cf/k1)*bc->phi4(hh1);
+//					s = s - (1.0/2.0)*(af/h1 + cf/k1)*bc->phi4(hhp1);
+//					s = s - (1.0/2.0)*(af/h1 + cf/k1)*bc->phi4(hhm1);
+//				}
+//			}
 
 			//Zhang- option 6
 			if (i == 1) {
-				s1 = bc->phi1(kkm1);
-				s2 = bc->phi1(kkp1);
-				s1 = ca * (s1 + s2);
-				s2 = bc->phi1(kk1);
-				s1 = s1 + cc*s2;
-				s = s-s1;
-//				if (j < m)
-//				{
-//					s = s - (af / h1) * bc->phi1(kkp1);
-//				}
-//				if (j > 0)
-//					s = s - (af / h1) * bc->phi1(kkm1);
+				s = s - 4.0 * (af / h1) * bc->phi1(kk1);
+				if (j < m)
+					s = s - (af / h1) * bc->phi1(kkp1);
+				if (j > 0)
+					s = s - (af / h1) * bc->phi1(kkm1);
 				if (j == 1) {
-					s1 = bc->phi2(hhp1);
-					s = s-ca*s1;
-					s1 = bc->phi2(hh1);
-					s = s-cb*s1;
+					s = s - 4.0 * (af / h1) * bc->phi2(hh1);
+					s = s - (af / h1) * bc->phi2(hhp1);
+
+					//s = s - (1.0/12.0)*(af/h1 + cf/k1)*bc->phi1(hhm1);//?
 				}
 				if (j == m - 1) {
-				    s1 = bc->phi4(hhp1);
-				    s =s-ca*s1;
-				    s1 =bc->phi4(hh1);
-				    s =s-cb*s1;
+					s = s - 4.0 * (af / h1) * bc->phi4(hh1);
+					s = s - (af / h1) * bc->phi4(hhp1);
+
+					//s = s - (1.0/12.0)*(af/h1 + cf/k1)*bc->phi1(hhm1);//?
 				}
 			} else if (i == n - 1) {
-				s1 = bc->phi3(kkm1);
-				s2 = bc->phi3(kkp1);
-				s1 = ca*(s1+s2);
-				s2 = bc->phi3(kk1);
-				s1 = s1+cc*s2;
-				s = s - s1;
-//				if (j < m)
-//					s = s - (af / h1) * bc->phi3(kkp1);
-//				if (j > 0)
-//					s = s - (af / h1) * bc->phi3(kkm1);
+				s = s - 4.0 * (af / h1) * bc->phi3(kk1);
+				if (j < m)
+					s = s - (af / h1) * bc->phi3(kkp1);
+				if (j > 0)
+					s = s - (af / h1) * bc->phi3(kkm1);
 				if (j == 1) {
-					s1 = bc-> phi2(hhm1);
-					s = s-ca*s1;
-					s1 = bc->phi2(hh1);
-					s = s-cb*s1;
+					s = s - 4.0 * (af / h1) * bc->phi2(hh1);
+					s = s - (af / h1) * bc->phi2(hhm1);
+					//s = s - (1.0/12.0)*(af/h1 + cf/k1)*bc->phi2(hhm1);
 				}
 				if (j == m - 1) {
-				  s1 = bc-> phi4(hhm1);
-				  s=s-ca*s1;
-				  s1=bc->phi4(hh1);
-				  s=s-cb*s1;
+					s = s - 4.0 * (af / h1) * bc->phi4(hh1);
+					s = s - (af / h1) * bc->phi4(hhm1);
+					//s = s - (1.0/12.0)*(af/h1 + cf/k1)*bc->phi4(hhm1);
 				}
 			} else {
 				if (j == 1) {
-					s1 =bc->phi2(hhm1);
-					  s2=bc->phi2(hhp1);
-					  s1=s1+s2;
-					  s=s-ca*s1;
-					  s1=bc->phi2(hh1);
-					  s=s-cb*s1;
+					s = s - 4.0 * (af / h1) * bc->phi2(hh1);
+					s = s - (af / h1) * bc->phi2(hhp1);
+					s = s - (af / h1) * bc->phi2(hhm1);
 				}
 				if (j == m - 1) {
-				  s1 = bc->phi4(hhm1);
-				  s2 = bc->phi4(hhp1);
-				  s1 = s1+s2;
-				  s = s-ca*s1;
-				  s1 = bc->phi4(hh1);
-				  s = s-cb*s1;
+					s = s - 4.0 * (af / h1) * bc->phi4(hh1);
+					s = s - (af / h1) * bc->phi4(hhp1);
+					s = s - (af / h1) * bc->phi4(hhm1);
 				}
 			}
 
@@ -376,25 +487,18 @@ int PoissonSolver4OrderAM<T>::SolveFP() {
 				for (int i = 3; i <= n - 3; i++)
 					for (int j = 3; j <= m - 3; j++) {
 						tmpM = abs(
-								-12 * u[i][j] + 6 * (u[i][j-1] + u[i][j+1])
-										+ 8 * (u[i-1][j] + u[i+1][j])
-										- 4 * (u[i-1][j-1] + u[i-1][j+1]
-										+ u[i+1][j-1] + u[i+1][j+1])
-										- 2 * (u[i-2][j] + u[i+2][j])
-										+ u[i-2][j-1] + u[i-2][j+1]
-										+ u[i+2][j-1] + u[i+2][j+1]);
-						tmpM = (1 / (h1 * h1 * h1 * h1 * k1 * k1)) * tmpM;
+								-20 * u[i][j] + 15 * u[i - 1][j] + 15 * u[i + 1][j]
+										- 6 * u[i - 2][j] -6 * u[i + 2][j] + u[i + 3][j] + u[i - 3][j]);
+						tmpM = (1 / (h1 * h1 * h1 * h1 * h1 * h1)) * tmpM;
 						if (tmpM > maxM)
 							maxM = tmpM;
 						tmpN = abs(
-								-12 * u[i][j] + 6 * (u[i-1][j] + u[i+1][j])
-										+ 8 * (u[i][j - 1] + u[i][j + 1])
-										- 4 * (u[i-1][j-1] + u[i+1][j-1]
-										+ u[i-1][j+1] + u[i+1][j+1])
-										- 2 * (u[i][j-2] + u[i][j+2])
-										+ u[i-1][j-2] + u[i+1][j-2]
-										+ u[i-1][j+2] + u[i+1][j+2]);
-						tmpN = (1 / (h1 * h1 * k1 * k1 * k1 * k1)) * tmpN;
+								-12 * u[i][j] + 8 * u[i+1][j] + 8 * u[i-1][j]
+										+ 6 * u[i][j - 1] + 6 * u[i][j + 1])
+										- 4 * u[i+1][j+1] - 4 * u[i+1][j-1]
+										- 4 * u[i-1][j+1] - 4 * u[i-1][j-1]
+										- 2 * u[i + 2][j] + u[i+2][j+1] + u[i+2][j-1];
+						tmpN = (1 / (h1 * h1 * h1 * h1 * k1 * k1)) * tmpN;
 						if (tmpN > maxN)
 							maxN = tmpN;
 					}
@@ -403,6 +507,8 @@ int PoissonSolver4OrderAM<T>::SolveFP() {
 					delete[] u[i];
 				delete[] u;
 			}
+			cout << "M = " << maxM << endl;
+			cout << "N = " << maxN << endl;
 
 		}
 		delete[] x;
@@ -413,10 +519,12 @@ int PoissonSolver4OrderAM<T>::SolveFP() {
 }
 
 template<typename T>
-int PoissonSolver4OrderAM<T>::SolvePIA() {
+int PoissonSolver6Order<T>::SolvePIA() {
 //	fstream filestr;
 //	string fname = "tmpLog.txt";
 //	filestr.open(fname.c_str(), fstream::out);
+
+	cout << "TH SOLVER 6TH ORDER PROPER INTERVAL ARTH" << endl;
 
 	if (!_initparams)
 		throw runtime_error("Parameters not initialized!");
@@ -435,10 +543,7 @@ int PoissonSolver4OrderAM<T>::SolvePIA() {
 	const Interval<T> itwo = { 2, 2 };
 	const Interval<T> ithree = { 3, 3 };
 	const Interval<T> ifour = { 4, 4 };
-	const Interval<T> ieight = { 8, 8 };
-	const Interval<T> ifive = { 5, 5 };
 	const Interval<T> itwelve = { 12, 12 };
-	const Interval<T> itwenty = { 20, 20 };
 	const Interval<T> imtwenty = { -20, -20 };
 	const Interval<T> ithreesixty = { 360, 360 };
 	const Interval<T> ininety = { 90, 90 };
@@ -447,9 +552,8 @@ int PoissonSolver4OrderAM<T>::SolvePIA() {
 	int i, j, jh, j1, k, kh, l, lh, l1, l2, n1, n2, n3, p, q, rh;
 	int num;
 	Interval<T> AF, BB0, BB1, CF, H1, HH, HH1, II, JJ, K1, KK, KK1, MAX, MM, AA,
-			CC, PPconst, QQconst, NN, S, S1, S2, S3, S4, S5, H1POW2, K1POW2,
+			CC, MMconst, NNconst, NN, S, S1, S2, S3, S4, S5, H1POW2, K1POW2,
 			IIP1, IIM1, JJP1, JJM1, KKP1, KKM1, HHP1, HHM1, H1POW2K1POW2;
-	Interval<T> H2, H4, K2, K4, PQ,CA, CB;
 	bool list_exists;
 	Interval<T> aij;
 	int* r;
@@ -462,10 +566,10 @@ int PoissonSolver4OrderAM<T>::SolvePIA() {
 	NN.b = n;
 	MM.a = m;
 	MM.b = m;
-	PPconst.a = -bc->GetConstP();
-	PPconst.b = bc->GetConstP();
-	QQconst.a = -bc->GetConstQ();
-	QQconst.b = bc->GetConstQ();
+	MMconst.a = -bc->GetConstM();
+	MMconst.b = bc->GetConstM();
+	NNconst.a = -bc->GetConstN();
+	NNconst.b = bc->GetConstN();
 
 	if ((n < 2) || (m < 2))
 		st = 1;
@@ -534,32 +638,13 @@ int PoissonSolver4OrderAM<T>::SolvePIA() {
 	if (st == 0) {
 		H1 = (GAMMA - ALPHA) / NN;
 		K1 = (DELTA - BETA) / MM;
-		H2 = H1 * H1;
-		H4 = H2 * H2;
-		K2 = K1 * K1;
-		K4 = K2 * K2;
 		HH.a = -H1.b;
 		HH.b = H1.a;
-		KK.a = -K1.b;
-		KK.b = K1.a;
 		H1POW2 = H1 * H1;
 		K1POW2 = K1 * K1;
 		H1POW2K1POW2 = H1POW2 * K1POW2;
-
-        CA=H2+K2;     // interval h^2+k^2
-        CB=(ifive*H2)- K2;
-        CB =itwo*CB;   // interval 2*(5*h^2-k^2)
-        CC=(ifive*K2)-H2;
-        CC=itwo*CC;   // interval 2*(5*k^2-h^2);
-        PQ=H4*PPconst;
-        PQ=PQ+K4*QQconst;
-        PQ=PQ/itwenty;
-        PPconst= PPconst+ QQconst;
-        PPconst=(H2*K2)*PPconst;
-        PPconst=PPconst/itwelve;
-        PQ=PQ+PPconst;
-		 // PQ = (h^4*[-P,P]+k^4*[-Q,Q])/20
-		 //       +h^2*k^2*([-P,P]+{-Q,Q])/12
+		KK.a = -K1.b;
+		KK.b = K1.a;
 		n1 = (n - 1) * (m - 1);
 		n2 = n1 + 1;
 		p = n2;
@@ -604,152 +689,144 @@ int PoissonSolver4OrderAM<T>::SolvePIA() {
 			HHP1 = ALPHA + (IIP1 * H1);
 			KKP1 = BETA + (JJP1 * K1);
 			AA = bc->A(HH1, KK1, st);
-			CF = bc->C(HH1, KK1, st);
+			CC = bc->C(HH1, KK1, st);
 			AF = AA / H1;
-			CF = CF / K1;
+			CF = CC / K1;
+			S1 = imtwenty * AF / H1;
 
-
-			//fourth order method - option AM
-
+			//fourth order method - option 6 (Zhang)
 			if (i > 1) {
-				bm.ToMap(l1 - 1, CC);
+				bm.ToMap(l1 - 1, ifour * AF / H1);
 
 				if (j > 1) {
-					bm.ToMap(l1 - 2, CA);
+					bm.ToMap(l1 - 2, AF / H1);
 				}
 				if (j < m - 1) {
-					bm.ToMap(l1, CA);
+					bm.ToMap(l1, AF / H1);
 				}
 
 			}
 
-			S1 = imtwenty * CA;
 			bm.ToMap(l2 - 1, S1);
+
 			if (j > 1) {
-				bm.ToMap(l2 - 2, CB);
+				bm.ToMap(l2 - 2, ifour * (AF / H1));
 			}
 			if (j < m - 1)
-				bm.ToMap(l2, CB);
+				bm.ToMap(l2, ifour * (AF / H1));
 
 			l1 = l2 + m - 1;
 
 			if (i < n - 1) {
-				bm.ToMap(l1 - 1, CC);
+				bm.ToMap(l1 - 1, ifour * (AF / H1));
 				if (j > 1) {
-					bm.ToMap(l1 - 2, CA);
+					bm.ToMap(l1 - 2, (AF / H1));
 				}
 				if (j < m - 1) {
-					bm.ToMap(l1, CA);
+					bm.ToMap(l1, (AF / H1));
 				}
 			}
 
 			//right site
 
 			//Zhang- option 6
-			S = bc->F(HHM1, KK1, st);
+			S = ifour * bc->F(HH1, KK1, st);
+			S = S
+					+ (ione / itwo)
+							* (bc->F(HHP1, KK1, st) + bc->F(HHM1, KK1, st)
+									+ bc->F(HH1, KKP1, st)
+									+ bc->F(HH1, KKM1, st));
+			cout << "k = " << k << "; S= [" << S.a << " ; " << S.b << "]" << endl;
+//			filestr << k << " B: S= [" << S.a << " ; " << S.b << "]" << endl;
 
 			if (st == 0) {
+				//second order truncation error
+//				S5 = ((AA * H1POW2) * H1POW2K1POW2) * MMconst;
+//				S3 = ((CC * K1POW2) * H1POW2K1POW2) * NNconst;
+//				S1 = S3 + S5;
+//				S = S + (S1 / itwelve);
 
 				//fourth order truncation error
-				S1 = bc->F(HHP1, KK1, st);
+				S5 = H1POW2 * H1POW2  / ithreesixty;
+				S3 = (bc->PSI1(HH1, KK1, st) + bc->PSI2(HH1, KK1, st));
+				S1 = S5 * S3;
 				S = S + S1;
-				S1 = bc->F(HH1, KK1, st);
-				S = S + ieight * S1;
-				S1 = bc->F(HH1, KKM1, st);
+				S5 = H1POW2 * H1POW2 / ininety;
+				S3 = bc->PSI3(HH1, KK1, st);
+				S1 = S5 * S3;
 				S = S + S1;
-				S1 = bc->F(HH1, KKP1, st);
-				S = S + ieight * S1; // S = F[i-1,j]+F[i+1,j]+8*F[i,j]+F[i,j-1]+F[i,j+1]
+				S = S + S5 * (MMconst + NNconst);
 
-
-				S1 = bc->THETA(HHP1, KK1, st);
-				S1 = H4 * S1;
-
-				S2 = bc->KSI(HH1, KKP1, st);
-				S1 = S1 + K4 *S2;
-				S1 = S1 / itwenty;
-				// S1 = (h^4*THETA(X[i]+[-h,h],Y[j])
-                //       +k^4*KSI(X[i],Y[j]+[-k,k]))/20
-
-				S = (S-S1) + PQ;
-				S = H2*K2*S;
-//				cout << k << " E: S= [" << S.a << " ; " << S.b << "]" << endl;
 				if (i == 1) {
-					S1 = bc->PHI1(KKM1, st);
-					S2 = bc->PHI1(KKP1, st);
-					S1 = CA *(S1 + S2);
-					cout << k << " E: S1= [" << S1.a << " ; " << S1.b << "]" << endl;
-					S2 = bc->PHI1(KK1, st);
-					cout << k << " E: S2= [" << S2.a << " ; " << S2.b << "]" << endl;
-					S1 = S1 +(CC*S2);
-					cout << k << " E: CC= [" << CC.a << " ; " << CC.b << "]" << endl;
-					cout << k << " E: S1= [" << S1.a << " ; " << S1.b << "]" << endl;
+					S1 = ifour * (AF / H1) * bc->PHI1(KK1, st);
 					S = S - S1;
 
-//					if (j < m) {
-//						S1 = (AF / H1) * bc->PHI1(KKP1, st);
-//						S = S - S1;
-//					}
-//					if (j > 0) {
-//						S1 = (AF / H1) * bc->PHI1(KKM1, st);
-//						S = S - S1;
-//					}
-					cout << k << " E: S= [" << S.a << " ; " << S.b << "]" << endl;
-					if (j == 1) {
-						S1 = bc->PHI2(HHP1, st);
-						S = S - (CA*S1);
+					if (j < m) {
+						S1 = (AF / H1) * bc->PHI1(KKP1, st);
+						S = S - S1;
+					}
+					if (j > 0) {
+						S1 = (AF / H1) * bc->PHI1(KKM1, st);
+						S = S - S1;
+					}
 
-						S1 = bc->PHI2(HH1, st);
-						S = S - (CB*S1);
+					if (j == 1) {
+						S1 = ifour * (AF / H1) * bc->PHI2(HH1, st);
+						S = S - S1;
+
+						S1 = (AF / H1) * bc->PHI2(HHP1, st);
+						S = S - S1;
 					}
 
 					if (j == m - 1) {
-						S1 = bc->PHI4(HHP1, st);
-						S = S - (CA*S1);
+						S1 = ifour * (AF / H1) * bc->PHI4(HH1, st);
+						S = S - S1;
 
-						S1 = bc->PHI4(HH1, st);
-						S = S - (CB*S1);
+						S1 = (AF / H1) * bc->PHI4(HHP1, st);
+						S = S - S1;
 					}
-					cout << k << " E: S= [" << S.a << " ; " << S.b << "]" << endl;
 
 				} else if (i == n - 1) {
-					S1 = bc->PHI3(KKM1, st);
-					S2 = bc->PHI3(KKP1, st);
-					S1 = CA*(S1 + S2);
-					S2 = bc->PHI3(KK1, st);
-					S1 = S1 + (CC * S2);
+					S1 = ifour * (AF / H1) * bc->PHI3(KK1, st);
 					S = S - S1;
+					if (j < m) {
+						S1 = (AF / H1) * bc->PHI3(KKP1, st);
+						S = S - S1;
+					}
+					if (j > 0) {
+						S1 = (AF / H1) * bc->PHI3(KKM1, st);
+						S = S - S1;
+					}
 
 					if (j == 1) {
-						S1 = bc->PHI2(HHM1, st);
-						S = S - (CA*S1);
-						S1 = bc->PHI2(HH1, st);
-						S = S - (CB*S1);
+						S1 = ifour * (AF / H1) * bc->PHI2(HH1, st);
+						S = S - S1;
+						S1 = (AF / H1) * bc->PHI2(HHM1, st);
+						S = S - S1;
 					}
 
 					if (j == m - 1) {
-						S1 = bc->PHI4(HHM1, st);
-						S = S - (CA*S1);
-						S1 = bc->PHI4(HH1, st);
-						S = S - (CB*S1);
+						S1 = ifour * (AF / H1) * bc->PHI4(HH1, st);
+						S = S - S1;
+						S1 = (AF / H1) * bc->PHI4(HHM1, st);
+						S = S - S1;
 					}
 
 				} else {
 
 					if (j == 1) {
-						S1 = bc->PHI2(HHM1, st);
-						S2 = bc->PHI2(HHP1, st);
-						S1 = S1 + S2;
-						S = S - (CA*S1);
-						S1 = bc->PHI2(HH1, st);
-						S = S - (CB*S1);
+						S1 = ifour * (AF / H1) * bc->PHI2(HH1, st);
+						S = S - S1;
+						S1 = (AF / H1) * bc->PHI2(HHP1, st);
+						S = S - S1;
+						S1 = (AF / H1) * bc->PHI2(HHM1, st);
+						S = S - S1;
 					}
 
 					if (j == m - 1) {
-						S1 = bc->PHI4(HHM1, st);
-						S2 = bc->PHI4(HHP1, st);
-						S1 = S1 + S2;
-						S = S - (CA*S1);
-						S1 = bc->PHI4(HH1, st);
+						S1 = ifour * (AF / H1) * bc->PHI4(HH1, st);
+						S = S - S1;
+						S1 = (AF / H1) * bc->PHI4(HHP1, st);
 						S = S - S1;
 						S1 = (AF / H1) * bc->PHI4(HHM1, st);
 						S = S - S1;
@@ -759,7 +836,6 @@ int PoissonSolver4OrderAM<T>::SolvePIA() {
 			}
 
 //			filestr << k << " E: S= [" << S.a << " ; " << S.b << "]" << endl;
-//			cout << k << " E: S= [" << S.a << " ; " << S.b << "]" << endl;
 			if (st == 0) {
 				bm.ToMap(n2 - 1, S);
 //				if (i < 10) cout << "S.Mid() = " << S.Mid() << endl;
@@ -878,11 +954,11 @@ int PoissonSolver4OrderAM<T>::SolvePIA() {
 }
 
 template<typename T>
-int PoissonSolver4OrderAM<T>::SolveDIA() {
+int PoissonSolver6Order<T>::SolveDIA() {
 	//	fstream filestr;
 	//	string fname = "tmpLog.txt";
 	//	filestr.open(fname.c_str(), fstream::out);
-
+	    cout << "TH SOLVER 6TH ORDER PROPER INTERVAL ARTH" << endl;
 		if (!_initparams)
 			throw runtime_error("Parameters not initialized!");
 
@@ -934,7 +1010,6 @@ int PoissonSolver4OrderAM<T>::SolveDIA() {
 			st = 2;
 
 		if (st == 0)
-
 		{
 			S = bc->PHI1(ALPHA, st);
 			if (st == 0)
@@ -1093,7 +1168,7 @@ int PoissonSolver4OrderAM<T>::SolveDIA() {
 								* (bc->F(HHP1, KK1, st) + bc->F(HHM1, KK1, st)
 										+ bc->F(HH1, KKP1, st)
 										+ bc->F(HH1, KKM1, st));
-				cout << "k = " << k << "; S= [" << S.a << " ; " << S.b << "]" << endl;
+//				cout << "k = " << k << "; S= [" << S.a << " ; " << S.b << "]" << endl;
 	//			filestr << k << " B: S= [" << S.a << " ; " << S.b << "]" << endl;
 
 				//second order truncation error
@@ -1321,7 +1396,6 @@ int PoissonSolver4OrderAM<T>::SolveDIA() {
 }
 
 //The explicit instantiation part
-template class PoissonSolver4OrderAM<long double> ;
-template class PoissonSolver4OrderAM<mpreal> ;
-
+template class PoissonSolver6Order<long double> ;
+template class PoissonSolver6Order<mpreal> ;
 }

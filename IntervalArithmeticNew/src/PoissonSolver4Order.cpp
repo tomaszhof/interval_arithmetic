@@ -525,6 +525,7 @@ int PoissonSolver4Order<T>::SolvePIA() {
 //	string fname = "tmpLog.txt";
 //	filestr.open(fname.c_str(), fstream::out);
 
+	cout << "TH SOLVER 4TH ORDER PROPER INTERVAL ARTH" << endl;
 	if (!_initparams)
 		throw runtime_error("Parameters not initialized!");
 
@@ -551,7 +552,7 @@ int PoissonSolver4Order<T>::SolvePIA() {
 	int i, j, jh, j1, k, kh, l, lh, l1, l2, n1, n2, n3, p, q, rh;
 	int num;
 	Interval<T> AF, BB0, BB1, CF, H1, HH, HH1, II, JJ, K1, KK, KK1, MAX, MM, AA,
-			CC, MMconst, NNconst, NN, S, S1, S2, S3, S4, S5, H1POW2, K1POW2,
+			CC, PPconst, QQconst, NN, S, S1, S2, S3, S4, S5, H1POW2, K1POW2,
 			IIP1, IIM1, JJP1, JJM1, KKP1, KKM1, HHP1, HHM1, H1POW2K1POW2;
 	bool list_exists;
 	Interval<T> aij;
@@ -565,10 +566,10 @@ int PoissonSolver4Order<T>::SolvePIA() {
 	NN.b = n;
 	MM.a = m;
 	MM.b = m;
-	MMconst.a = -bc->GetConstM();
-	MMconst.b = bc->GetConstM();
-	NNconst.a = -bc->GetConstN();
-	NNconst.b = bc->GetConstN();
+	PPconst.a = -bc->GetConstP();
+	PPconst.b = bc->GetConstP();
+	QQconst.a = -bc->GetConstQ();
+	QQconst.b = bc->GetConstQ();
 
 	if ((n < 2) || (m < 2))
 		st = 1;
@@ -740,10 +741,10 @@ int PoissonSolver4Order<T>::SolvePIA() {
 
 			if (st == 0) {
 				//second order truncation error
-				S5 = ((AA * H1POW2) * H1POW2K1POW2) * MMconst;
-				S3 = ((CC * K1POW2) * H1POW2K1POW2) * NNconst;
-				S1 = S3 + S5;
-				S = S + (S1 / itwelve);
+//				S5 = ((AA * H1POW2) * H1POW2K1POW2) * MMconst;
+//				S3 = ((CC * K1POW2) * H1POW2K1POW2) * NNconst;
+//				S1 = S3 + S5;
+//				S = S + (S1 / itwelve);
 
 				//fourth order truncation error
 				S5 = H1POW2 * H1POW2  / ithreesixty;
@@ -754,7 +755,7 @@ int PoissonSolver4Order<T>::SolvePIA() {
 				S3 = bc->PSI3(HH1, KK1, st);
 				S1 = S5 * S3;
 				S = S + S1;
-				S = S + S5 * (MMconst + NNconst);
+				S = S + S5 * (PPconst + QQconst);
 
 				if (i == 1) {
 					S1 = ifour * (AF / H1) * bc->PHI1(KK1, st);
@@ -958,6 +959,7 @@ int PoissonSolver4Order<T>::SolveDIA() {
 	//	string fname = "tmpLog.txt";
 	//	filestr.open(fname.c_str(), fstream::out);
 
+	    cout << "TH SOLVER 4TH ORDER DIRECTED INTERVAL ARTH" << endl;
 		if (!_initparams)
 			throw runtime_error("Parameters not initialized!");
 
@@ -1167,14 +1169,14 @@ int PoissonSolver4Order<T>::SolveDIA() {
 								* (bc->F(HHP1, KK1, st) + bc->F(HHM1, KK1, st)
 										+ bc->F(HH1, KKP1, st)
 										+ bc->F(HH1, KKM1, st));
-				cout << "k = " << k << "; S= [" << S.a << " ; " << S.b << "]" << endl;
+//				cout << "k = " << k << "; S= [" << S.a << " ; " << S.b << "]" << endl;
 	//			filestr << k << " B: S= [" << S.a << " ; " << S.b << "]" << endl;
 
 				//second order truncation error
-				S5 = H1POW2 / itwelve;
-				S3 = S5 * bc->PSI(HH1, KK1, st) * bc->OMEGA(HH1, KK1, st) - itwo*MMconst;
-				S1 = S5 * S3;
-				S = S + S1;
+//				S5 = H1POW2 / itwelve;
+//				S3 = S5 * bc->PSI(HH1, KK1, st) * bc->OMEGA(HH1, KK1, st) - itwo*MMconst;
+//				S1 = S5 * S3;
+//				S = S + S1;
 
 				//fourth order truncation error
 				S5 = H1POW2 * H1POW2  / ithreesixty;

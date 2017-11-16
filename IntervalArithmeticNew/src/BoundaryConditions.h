@@ -30,6 +30,10 @@ public:
 			int& st);
 	virtual Interval<T> OMEGA(const Interval<T>& ix, const Interval<T>& iy,
 			int& st);
+	virtual Interval<T> THETA(const Interval<T>& ix, const Interval<T>& iy,
+				int& st);
+	virtual Interval<T> KSI(const Interval<T>& ix, const Interval<T>& iy,
+				int& st);
 	virtual Interval<T> PSI1(const Interval<T>& ix, const Interval<T>& iy,
 				int& st);
 	virtual Interval<T> PSI2(const Interval<T>& ix, const Interval<T>& iy,
@@ -61,6 +65,8 @@ public:
 	virtual long double ExactSol(long double x, long double y);
 	virtual long double GetConstM();
 	virtual long double GetConstN();
+	virtual long double GetConstP();
+	virtual long double GetConstQ();
 	virtual void SetArithmeticMode(int mode);
 };
 
@@ -185,6 +191,25 @@ Interval<T> BoundaryConditions<T>::OMEGA(const Interval<T>& ix,
 }
 
 template<typename T>
+Interval<T> BoundaryConditions<T>::THETA(const Interval<T>& ix,
+		const Interval<T>& iy, int& st) {
+	Interval<T> r = { 0, 0 };
+	st = 0;
+
+	return r;
+}
+
+template<typename T>
+Interval<T> BoundaryConditions<T>::KSI(const Interval<T>& ix,
+		const Interval<T>& iy, int& st) {
+	Interval<T> r = { 0, 0 };
+	st = 0;
+
+	return r;
+}
+
+
+template<typename T>
 Interval<T> BoundaryConditions<T>::PSI1(const Interval<T>& ix,
 		const Interval<T>& iy, int& st) {
 	Interval<T> r = { 0, 0 };
@@ -253,6 +278,18 @@ template<typename T>
 long double BoundaryConditions<T>::GetConstN() {
 	long double constN = 0;
 	return constN;
+}
+
+template<typename T>
+long double BoundaryConditions<T>::GetConstP() {
+	long double constP = 0;
+	return constP;
+}
+
+template<typename T>
+long double BoundaryConditions<T>::GetConstQ() {
+	long double constQ = 0;
+	return constQ;
 }
 
 template<typename T>

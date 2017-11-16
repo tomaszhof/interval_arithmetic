@@ -49,6 +49,8 @@ public:
 	long double ExactSol(long double x, long double y);
 	long double GetConstM();
 	long double GetConstN();
+	long double GetConstP();
+	long double GetConstQ();
 	void SetArithmeticMode(IAMode mode);
 };
 
@@ -280,6 +282,22 @@ long double Example09<T>::GetConstN()
 	long double constN = 1627;
 
 	return constN;
+}
+
+template<typename T>
+long double Example09<T>::GetConstP()
+{
+	long double constP = 14643;
+
+	return constP;
+}
+
+template<typename T>
+long double Example09<T>::GetConstQ()
+{
+	long double constQ = 14643;
+
+	return constQ;
 }
 
 template<typename T>

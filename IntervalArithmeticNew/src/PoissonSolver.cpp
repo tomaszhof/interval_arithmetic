@@ -300,7 +300,7 @@ int PoissonSolver<T>::SolvePIA() {
 //	fstream filestr;
 //	string fname = "tmpLog.txt";
 //	filestr.open(fname.c_str(), fstream::out);
-
+	cout << "TH SOLVER 2ND ORDER PROPER INTERVAL ARTH" << endl;
 	if (!_initparams)
 		throw runtime_error("Parameters not initialized!");
 
@@ -675,6 +675,7 @@ int PoissonSolver<T>::SolvePIA() {
 
 template<typename T>
 int PoissonSolver<T>::SolveDIA() {
+	cout << "TH SOLVER 2ND ORDER DIRECTED INTERVAL ARTH" << endl;
 	if (!_initparams)
 		throw runtime_error("Parameters not initialized!");
 	int st = 0;

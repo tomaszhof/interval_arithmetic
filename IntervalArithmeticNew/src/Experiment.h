@@ -29,6 +29,7 @@
 #include "PoissonSolverAM.h"
 #include "PoissonSolver4Order.h"
 #include "PoissonSolver4OrderAM.h"
+#include "PoissonSolver6Order.h"
 #include "Utils.h"
 
 using namespace std;
