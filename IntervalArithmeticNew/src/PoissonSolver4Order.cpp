@@ -959,441 +959,450 @@ int PoissonSolver4Order<T>::SolveDIA() {
 	//	string fname = "tmpLog.txt";
 	//	filestr.open(fname.c_str(), fstream::out);
 
-	    cout << "TH SOLVER 4TH ORDER DIRECTED INTERVAL ARTH" << endl;
-		if (!_initparams)
-			throw runtime_error("Parameters not initialized!");
+	if (!_initparams)
+		throw runtime_error("Parameters not initialized!");
 
-		int st = 0;
-		int n = params.n;
-		int m = params.m;
-		Interval<T> ALPHA = { params.alpha, params.alpha };
-		Interval<T> BETA = { params.beta, params.beta };
-		Interval<T> GAMMA = { params.gamma, params.gamma };
-		Interval<T> DELTA = { params.delta, params.delta };
-		long double eps = params.eps;
+	int st = 0;
+	int n = params.n;
+	int m = params.m;
+	Interval<T> ALPHA = { params.alpha, params.alpha };
+	Interval<T> BETA = { params.beta, params.beta };
+	Interval<T> GAMMA = { params.gamma, params.gamma };
+	Interval<T> DELTA = { params.delta, params.delta };
+	long double eps = params.eps;
 
-		const Interval<T> izero = { 0, 0 };
-		const Interval<T> ione = { 1, 1 };
-		const Interval<T> itwo = { 2, 2 };
-		const Interval<T> ithree = { 3, 3 };
-		const Interval<T> ifour = { 4, 4 };
-		const Interval<T> itwelve = { 12, 12 };
-		const Interval<T> imtwenty = { -20, -20 };
-		const Interval<T> ithreesixty = { 360, 360 };
-		const Interval<T> ininety = { 90, 90 };
+	const Interval<T> izero = { 0, 0 };
+	const Interval<T> ione = { 1, 1 };
+	const Interval<T> itwo = { 2, 2 };
+	const Interval<T> ithree = { 3, 3 };
+	const Interval<T> ifour = { 4, 4 };
+	const Interval<T> ieight = { 8, 8 };
+	const Interval<T> ifive = { 5, 5 };
+	const Interval<T> itwelve = { 12, 12 };
+	const Interval<T> itwenty = { 20, 20 };
+	const Interval<T> imtwenty = { -20, -20 };
+	const Interval<T> ithreesixty = { 360, 360 };
+	const Interval<T> ininety = { 90, 90 };
 
-		Interval<T> tmpi = { 0, 0 };
-		int i, j, jh, j1, k, kh, l, lh, l1, l2, n1, n2, n3, p, q, rh;
-		int num;
-		Interval<T> AF, BB0, BB1, CF, H1, HH, HH1, II, JJ, K1, KK, KK1, MAX, MM, AA,
-				CC, MMconst, NNconst, NN, S, S1, S2, S3, S4, S5, H1POW2, K1POW2,
-				IIP1, IIM1, JJP1, JJM1, KKP1, KKM1, HHP1, HHM1, H1POW2K1POW2;
-		bool list_exists;
-		Interval<T> aij;
-		int* r;
-		T z;
-		THashMap<T> bm;
-		THashMap<T>* B1M = new THashMap<T>();
+	Interval<T> tmpi = { 0, 0 };
+	int i, j, jh, j1, k, kh, l, lh, l1, l2, n1, n2, n3, p, q, rh;
+	int num;
+	Interval<T> AF, BB0, BB1, CF, H1, HH, HH1, II, JJ, K1, KK, KK1, MAX, MM, AA,
+			CC, PPconst, QQconst, NN, S, S1, S2, S3, S4, S5, H1POW2, K1POW2,
+			IIP1, IIM1, JJP1, JJM1, KKP1, KKM1, HHP1, HHM1, H1POW2K1POW2;
+	Interval<T> H2, H4, K2, K4, PQ, CA, CB;
+	bool list_exists;
+	Interval<T> aij;
+	int* r;
+	T z;
+	THashMap<T> bm;
+	THashMap<T>* B1M = new THashMap<T>();
 
-		st = 0;
-		NN.a = n;
-		NN.b = n;
-		MM.a = m;
-		MM.b = m;
-		MMconst.a = bc->GetConstM();
-		MMconst.b = -bc->GetConstM();
-		NNconst.a = bc->GetConstN();
-		NNconst.b = -bc->GetConstN();
+	st = 0;
+	NN.a = n;
+	NN.b = n;
+	MM.a = m;
+	MM.b = m;
+	PPconst.a = bc->GetConstP();
+	PPconst.b = -bc->GetConstP();
+	QQconst.a = bc->GetConstQ();
+	QQconst.b = -bc->GetConstQ();
 
-		if ((n < 2) || (m < 2))
-			st = 1;
-		else if ((ALPHA.a < 0) || (BETA.a < 0))
-			st = 2;
+	int dprec = Interval<T>::GetOutDigits();
 
+	if ((n < 2) || (m < 2))
+		st = 1;
+	else if ((ALPHA.a < 0) || (BETA.a < 0))
+		st = 2;
+
+	if (st == 0)
+
+	{
+		S = bc->PHI1(ALPHA, st);
 		if (st == 0)
+
 		{
-			S = bc->PHI1(ALPHA, st);
+			S1 = bc->PHI2(BETA, st);
 			if (st == 0)
 
 			{
-				S1 = bc->PHI2(BETA, st);
+				st = bc->boundconds(S, S1, eps);
 				if (st == 0)
 
 				{
-					st = bc->boundconds(S, S1, eps);
+					S = bc->PHI2(GAMMA, st);
 					if (st == 0)
 
 					{
-						S = bc->PHI2(GAMMA, st);
+						S1 = bc->PHI3(BETA, st);
 						if (st == 0)
 
 						{
-							S1 = bc->PHI3(BETA, st);
+							st = bc->boundconds(S, S1, eps);
 							if (st == 0)
 
 							{
-								st = bc->boundconds(S, S1, eps);
+								S = bc->PHI3(DELTA, st);
 								if (st == 0)
 
 								{
-									S = bc->PHI3(DELTA, st);
+									S1 = bc->PHI4(GAMMA, st);
+									if (st == 0)
+
+										//<--- 20
+
+										st = bc->boundconds(S, S1, eps);
 									if (st == 0)
 
 									{
-										S1 = bc->PHI4(GAMMA, st);
-										if (st == 0)
-
-											//<--- 20
-
-											st = bc->boundconds(S, S1, eps);
+										S = bc->PHI4(ALPHA, st);
 										if (st == 0)
 
 										{
-											S = bc->PHI4(ALPHA, st);
+											S1 = bc->PHI1(DELTA, st);
 											if (st == 0)
-
-											{
-												S1 = bc->PHI1(DELTA, st);
-												if (st == 0)
-													st = bc->boundconds(S, S1, eps);
-											}
+												st = bc->boundconds(S, S1, eps);
 										}
 									}
-									//---> 20
 								}
+								//---> 20
 							}
 						}
 					}
 				}
 			}
 		}
+	}
 
-		if (st == 0) {
-			H1 = (GAMMA - ALPHA) / NN;
-			K1 = (DELTA - BETA) / MM;
-			HH.a = -H1.b;
-			HH.b = H1.a;
-			H1POW2 = H1 * H1;
-			K1POW2 = K1 * K1;
-			H1POW2K1POW2 = H1POW2 * K1POW2;
-			KK.a = -K1.b;
-			KK.b = K1.a;
-			n1 = (n - 1) * (m - 1);
-			n2 = n1 + 1;
-			p = n2;
+	if (st == 0) {
+		H1 = (GAMMA - ALPHA) / NN;
+		K1 = (DELTA - BETA) / MM;
+		H2 = H1 * H1;
+		H4 = H2 * H2;
+		K2 = K1 * K1;
+		K4 = K2 * K2;
+		HH.a = -H1.b;
+		HH.b = H1.a;
+		KK.a = -K1.b;
+		KK.b = K1.a;
+		H1POW2 = H1 * H1;
+		K1POW2 = K1 * K1;
+		H1POW2K1POW2 = H1POW2 * K1POW2;
 
-			r = new int[n1 + 1];
-			for (i = 1; i <= n2; i++)
-				r[i - 1] = 0;
-			k = 0;
-			j = 0;
-			n3 = (n * m - n - m + 4) * (n * m - n - m + 4) / 4;
+		CA = H2 + K2;     // interval h^2+k^2
+		CB = (ifive * H2) - K2;
+		CB = itwo * CB;   // interval 2*(5*h^2-k^2)
+		CC = (ifive * K2) - H2;
+		//        cout << std::setprecision(dprec) << " E: CCmH2= [" << CC.a << " ; " << CC.b << "]" << endl;
+		CC = itwo * CC;   // interval 2*(5*k^2-h^2);
+		PQ = H4 * PPconst;
+		PQ = PQ + K4 * QQconst;
+		PQ = PQ / itwenty;
+		PPconst = PPconst + QQconst;
+		PPconst = (H2 * K2) * PPconst;
+		PPconst = PPconst / itwelve;
+		PQ = PQ + PPconst;
+		// PQ = (h^4*[-P,P]+k^4*[-Q,Q])/20
+		//       +h^2*k^2*([-P,P]+{-Q,Q])/12
+		n1 = (n - 1) * (m - 1);
+		n2 = n1 + 1;
+		p = n2;
 
-			this->X = new Interval<T> [n3];
-			for (i = 1; i <= n3; i++)
-				this->X[i - 1] = izero;
-			num = 1;
+		r = new int[n1 + 1];
+		for (i = 1; i <= n2; i++)
+			r[i - 1] = 0;
+		k = 0;
+		j = 0;
+		n3 = (n * m - n - m + 4) * (n * m - n - m + 4) / 4;
 
-			do {
-				k = k + 1;
-				j = j + 1;
-				i = trunc((k - 1) / (m - 1)) + 1;
-				l1 = (i - 2) * (m - 1) + j;
-				l2 = l1 + m - 1;
-				II.a = i;
-				II.b = i;
-				JJ.a = j;
-				JJ.b = j;
-				IIP1.a = i + 1;
-				IIP1.b = i + 1;
-				JJP1.a = j + 1;
-				JJP1.b = j + 1;
-				IIM1.a = i - 1;
-				IIM1.b = i - 1;
-				JJM1.a = j - 1;
-				JJM1.b = j - 1;
+		this->X = new Interval<T> [n3];
+		for (i = 1; i <= n3; i++)
+			this->X[i - 1] = izero;
+		num = 1;
 
-				HH1 = ALPHA + (II * H1);
-				KK1 = BETA + (JJ * K1);
+		do {
+			k = k + 1;
+			j = j + 1;
+			i = trunc((k - 1) / (m - 1)) + 1;
+			l1 = (i - 2) * (m - 1) + j;
+			l2 = l1 + m - 1;
+			II.a = i;
+			II.b = i;
+			JJ.a = j;
+			JJ.b = j;
+			IIP1.a = i + 1;
+			IIP1.b = i + 1;
+			JJP1.a = j + 1;
+			JJP1.b = j + 1;
+			IIM1.a = i - 1;
+			IIM1.b = i - 1;
+			JJM1.a = j - 1;
+			JJM1.b = j - 1;
 
-				HHM1 = ALPHA + (IIM1 * H1);
-				KKM1 = BETA + (JJM1 * K1);
+			HH1 = ALPHA + (II * H1);
+			KK1 = BETA + (JJ * K1);
 
-				HHP1 = ALPHA + (IIP1 * H1);
-				KKP1 = BETA + (JJP1 * K1);
-				AA = bc->A(HH1, KK1, st);
-				CC = bc->C(HH1, KK1, st);
-				AF = AA / H1;
-				CF = CC / K1;
-				S1 = imtwenty * AF / H1;
+			HHM1 = ALPHA + (IIM1 * H1);
+			KKM1 = BETA + (JJM1 * K1);
 
-				//fourth order method - option 6 (Zhang)
-				if (i > 1) {
-					bm.ToMap(l1 - 1, ifour * AF / H1);
+			HHP1 = ALPHA + (IIP1 * H1);
+			KKP1 = BETA + (JJP1 * K1);
+			AA = bc->A(HH1, KK1, st);
+			CF = bc->C(HH1, KK1, st);
+			AF = AA / H1;
+			CF = CF / K1;
 
-					if (j > 1) {
-						bm.ToMap(l1 - 2, AF / H1);
-					}
-					if (j < m - 1) {
-						bm.ToMap(l1, AF / H1);
-					}
+			//fourth order method - option AM
 
-				}
-
-				bm.ToMap(l2 - 1, S1);
+			if (i > 1) {
+				bm.ToMap(l1 - 1, CC);
 
 				if (j > 1) {
-					bm.ToMap(l2 - 2, ifour * (AF / H1));
+					bm.ToMap(l1 - 2, CA);
 				}
-				if (j < m - 1)
-					bm.ToMap(l2, ifour * (AF / H1));
-
-				l1 = l2 + m - 1;
-
-				if (i < n - 1) {
-					bm.ToMap(l1 - 1, ifour * (AF / H1));
-					if (j > 1) {
-						bm.ToMap(l1 - 2, (AF / H1));
-					}
-					if (j < m - 1) {
-						bm.ToMap(l1, (AF / H1));
-					}
+				if (j < m - 1) {
+					bm.ToMap(l1, CA);
 				}
 
-				//right site
+			}
 
-				//Zhang- option 6
-				S = ifour * bc->F(HH1, KK1, st);
-				S = S
-						+ (ione / itwo)
-								* (bc->F(HHP1, KK1, st) + bc->F(HHM1, KK1, st)
-										+ bc->F(HH1, KKP1, st)
-										+ bc->F(HH1, KKM1, st));
-//				cout << "k = " << k << "; S= [" << S.a << " ; " << S.b << "]" << endl;
-	//			filestr << k << " B: S= [" << S.a << " ; " << S.b << "]" << endl;
+			S1 = imtwenty * CA;
+			bm.ToMap(l2 - 1, S1);
+			if (j > 1) {
+				bm.ToMap(l2 - 2, CB);
+			}
+			if (j < m - 1)
+				bm.ToMap(l2, CB);
 
-				//second order truncation error
-//				S5 = H1POW2 / itwelve;
-//				S3 = S5 * bc->PSI(HH1, KK1, st) * bc->OMEGA(HH1, KK1, st) - itwo*MMconst;
-//				S1 = S5 * S3;
-//				S = S + S1;
+			l1 = l2 + m - 1;
+
+			if (i < n - 1) {
+				bm.ToMap(l1 - 1, CC);
+				if (j > 1) {
+					bm.ToMap(l1 - 2, CA);
+				}
+				if (j < m - 1) {
+					bm.ToMap(l1, CA);
+				}
+			}
+
+			//right site
+
+			//Zhang- option 6
+			S = bc->F(HHM1, KK1, st);
+
+			if (st == 0) {
 
 				//fourth order truncation error
-				S5 = H1POW2 * H1POW2  / ithreesixty;
-				S3 = (bc->PSI1(HH1, KK1, st) + bc->PSI2(HH1, KK1, st));
-				S1 = S5 * S3;
+				S1 = bc->F(HHP1, KK1, st);
 				S = S + S1;
-				S5 = H1POW2 * H1POW2 / ininety;
-				S3 = bc->PSI3(HH1, KK1, st);
-				S1 = S5 * S3;
+				S1 = bc->F(HH1, KK1, st);
+				S = S + ieight * S1;
+				S1 = bc->F(HH1, KKM1, st);
 				S = S + S1;
+				S1 = bc->F(HH1, KKP1, st);
+				S = S + ieight * S1; // S = F[i-1,j]+F[i+1,j]+8*F[i,j]+F[i,j-1]+F[i,j+1]
 
-				if (st == 0) {
+				S1 = bc->THETA(HHP1, KK1, st);
+				S1 = H4 * S1;
 
-					if (i == 1) {
-						S1 = ifour * (AF / H1) * bc->PHI1(KK1, st);
-						S = S - S1.Dual();
+				S2 = bc->KSI(HH1, KKP1, st);
+				S1 = S1 + K4 * S2;
+				S1 = S1 / itwenty;
+				// S1 = (h^4*THETA(X[i]+[-h,h],Y[j])
+				//       +k^4*KSI(X[i],Y[j]+[-k,k]))/20
 
-						if (j < m) {
-							S1 = (AF / H1) * bc->PHI1(KKP1, st);
-							S = S - S1.Dual();
-						}
-						if (j > 0) {
-							S1 = (AF / H1) * bc->PHI1(KKM1, st);
-							S = S - S1.Dual();
-						}
+				S = (S - S1) + PQ;
+				S = H2 * K2 * S;
+				if (i == 1) {
+					S1 = bc->PHI1(KKM1, st);
+					S2 = bc->PHI1(KKP1, st);
+					S1 = CA * (S1 + S2);
+					S2 = bc->PHI1(KK1, st);
+					S1 = S1 + (CC * S2);
+					S = S + S1.Opposite();
+					if (j == 1) {
+						S1 = bc->PHI2(HHP1, st);
+						S = S + (CA * S1).Opposite();
 
-						if (j == 1) {
-							S1 = ifour * (AF / H1) * bc->PHI2(HH1, st);
-							S = S - S1.Dual();
-
-							S1 = (AF / H1) * bc->PHI2(HHP1, st);
-							S = S - S1.Dual();
-						}
-
-						if (j == m - 1) {
-							S1 = ifour * (AF / H1) * bc->PHI4(HH1, st);
-							S = S - S1.Dual();
-
-							S1 = (AF / H1) * bc->PHI4(HHP1, st);
-							S = S - S1.Dual();
-						}
-
-					} else if (i == n - 1) {
-
-						S1 = ifour * (AF / H1) * bc->PHI3(KK1, st);
-						S = S - S1.Dual();
-						if (j < m) {
-							S1 = (AF / H1) * bc->PHI3(KKP1, st);
-							S = S - S1.Dual();
-						}
-						if (j > 0) {
-							S1 = (AF / H1) * bc->PHI3(KKM1, st);
-							S = S - S1.Dual();
-						}
-
-						if (j == 1) {
-							S1 = ifour * (AF / H1) * bc->PHI2(HH1, st);
-							S = S - S1.Dual();
-							S1 = (AF / H1) * bc->PHI2(HHM1, st);
-							S = S - S1.Dual();
-						}
-
-						if (j == m - 1) {
-							S1 = ifour * (AF / H1) * bc->PHI4(HH1, st);
-							S = S - S1.Dual();
-							S1 = (AF / H1) * bc->PHI4(HHM1, st);
-							S = S - S1.Dual();
-						}
-
-					} else {
-						if (j == 1) {
-							S1 = ifour * (AF / H1) * bc->PHI2(HH1, st);
-							S = S - S1.Dual();
-							S1 = (AF / H1) * bc->PHI2(HHP1, st);
-							S = S - S1.Dual();
-							S1 = (AF / H1) * bc->PHI2(HHM1, st);
-							S = S - S1.Dual();
-						}
-
-						if (j == m - 1) {
-							S1 = ifour * (AF / H1) * bc->PHI4(HH1, st);
-							S = S - S1.Dual();
-							S1 = (AF / H1) * bc->PHI4(HHP1, st);
-							S = S - S1.Dual();
-							S1 = (AF / H1) * bc->PHI4(HHM1, st);
-							S = S - S1.Dual();
-						}
-					}
-
-				}
-
-	//			filestr << k << " E: S= [" << S.a << " ; " << S.b << "]" << endl;
-				if (st == 0) {
-					S5 = ((AA * H1POW2) * H1POW2K1POW2) * MMconst;
-					S3 = ((CC * K1POW2) * H1POW2K1POW2) * NNconst;
-					S1 = S3 + S5;
-					S = S + (S1 / itwelve);
-					bm.ToMap(n2 - 1, S);
-	//				if (i < 10) cout << "S.Mid() = " << S.Mid() << endl;
-
-					for (int i = 1; i <= n1; i++) {
-						rh = r[i - 1];
-						if (rh != 0)
-						{
-							B1M->ToMap(rh -1, bm.FromMap(i-1));
-						}
-	//					if ((k > 1) && (rh == k - 1)) {
-	//						BB1 = bm.FromMap(i - 1);
-	//					}
-	//					if ((k > m - 1) && (rh == k - m + 1)) {
-	//						BB0 = bm.FromMap(i - 1);
-	//					}
-					}
-					kh = k - 1;
-					l = 0;
-					MAX.a = 0;
-					MAX.b = 0;
-					for (j1 = 1; j1 <= n2; j1++) {
-						if (r[j1 - 1] == 0) {
-							S = bm.FromMap(j1 - 1);
-							l = l + 1;
-							q = l;
-							for (int i = 1; i <= kh; i++) {
-								S = S - (B1M->FromMap(i-1) * this->X[q - 1]);
-								q = q + p;
-							}
-							if (!((S.a >= 0) && (S.b <= 0)))
-								bm.ToMap(l - 1, S);
-							else
-								bm.Erase(l - 1);
-
-							if (S.a < 0)
-								S.a = abs(S.a);
-							if (S.b < 0)
-								S.b = abs(S.b);
-
-							if (S.b < S.a) {
-								z = S.a;
-								S.a = S.b;
-								S.b = z;
-							}
-							if ((j1 < n2) && (S.b > MAX.a)) {
-								MAX = S;
-								jh = j1;
-								lh = l;
-							}
-						}
-					}
-					//cout << "MAX= [" << MAX.a << " ; " << MAX.b << "]" << endl;
-					if ((MAX.a == 0) && (MAX.b == 0))
-						st = 5;
-					else {
-						tmpi = bm.FromMap(lh - 1);
-						MAX = (ione * tmpi.Inverse());
-						r[jh - 1] = k;
-						for (int i = 1; i <= p; i++) {
-							tmpi = bm.FromMap(i - 1);
-							S = (MAX * tmpi);
-							if (!((S.a == 0) && (S.b == 0)))
-								bm.ToMap(i - 1, S);
-							else
-								bm.Erase(i - 1);
-						}
-						jh = 0;
-						q = 0;
-						for (j1 = 1; j1 <= kh; j1++) {
-							S = this->X[q + lh - 1];
-							for (int i = 1; i <= p; i++)
-								if (i != lh) {
-									jh = jh + 1;
-									S1 = bm.FromMap(i - 1);
-									this->X[jh - 1] = this->X[q + i - 1] - (S * S1);
-								}
-							q = q + p;
-						}
-						for (int i = 1; i <= p; i++) {
-							if (i != lh) {
-								jh = jh + 1;
-								tmpi = bm.FromMap(i - 1);
-								this->X[jh - 1] = tmpi;
-								//filestr << jh-1 << ": X= [" << this->X[jh - 1].a << " ; " << this->X[jh - 1].b << "]" << endl;
-								//cout << jh-1 << ": X= [" << this->X[jh - 1].a << " ; " << this->X[jh - 1].b << "]" << endl;
-							}
-						}
-						p = p - 1;
+						S1 = bc->PHI2(HH1, st);
+						S = S + (CB * S1).Opposite();
 					}
 
 					if (j == m - 1) {
-						j = 0;
+						S1 = bc->PHI4(HHP1, st);
+						S = S + (CA * S1).Opposite();
+
+						S1 = bc->PHI4(HH1, st);
+						S = S + (CB * S1).Opposite();
+					}
+
+				} else if (i == n - 1) {
+					S1 = bc->PHI3(KKM1, st);
+					S2 = bc->PHI3(KKP1, st);
+					S1 = CA * (S1 + S2);
+					S2 = bc->PHI3(KK1, st);
+					S1 = S1 + (CC * S2);
+					S = S + S1.Opposite();
+
+					if (j == 1) {
+						S1 = bc->PHI2(HHM1, st);
+						S = S + (CA * S1).Opposite();
+						S1 = bc->PHI2(HH1, st);
+						S = S + (CB * S1).Opposite();
+					}
+
+					if (j == m - 1) {
+						S1 = bc->PHI4(HHM1, st);
+						S = S + (CA * S1).Opposite();
+						S1 = bc->PHI4(HH1, st);
+						S = S + (CB * S1).Opposite();
+					}
+				} else {
+					if (j == 1) {
+						S1 = bc->PHI2(HHM1, st);
+						S2 = bc->PHI2(HHP1, st);
+						S1 = S1 + S2;
+						S = S + (CA * S1).Opposite();
+						S1 = bc->PHI2(HH1, st);
+						S = S + (CB * S1).Opposite();
+					}
+
+					if (j == m - 1) {
+						S1 = bc->PHI4(HHM1, st);
+						S2 = bc->PHI4(HHP1, st);
+						S1 = S1 + S2;
+						S = S + (CA * S1).Opposite();
+						S1 = bc->PHI4(HH1, st);
+						S = S + (CB * S1).Opposite();
+					}
+					cout << k << std::scientific << " E: S= [" << S.a << " ; "
+							<< S.b << "]" << endl;
+				}
+			}
+			S = S.Projection();
+			//			filestr << k << " E: S= [" << S.a << " ; " << S.b << "]" << endl;
+			if (st == 0) {
+				bm.ToMap(n2 - 1, S);
+				//				if (i < 10) cout << "S.Mid() = " << S.Mid() << endl;
+
+				for (int i = 1; i <= n1; i++) {
+					rh = r[i - 1];
+					if (rh != 0) {
+						B1M->ToMap(rh - 1, bm.FromMap(i - 1));
+					}
+					//					if ((k > 1) && (rh == k - 1)) {
+					//						BB1 = bm.FromMap(i - 1);
+					//					}
+					//					if ((k > m - 1) && (rh == k - m + 1)) {
+					//						BB0 = bm.FromMap(i - 1);
+					//					}
+				}
+				kh = k - 1;
+				l = 0;
+				MAX.a = 0;
+				MAX.b = 0;
+				for (j1 = 1; j1 <= n2; j1++) {
+					if (r[j1 - 1] == 0) {
+						S = bm.FromMap(j1 - 1);
+						l = l + 1;
+						q = l;
+						for (int i = 1; i <= kh; i++) {
+							S = S + (B1M->FromMap(i - 1) * this->X[q - 1]).Opposite();
+							S = S.Projection();
+							q = q + p;
+						}
+						if (!((S.a >= 0) && (S.b <= 0)))
+							bm.ToMap(l - 1, S);
+						else
+							bm.Erase(l - 1);
+
+						if (S.a < 0)
+							S.a = abs(S.a);
+						if (S.b < 0)
+							S.b = abs(S.b);
+
+						if (S.b < S.a) {
+							z = S.a;
+							S.a = S.b;
+							S.b = z;
+						}
+						if ((j1 < n2) && (S.b > MAX.a)) {
+							MAX = S;
+							jh = j1;
+							lh = l;
+						}
 					}
 				}
-
-				bm.Clear();
-
-			} while (!((k == n1) || (st == 5)));
-
-			if (st == 0) {
-				for (int k = 1; k <= n1; k++) {
-					rh = r[k - 1];
-					if (rh != k) {
-						S = this->X[k - 1];
-						this->X[k - 1] = this->X[rh - 1];
-						i = r[rh - 1];
-						while (i != k) {
-							this->X[rh - 1] = this->X[i - 1];
-							r[rh - 1] = rh;
-							rh = i;
-							i = r[rh - 1];
-						}
-						this->X[rh - 1] = S.Projection();
-						r[rh - 1] = rh;
+				//cout << "MAX= [" << MAX.a << " ; " << MAX.b << "]" << endl;
+				if ((MAX.a == 0) && (MAX.b == 0))
+					st = 5;
+				else {
+					tmpi = bm.FromMap(lh - 1);
+					MAX = (ione * tmpi.Inverse());
+					r[jh - 1] = k;
+					for (int i = 1; i <= p; i++) {
+						tmpi = bm.FromMap(i - 1);
+						S = (MAX * tmpi);
+						if (!((S.a == 0) && (S.b == 0)))
+							bm.ToMap(i - 1, S);
+						else
+							bm.Erase(i - 1);
 					}
+					jh = 0;
+					q = 0;
+					for (j1 = 1; j1 <= kh; j1++) {
+						S = this->X[q + lh - 1];
+						for (int i = 1; i <= p; i++)
+							if (i != lh) {
+								jh = jh + 1;
+								S1 = bm.FromMap(i - 1);
+								this->X[jh - 1] = this->X[q + i - 1] - (S * S1);
+							}
+						q = q + p;
+					}
+					for (int i = 1; i <= p; i++) {
+						if (i != lh) {
+							jh = jh + 1;
+							tmpi = bm.FromMap(i - 1);
+							this->X[jh - 1] = tmpi;
+							//filestr << jh-1 << ": X= [" << this->X[jh - 1].a << " ; " << this->X[jh - 1].b << "]" << endl;
+							//cout << jh-1 << ": X= [" << this->X[jh - 1].a << " ; " << this->X[jh - 1].b << "]" << endl;
+						}
+					}
+					p = p - 1;
+				}
+
+				if (j == m - 1) {
+					j = 0;
+				}
+			}
+
+			bm.Clear();
+
+		} while (!((k == n1) || (st == 5)));
+
+		if (st == 0) {
+			for (int k = 1; k <= n1; k++) {
+				rh = r[k - 1];
+				if (rh != k) {
+					S = this->X[k - 1];
+					this->X[k - 1] = this->X[rh - 1];
+					i = r[rh - 1];
+					while (i != k) {
+						this->X[rh - 1] = this->X[i - 1];
+						r[rh - 1] = rh;
+						rh = i;
+						i = r[rh - 1];
+					}
+					this->X[rh - 1] = S.Projection();
+					r[rh - 1] = rh;
 				}
 			}
 		}
+	}
 	//	filestr.close();
-		return 0;
+	return 0;
 }
 
 //The explicit instantiation part
