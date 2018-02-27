@@ -10,6 +10,7 @@
 //#include "Tester.h"
 #include "Interval.h"
 #include "Experiment.h"
+#include "NakaoExperiment.h"
 
 
 using namespace std;
@@ -26,9 +27,13 @@ int main(int ac, char *av[]) {
 //	delete tester;
 
 	//experiment for the Generalized Poisson Equation
-	Experiment<long double>* exper = new Experiment<long double>(ac, av);
-	exper->Initialize();
-	exper->Execute();
+//	Experiment<long double>* exper = new Experiment<long double>(ac, av);
+//	exper->Initialize();
+//	exper->Execute();
+//	delete exper;
+
+	NakaoExperiment* exper = new NakaoExperiment();
+	exper->execute();
 	delete exper;
 
 	return 0;
