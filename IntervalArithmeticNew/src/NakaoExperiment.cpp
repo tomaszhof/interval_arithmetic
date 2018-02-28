@@ -153,7 +153,7 @@ void NakaoExperiment::execute() {
 	ih.a = LeftRead<long double>(hstr);
 	ih.b = RightRead<long double>(hstr);
 
-	string a1str = boost::lexical_cast<string>(2.0 * M_PIl * M_PIl / 3.0);
+	string a1str = boost::lexical_cast<string>(2.0 * M_PIl * M_PIl * h / 3.0);
 	ia1.a = LeftRead<long double>(a1str);
 	ia1.b = RightRead<long double>(a1str);
 
@@ -201,9 +201,9 @@ void NakaoExperiment::execute() {
 	delta = 1e-8;
 	epsilon = 1e-8;
 
-	while (!finish){
+	while (!finish) {
 		k++;
-		if (output == 's'){
+		if (output == 's') {
 			cout << "k = " << k << endl;
 			cout << endl;
 		} else {
@@ -211,7 +211,7 @@ void NakaoExperiment::execute() {
 			results << endl;
 		}
 
-		iy[0] = (iPi*(i4 * iu_km1[0] + iu_km1[1]))/i6;
+		iy[0] = (iPi * (i4 * iu_km1[0] + iu_km1[1])) / i6;
 
 		string sinpihstr = boost::lexical_cast<string>(std::sin(M_PIl * h));
 		iSin.a = LeftRead<long double>(sinpihstr);
@@ -219,37 +219,37 @@ void NakaoExperiment::execute() {
 
 		iy[0] = iy[0] + (id * iSin);
 
-		string alphakm1str = boost::lexical_cast<string>(std::sin(M_PIl * h));
+		string alphakm1str = boost::lexical_cast<string>(alpha_km1[0]);
 		ialpha.a = LeftRead<long double>(alphakm1str);
 		ialpha.b = RightRead<long double>(alphakm1str);
 
 		iy[0] = (iy[0] + (ic * ialpha)) / ia;
 		iz[0] = ib / ia;
 
-		for (int i = 1; i < n-2; ++i)
-		{
-			iz[i] = ib / (ia - (ib * iz[i-1]));
+		for (int i = 1; i < n - 2; ++i) {
+			iz[i] = ib / (ia - (ib * iz[i - 1]));
 		}
 
-		for (i=0; i<n-2; ++i){
-			iy[i+1] = iu_km1[i] + (i4 * iu_km1[i+1]);
-			if (i < n-2 -1 )
-			{
-				iy[i + 1]  = iy[i+1] + iu_km1[i+1];
+		for (i = 0; i < n - 2; ++i) {
+			iy[i + 1] = iu_km1[i] + (i4 * iu_km1[i + 1]);
+			if (i < n - 2 - 1) {
+				iy[i + 1] = iy[i + 1] + iu_km1[i + 2];
 			}
 
-			sinpihstr = boost::lexical_cast<string>(std::sin((i + 1.0 + 1.0) * M_PIl * h));
+			sinpihstr = boost::lexical_cast<string>(
+					std::sin((i + 1.0 + 1.0) * M_PIl * h));
 			iSin.a = LeftRead<long double>(sinpihstr);
 			iSin.b = RightRead<long double>(sinpihstr);
 
-			iy[i+1] = ((iPi * iy[i+1])/i6) + (id * iSin);
+			iy[i + 1] = ((iPi * iy[i + 1]) / i6) + (id * iSin);
 
-			string alphakm1str = boost::lexical_cast<string>(alpha_km1[i+1]);
+			string alphakm1str = boost::lexical_cast<string>(alpha_km1[i + 1]);
 			ialpha.a = LeftRead<long double>(alphakm1str);
 			ialpha.b = RightRead<long double>(alphakm1str);
+			ialpha = im11 * ialpha;
 
-			iy[i+1] = iy[i+1] + (ic * ialpha);
-			iy[i+1] =  (iy[i+1] - (ib * iy[i])) / (ia  - (ib * iz[i]));
+			iy[i + 1] = iy[i + 1] + (ic * ialpha);
+			iy[i + 1] = (iy[i + 1] - (ib * iy[i])) / (ia - (ib * iz[i]));
 		}
 
 		iu_k[n - 1 - 1] = iy[n - 1 - 1];
@@ -262,124 +262,150 @@ void NakaoExperiment::execute() {
 			iu_k[i].IEndsToStrings(left, right);
 			exact = (1.0 / M_PIl) * std::sin(M_PIl * (i + 1) * h);
 			if (output == 's') {
-				cout << std::setprecision(2) << "u(" << i * h << std::setprecision(7)  <<") = [" << left << "; " << right << "]" << endl;
-				cout << endl;
+				cout << std::setprecision(2) << "u(" << (i + 1) * h
+						<< std::setprecision(7) << ") = [" << left << "; "
+						<< right << "]" << endl;
 				cout << "  exact = " << exact << endl;
+				cout << endl;
 			} else {
-				results << "u(" << std::setprecision(2) << i * h << std::setprecision(7) << ") = [" << left << ", " << right << "]" << endl;
-				results << endl;
+				results << "u(" << std::setprecision(2) << (i + 1) * h
+						<< std::setprecision(7) << ") = [" << left << ", "
+						<< right << "]" << endl;
 				results << "  exact = " << exact << endl;
+				results << endl;
 			}
 		}
 
-		if (output == 's'){
+		if (output == 's') {
 			cout << endl;
 		} else {
 			results << endl;
 		}
 
-		for (int i = 0; i <n-1; ++i){
-			beta = std::sin(M_PIl*h)*std::cos(i*M_PIl*h)/(M_PIl * h)
-					+ 2 * i * std::sin(M_PIl * h/2)*std::sin((2*i + 1)*M_PIl*h/2.0)
-			        - std::cos((i+1)*M_PIl*h);
+		for (int i = 0; i < n - 1; ++i) {
+			beta = std::sin(M_PIl * h) * std::cos((i + 1) * M_PIl * h)
+					/ (M_PIl * h)
+					+ 2 * (i + 1) * std::sin(M_PIl * h / 2)
+							* std::sin((2 * (i + 1) + 1) * M_PIl * h / 2.0)
+					- std::cos((i + 1 + 1) * M_PIl * h);
+//			cout << "beta = " << beta << endl;
 
 			string betastr = boost::lexical_cast<string>(beta);
 			ibeta.a = LeftRead<long double>(betastr);
 			ibeta.b = RightRead<long double>(betastr);
 
 			ibeta = (ib1 * iu_km1[i]) * ibeta;
-			ibeta = ia1*(iu_km1[i]*iu_km1[i]) + ibeta;
+
+			ia1.IEndsToStrings(left, right);
+//												cout << "ia1 = "<< std::setprecision(7) << "[" << left << "; "
+//																		<< right << "]" << endl;
+
+			ibeta = ia1 * (iu_km1[i] * iu_km1[i]) + ibeta;
+
+			ibeta.IEndsToStrings(left, right);
+//									cout << "ibeta = "<< std::setprecision(7) << "[" << left << "; "
+//															<< right << "]" << endl;
+
 			ibeta = ibeta + ic1;
 			ibeta = ISqrt(ibeta, error);
-			if (error == 0){
-				string id1str = boost::lexical_cast<string>(std::sin(M_PIl * h)*alpha_km1[i]);
+
+			if (error == 0) {
+				string id1str = boost::lexical_cast<string>(
+						std::sin(M_PIl * h) * alpha_km1[i]);
 				id1.a = LeftRead<long double>(id1str);
 				id1.b = RightRead<long double>(id1str);
 				ibeta = (ibeta + id1) * ih;
 				alpha_k[i] = ibeta.b;
 			} else {
-				cout << "Impossible to calculate Sqrt(beta) for i = " << i << endl;
+				cout << "Impossible to calculate Sqrt(beta) for i = " << i
+						<< endl;
 				break;
-			}
-
-			for (int i = 0; i < n-1; ++i){
-				if (output == 's'){
-					cout << "alpha(" << i*h << ") = " << alpha_k[i] << endl;
-				} else {
-					results << "alpha(" << i*h << ") = " << alpha_k[i] << endl;
-				}
-			}
-
-			if (output == 's'){
-				cout << endl;
-			} else
-				results << endl;
-
-			norm_u = 0.0;
-			for (int i = 0; i < n-1; ++i){
-				norm_ui = std::abs(iu_k[i].a - iu_km1[i].a);
-				if (std::abs(iu_k[i].b - iu_km1[i].b) > norm_u){
-					norm_ui = std::abs(iu_k[i].b - iu_km1[i].b);
-				}
-				if (norm_ui > norm_u)
-					norm_u = norm_ui;
-
-				if (norm_u < epsilon)
-					u_OK = true;
-				else u_OK = false;
-
-				abs_alpha = 0.0;
-				for (int i = 0; i < n - 1; ++i){
-					abs_alphai = std::abs(alpha_k[i] - alpha_km1[i]);
-					if (abs_alphai > abs_alpha){
-						abs_alpha = abs_alphai;
-					}
-				}
-				if (abs_alpha < epsilon)
-					alpha_OK = true;
-				else alpha_OK = false;
-
-				if (u_OK && alpha_OK){
-					finish = true;
-
-					if (output == 's'){
-						cout << "Press Enter to continue ..." << endl;
-						std::getchar();
-						cout << "Interval solution after delta-extension:" << endl << endl;
-					} else {
-						results << "Interval solution after delta-extension:" << endl << endl;
-					}
-				}
-
-				for (int i=0; i < n-1; ++i){
-					iu_k[i].a = iu_k[i].a - delta;
-					iu_k[i].b = iu_k[i].b + delta;
-					iu_k[i].IEndsToStrings(left, right);
-
-					exact = (1.0 / M_PIl) * std::sin(M_PIl * (i + 1) * h);
-
-					if (output == 's'){
-						cout << "u(" << std::setprecision(2) << i * h << std::setprecision(7) << ") = [" << left << "; " << right << "]" << endl;
-						cout << "     = [" << iu_k[i].a << "; " << iu_k[i].b << "]" << endl;
-						cout << "     exact = " << exact << endl;
-					} else
-					{
-						results << "u(" << i * h << ") = [" << left << ', ' << right << "]" << endl;
-						results << "     = [" << iu_k[i].a << ', ' << iu_k[i].b << "]" << endl;
-						results << "     exact = " << exact << endl;
-					}
-				}
-
 			}
 		}
 
-		if (!finish){
-			for (int i = 0; i < n-1; ++i){
+		for (int i = 0; i < n - 1; ++i) {
+			if (output == 's') {
+				cout << "alpha(" << (i + 1) * h << ") = " << alpha_k[i] << endl;
+			} else {
+				results << "alpha(" << (i + 1) * h << ") = " << alpha_k[i]
+						<< endl;
+			}
+		}
+
+		if (output == 's') {
+			cout << endl;
+		} else
+			results << endl;
+
+		norm_u = 0.0;
+		for (int i = 0; i < n - 1; ++i) {
+			norm_ui = std::abs(iu_k[i].a - iu_km1[i].a);
+			if (std::abs(iu_k[i].b - iu_km1[i].b) > norm_u) {
+				norm_ui = std::abs(iu_k[i].b - iu_km1[i].b);
+			}
+			if (norm_ui > norm_u)
+				norm_u = norm_ui;
+		}
+		if (norm_u < epsilon)
+			u_OK = true;
+		else
+			u_OK = false;
+
+		abs_alpha = 0.0;
+		for (int i = 0; i < n - 1; ++i) {
+			abs_alphai = std::abs(alpha_k[i] - alpha_km1[i]);
+			if (abs_alphai > abs_alpha) {
+				abs_alpha = abs_alphai;
+			}
+		}
+		if (abs_alpha < epsilon)
+			alpha_OK = true;
+		else
+			alpha_OK = false;
+
+		if (u_OK && alpha_OK) {
+			finish = true;
+
+			if (output == 's') {
+				cout << "Press Enter to continue ..." << endl;
+				std::getchar();
+				cout << "Interval solution after delta-extension:" << endl
+						<< endl;
+			} else {
+				results << "Interval solution after delta-extension:" << endl
+						<< endl;
+			}
+
+			for (int i = 0; i < n - 1; ++i) {
+				iu_k[i].a = iu_k[i].a - delta;
+				iu_k[i].b = iu_k[i].b + delta;
+				iu_k[i].IEndsToStrings(left, right);
+
+				exact = (1.0 / M_PIl) * std::sin(M_PIl * (i + 1) * h);
+
+				if (output == 's') {
+					cout << "u(" << std::setprecision(2) << (i + 1) * h
+							<< std::setprecision(7) << ") = [" << left << "; "
+							<< right << "]" << endl;
+					cout << "     = [" << iu_k[i].a << "; " << iu_k[i].b << "]"
+							<< endl;
+					cout << "     exact = " << exact << endl;
+				} else {
+					results << "u(" << (i + 1) * h << ") = [" << left << ', '
+							<< right << "]" << endl;
+					results << "     = [" << iu_k[i].a << ', ' << iu_k[i].b
+							<< "]" << endl;
+					results << "     exact = " << exact << endl;
+				}
+			}
+		}
+		if (!finish) {
+			for (int i = 0; i < n - 1; ++i) {
 				iu_km1[i] = iu_k[i];
 				alpha_km1[i] = alpha_k[i];
 			}
 
-			if (output == 's'){
+			if (output == 's') {
 				cout << "Press Enter to continue ..." << endl;
 				std::getchar();
 			}

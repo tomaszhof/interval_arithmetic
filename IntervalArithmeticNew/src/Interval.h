@@ -757,6 +757,8 @@ Interval<T> ISqrt(const Interval<T>& x, int& st) {
 		r.b =std::sqrt(x.b);
 		SetRounding<T>(FE_TONEAREST);
 	}
+
+	return r;
 }
 
 template<typename T>
