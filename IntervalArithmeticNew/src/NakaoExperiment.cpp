@@ -157,7 +157,7 @@ void NakaoExperiment::execute() {
 	ia1.a = LeftRead<long double>(a1str);
 	ia1.b = RightRead<long double>(a1str);
 
-	string b1str = boost::lexical_cast<string>(4.0 * (M_PIl - 1.0));
+	string b1str = boost::lexical_cast<string>(8.0 * (1.0 - 1.0/M_PIl)*std::pow(std::sin(M_PIl * h/2.0), 2.0));
 	ib1.a = LeftRead<long double>(b1str);
 	ib1.b = RightRead<long double>(b1str);
 
@@ -283,11 +283,7 @@ void NakaoExperiment::execute() {
 		}
 
 		for (int i = 0; i < n - 1; ++i) {
-			beta = std::sin(M_PIl * h) * std::cos((i + 1) * M_PIl * h)
-					/ (M_PIl * h)
-					+ 2 * (i + 1) * std::sin(M_PIl * h / 2)
-							* std::sin((2 * (i + 1) + 1) * M_PIl * h / 2.0)
-					- std::cos((i + 1 + 1) * M_PIl * h);
+			beta = std::sin(i * M_PIl * h);
 //			cout << "beta = " << beta << endl;
 
 			string betastr = boost::lexical_cast<string>(beta);
