@@ -8,16 +8,22 @@
 #ifndef NAKAOEXPERIMENT2D_H_
 #define NAKAOEXPERIMENT2D_H_
 
+#include "Interval.h"
+#include <string>
+#include <fstream>
 #include <math.h>
 #include <stdio.h>
 #include <boost/lexical_cast.hpp>
+#include <stdlib.h>
+
 
 using namespace interval_arithmetic;
 using namespace std;
 
-
+const long double PI = 3.141592653589793238L;
 
 class NakaoExperiment2D {
+
 private:
 	int error, i, it, j, j1, jh, k, kh, l, l1, l2,
 	lh, n, n1, n2, p, q, rh;
@@ -33,7 +39,7 @@ private:
 	Interval<long double> **iu_k, **iu_km1;
 	char answer, output;
 	bool alpha_OK, finish, u_OK;
-	string file_name, left, right, st;
+	string file_name, left, right, st, tmpstr;
 	fstream results;
 
 	const Interval<long double> i0 = {0.0, 0.0};

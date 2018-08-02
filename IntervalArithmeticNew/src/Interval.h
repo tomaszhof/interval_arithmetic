@@ -85,9 +85,10 @@ public:
 	T a;
 	T b;
 	Interval();
+	Interval(Interval const& copy);
 	Interval(T a, T b);
 	virtual ~Interval();
-	Interval operator=(const Interval<T>& i);
+	Interval& operator=(const Interval<T> i);
 	Interval operator+(const Interval<T>& i);
 	Interval operator-(const Interval<T>& i);
 	Interval operator*(const Interval<T>& i);
@@ -138,6 +139,7 @@ public:
 	friend int SetRounding<T>(int rounding);
 };
 
+
 template<typename T>
 inline Interval<T>::~Interval() {
 }
@@ -146,6 +148,12 @@ template<typename T>
 Interval<T>::Interval() {
 	this->a = 0;
 	this->b = 0;
+}
+
+template<typename T>
+Interval<T>::Interval(Interval const& copy) {
+	this->a = copy.a;
+	this->b = copy.b;
 }
 
 template<typename T>
@@ -160,12 +168,12 @@ inline IAMode Interval<T>::GetMode() {
 }
 
 template<typename T>
-inline Interval<T> Interval<T>::operator =(const Interval<T>& i) {
-	this->a = i.a;
-	this->b = i.b;
-
+inline Interval<T>& Interval<T>::operator =(Interval<T> i) {
+	std::swap(this->a, i.a);
+	std::swap(this->b, i.b);
 	return *this;
 }
+
 
 template<typename T>
 inline void Interval<T>::SetPrecision(IAPrecision p) {

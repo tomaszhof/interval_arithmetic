@@ -69,7 +69,7 @@ void NakaoExperiment2D::execute() {
 		cout << endl;
 	}
 
-	h = 1.0L / n;
+	h = 1.0 / n;
 	n1 = (n - 1) * (n - 1);
 	n2 = n1 + 1;
 	p = n2;
@@ -82,20 +82,20 @@ void NakaoExperiment2D::execute() {
 	a1 = new long double[n1 + 1];
 	b1 = new long double[n1 + 1];
 	x = new long double[(n1 + 2) * (n1 + 2) / 4];
-	a = 4.0 / pow(h, 2.0) - M_PIl / 2.0;
-	b = -1.0 / pow(h, 2.0) - M_PIl / 12.0;
-	b_dash = -M_PIl / 12.0;
-	d = (1 - 2.0 * M_PIl) * (1 - cos(M_PIl * h)) / pow(M_PIl * h, 2.0);
-	sph = sin(M_PIl * h) / (M_PIl * h);
+	a = 4.0 / pow(h, 2.0) - PI / 2.0;
+	b = -1.0 / pow(h, 2.0) - PI / 12.0;
+	b_dash = (-1.0 * PI) / 12.0;
+	d = (1.0 - 2.0 * PI) * (1.0 - cos(PI * h)) / pow(PI * h, 2.0);
+	sph = sin(PI * h) / (PI * h);
 
 	finish = false;
 	while (k != n1) {
 		k = k + 1;
-		for (int i = 1; i <= n1; ++i) {
+		for (i = 1; i <= n1; ++i) {
 			a1[i - 1] = 0;
 		}
 		j = j + 1;
-		i = ((k - 1) / (n - 1)) + 1;
+		i = (k - 1) / (n - 1) + 1;
 		l1 = (i - 2) * (n - 1) + j;
 		l2 = l1 + n - 1;
 		if (i > 1) {
@@ -116,8 +116,8 @@ void NakaoExperiment2D::execute() {
 				a1[l1 - 2] = b_dash;
 		}
 		a1[n2 - 1] = d
-				* (cos(M_PIl * (i + j) * h) - sph * cos(M_PIl * (i - j) * h));
-		for (int i = 1; i <= n1; ++i) {
+				* (cos(PI * (i + j) * h) - sph * cos(PI * (i - j) * h));
+		for (i = 1; i <= n1; ++i) {
 			rh = r[i - 1];
 			if (rh != 0)
 				b1[rh - 1] = a1[i - 1];
@@ -129,8 +129,8 @@ void NakaoExperiment2D::execute() {
 			if (r[j1 - 1] == 0) {
 				s = a1[j1 - 1];
 				l = l + 1;
-				q = 1;
-				for (int i = 1; i <= kh; ++i) {
+				q =l;
+				for (i = 1; i <= kh; ++i) {
 					s = s - b1[i - 1] * x[q - 1];
 					q = q + p;
 				}
@@ -147,7 +147,7 @@ void NakaoExperiment2D::execute() {
 		} //end for loop (find max value)
 		max = 1.0 / a1[lh - 1];
 		r[jh - 1] = k;
-		for (int i = 1; i <= p; ++i) {
+		for (i = 1; i <= p; ++i) {
 			a1[i - 1] = max * a1[i - 1];
 		}
 		jh = 0;
@@ -162,7 +162,7 @@ void NakaoExperiment2D::execute() {
 			}
 			q = q + p;
 		}
-		for (int i = 1; i <= p; ++i) {
+		for (i = 1; i <= p; ++i) {
 			if (i != lh) {
 				jh = jh + 1;
 				x[jh - 1] = a1[i - 1];
@@ -193,29 +193,29 @@ void NakaoExperiment2D::execute() {
 		}
 	}
 	u = new long double*[n];
-	for (int i = 0; i < n; ++i)
+	for (i = 0; i <= n-1; ++i)
 		u[i] = new long double[n];
 
-	for (int i = 1; i <= n - 1; ++i) {
-		for (int j = 1; j <= n - 1; ++i) {
+	for (i = 1; i <= n - 1; ++i) {
+		for (j = 1; j <= n - 1; ++j) {
 			u[i][j] = x[(i - 1) * (n - 1) + j - 1];
 		}
 	}
 
 	delete[] x;
 
-	for (int i = 1; i <= n - 1; ++i)
-		for (int j = 1; j <= n - 1; ++j) {
-			exact = (1.0 / M_PIl) * sin(M_PIl * i * h) * sin(M_PIl * j * h);
+	for (i = 1; i <= n - 1; ++i)
+		for (j = 1; j <= n - 1; ++j) {
+			exact = (1.0 / M_PI) * sin(M_PI * i * h) * sin(M_PI * j * h);
 			if (output == 's') {
 				cout << "u(" << i * h << "," << j * h << ") = " << u[i][j]
 						<< endl;
-				cout << "         exact = " << exact << endl;
+				cout << "         exact = " << exact;
 				cout << "   error = " << abs(u[i][j] - exact) << endl;
 			} else {
 				results << "u(" << i * h << "," << j * h << ") = " << u[i][j]
 						<< endl;
-				results << "         exact = " << exact << endl;
+				results << "         exact = " << exact;
 				results << "   error = " << abs(u[i][j] - exact) << endl;
 			}
 
@@ -237,58 +237,64 @@ void NakaoExperiment2D::execute() {
 	}
 
 	a = 4.0 / (h * h);
-	string tmpstr = boost::lexical_cast<string>(a);
+	tmpstr = boost::lexical_cast<string>(a);
 	ia.a = LeftRead<long double>(tmpstr);
 	ia.b = RightRead<long double>(tmpstr);
 
 	b = -1.0 / (h * h);
-	string tmpstr = boost::lexical_cast<string>(b);
+	tmpstr = boost::lexical_cast<string>(b);
 	ib.a = LeftRead<long double>(tmpstr);
 	ib.b = RightRead<long double>(tmpstr);
 
-	c = sqrt(2.0) / 2.0;
-	string tmpstr = boost::lexical_cast<string>(c);
+	tmpstr = boost::lexical_cast<string>(d);
+	id.a = LeftRead<long double>(tmpstr);
+	id.b = RightRead<long double>(tmpstr);
+
+
+	c = std::sqrt(2.0) / 2.0;
+	tmpstr = boost::lexical_cast<string>(c);
 	ic.a = LeftRead<long double>(tmpstr);
 	ic.b = RightRead<long double>(tmpstr);
 	ic = im11 * ic;
 
-	string tmpstr = boost::lexical_cast<string>(M_PIl / 12.0);
+	tmpstr = boost::lexical_cast<string>(PI / 12.0);
 	ipi.a = LeftRead<long double>(tmpstr);
 	ipi.b = RightRead<long double>(tmpstr);
 
-	string tmpstr = boost::lexical_cast<string>(h);
+	tmpstr = boost::lexical_cast<string>(h);
 	ih.a = LeftRead<long double>(tmpstr);
 	ih.b = RightRead<long double>(tmpstr);
 
-	string tmpstr = boost::lexical_cast<string>(pow(M_PIl * h, 2.0) / 2.0);
+	tmpstr = boost::lexical_cast<string>(pow(PI * h, 2.0) / 2.0);
 	ia1.a = LeftRead<long double>(tmpstr);
 	ia1.b = RightRead<long double>(tmpstr);
 
-	beta = (2.0 / M_PIl - 4.0) * (1.0 - cos(M_PIl * h));
-	string tmpstr = boost::lexical_cast<string>(beta);
+	beta = (2.0 / PI - 4.0) * (1.0 - cos(PI * h));
+	tmpstr = boost::lexical_cast<string>(beta);
 	ib1.a = LeftRead<long double>(tmpstr);
 	ib1.b = RightRead<long double>(tmpstr);
 
-	string tmpstr = boost::lexical_cast<string>(
-			pow((2 * M_PIl - 1.0), 2.0) / 4.0);
+	tmpstr = boost::lexical_cast<string>(
+			pow((2.0 * PI - 1.0), 2.0) / 4.0);
 	ic1.a = LeftRead<long double>(tmpstr);
 	ic1.b = RightRead<long double>(tmpstr);
 
 	alpha_k = new long double*[n];
 	alpha_km1 = new long double*[n];
-	iu_k = new long double*[n];
-	iu_km1 = new long double*[n];
+	iu_k = new Interval<long double>*[n];
+	iu_km1 = new Interval<long double>*[n];
 
 	for (int i = 0; i < n; ++i) {
 		alpha_k[i] = new long double[n];
 		alpha_km1[i] = new long double[n];
-		iu_k = new long double[n];
-		iu_km1 = new long double[n];
+		iu_k[i] = new Interval<long double>[n];
+		iu_km1[i] = new Interval<long double>[n];
 	}
 
+	iu_km1[0][0] = i0;
 	for (int i = 1; i <= n - 1; ++i) {
 		for (int j = 1; j <= n - 1; ++j) {
-			string tmpstr = boost::lexical_cast<string>(u[i][j]);
+			tmpstr = boost::lexical_cast<string>(u[i][j]);
 			iu_km1[i][j].a = LeftRead<long double>(tmpstr);
 			iu_km1[i][j].b = RightRead<long double>(tmpstr);
 			alpha_km1[i][j] = 0.0;
@@ -300,7 +306,7 @@ void NakaoExperiment2D::execute() {
 	finish = false;
 	delta = 1e-8;
 	epsilon = 1e-8;
-	interval_a1 = new Interval<long double> [n1 + 1];
+	interval_a1 = new Interval<long double> [n2 + 1];
 	interval_b1 = new Interval<long double> [n1 + 1];
 	interval_x = new Interval<long double> [(n1 + 2) * (n1 + 2) / 4];
 
@@ -308,7 +314,7 @@ void NakaoExperiment2D::execute() {
 		it = it + 1;
 		cout << "it = " << it << endl;
 		p = n2;
-		for (int i = 1; i <= n2; ++i) {
+		for (i = 1; i <= n2; ++i) {
 			r[i - 1] = 0;
 		}
 
@@ -317,12 +323,12 @@ void NakaoExperiment2D::execute() {
 
 		while (k != n1) {
 			k = k + 1;
-			for (int i = 1; i <= n1; ++i) {
+			for (i = 0; i <= n2+1; ++i) {
 				interval_a1[i - 1] = i0;
 			}
 			j = j + 1;
 
-			i = floor((k - 1) / (n - 1)) + 1;
+			i = (k - 1) / (n - 1) + 1;
 			l1 = (i - 2) * (n - 1) + j;
 			l2 = l1 + n - 1;
 
@@ -352,7 +358,7 @@ void NakaoExperiment2D::execute() {
 						id1 = id1 + iu_km1[1][n - 2] + iu_km1[2][n - 2]
 								+ iu_km1[2][n - 1];
 					} else {
-						id1 = iu_km1[1][j - 1] + iu_km1[1][j + 1]
+						id1 = id1 + iu_km1[1][j - 1] + iu_km1[1][j + 1]
 								+ iu_km1[2][j - 1] + iu_km1[2][j];
 					}
 				}
@@ -385,14 +391,14 @@ void NakaoExperiment2D::execute() {
 			}
 
 			id1 = ipi * id1;
-			d = cos(M_PIl * (i + j) * h) - sph * cos(M_PIl * (i - j) * h);
-			string tmpstr = boost::lexical_cast<string>(d);
+			d = cos(PI * (i + j) * h) - sph * cos(PI * (i - j) * h);
+			tmpstr = boost::lexical_cast<string>(d);
 			iz.a = LeftRead<long double>(tmpstr);
 			iz.b = RightRead<long double>(tmpstr);
 
 			id1 = id1 + (id * iz);
 
-			string tmpstr = boost::lexical_cast<string>(alpha_km1[i][j]);
+			tmpstr = boost::lexical_cast<string>(alpha_km1[i][j]);
 			iz.a = LeftRead<long double>(tmpstr);
 			iz.b = RightRead<long double>(tmpstr);
 
@@ -408,7 +414,8 @@ void NakaoExperiment2D::execute() {
 			l = 0;
 			imax = i0;
 
-			for (j1 = 1; j <= n2; ++j1) {
+
+			for (j1 = 1; j1 <= n2; ++j1) {
 				if (r[j1 - 1] == 0) {
 					interval_s = interval_a1[j1 - 1];
 					l = l + 1;
@@ -490,7 +497,7 @@ void NakaoExperiment2D::execute() {
 
 		for (int i = 1; i <= n - 1; ++i)
 			for (int j = 1; j <= n - 1; ++j) {
-				iu_k[i, j] = interval_x[(i - 1) * (n - 1) + j - 1];
+				iu_k[i][j] = interval_x[(i - 1) * (n - 1) + j - 1];
 			}
 
 		if (output == 's') {
@@ -499,8 +506,8 @@ void NakaoExperiment2D::execute() {
 					iu_k[i][j].IEndsToStrings(left, right);
 					cout << "    u(" << i * h << ", " << j * h << ") = ["
 							<< left << ", " << right << "]" << endl;
-					exact = (1 / M_PIl) * sin(M_PIl * i * h)
-							* sin(M_PIl * j * h);
+					exact = (1 / PI) * sin(PI * i * h)
+							* sin(PI * j * h);
 					cout << "          exact = " << exact << endl;
 				}
 			}
@@ -508,8 +515,8 @@ void NakaoExperiment2D::execute() {
 
 		for (int i = 1; i <= n - 1; ++i) {
 			for (int j = 1; j <= n - 1; ++j) {
-				d = cos(M_PIl * (i + j) * h) - sph * cos(M_PIl * (i - 1) * h);
-				string tmpstr = boost::lexical_cast<string>(d);
+				d = cos(PI * (i + j) * h) - sph * cos(PI * (i - 1) * h);
+				tmpstr = boost::lexical_cast<string>(d);
 				ibeta.a = LeftRead<long double>(tmpstr);
 				ibeta.b = RightRead<long double>(tmpstr);
 				ibeta = ib1 * ibeta * iu_km1[i][j];
@@ -517,8 +524,8 @@ void NakaoExperiment2D::execute() {
 				ibeta = ibeta + ic1;
 				ibeta = interval_arithmetic::ISqrt(ibeta, error);
 				if (error == 0) {
-					string tmpstr = boost::lexical_cast<string>(
-					M_PIl * h * alpha_km1[i][j]);
+					tmpstr = boost::lexical_cast<string>(
+					PI * h * alpha_km1[i][j]);
 					id1.a = LeftRead<long double>(tmpstr);
 					id1.b = RightRead<long double>(tmpstr);
 					ibeta = ih * (ibeta + id1);
@@ -530,14 +537,14 @@ void NakaoExperiment2D::execute() {
 			}
 		} //end of double "for" loop (i,j)
 
-		if (output == 's') {
-			for (int i = 1; i <= n - 1; ++i) {
-				for (int j = 1; j <= n - 1; ++j) {
-					cout << "alpha(" << i * h << ", " << j * h << ") = "
-							<< alpha_k[i][j] << endl;
-				}
-			}
-		} // if output = 's'
+//		if (output == 's') {
+//			for (int i = 1; i <= n - 1; ++i) {
+//				for (int j = 1; j <= n - 1; ++j) {
+//					cout << "alpha(" << i * h << ", " << j * h << ") = "
+//							<< alpha_k[i][j] << endl;
+//				}
+//			}
+//		} // if output = 's'
 
 		norm_u = 0;
 		for (int i = 1; i <= n - 1; ++i)
@@ -600,8 +607,8 @@ void NakaoExperiment2D::execute() {
 								<< ", " << iu_k[i][j].b << "]" << endl;
 					}
 
-					exact = (1.0 / M_PIl) * sin(M_PIl * i * h)
-							* sin(M_PIl * j * h);
+					exact = (1.0 / PI) * sin(PI * i * h)
+							* sin(PI * j * h);
 					if (output == 's')
 						cout << "           exact = " << exact << endl;
 					else
@@ -622,6 +629,13 @@ void NakaoExperiment2D::execute() {
 			}
 		}
 	} //end of while(!finish) loop
+
+	for (int i = 0; i < n; ++i) {
+			delete[] alpha_k[i];
+			delete[] alpha_km1[i];
+			delete[] iu_k[i];
+			delete[] iu_km1[i];
+		}
 
 	delete[] interval_a1;
 	delete[] interval_b1;

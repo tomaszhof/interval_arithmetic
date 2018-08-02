@@ -11,6 +11,7 @@
 #include "Interval.h"
 #include "Experiment.h"
 #include "NakaoExperiment.h"
+#include "NakaoExperiment2D.h"
 
 
 using namespace std;
@@ -32,7 +33,11 @@ int main(int ac, char *av[]) {
 //	exper->Execute();
 //	delete exper;
 
-	NakaoExperiment* exper = new NakaoExperiment();
+//	NakaoExperiment* exper = new NakaoExperiment();
+//	exper->execute();
+//	delete exper;
+
+	NakaoExperiment2D* exper = new NakaoExperiment2D();
 	exper->execute();
 	delete exper;
 
