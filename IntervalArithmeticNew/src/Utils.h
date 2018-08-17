@@ -9,12 +9,13 @@
 #define UTILS_H_
 
 #include <string>
+#include "Interval.h"
 
 using namespace std;
 
 namespace interval_arithmetic
 {
-enum IAMode {DINT_MODE, PINT_MODE};
+//enum IAMode {DINT_MODE, PINT_MODE};
 enum ExperimentMode {CONST_M_EXP, CLASSICAL_EXP, INTERVAL_EXP};
 enum Solvers {GPDE_SOLVER, POISSON, POISSONAM, POISSON4, POISSON4AM, POISSON6};
 

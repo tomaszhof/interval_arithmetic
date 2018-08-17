@@ -8,7 +8,7 @@
 #ifndef SOLVER_H_
 #define SOLVER_H_
 
-//#include "Utils.h"
+#include "Utils.h"
 #include "BoundaryConditions.h"
 
 #include <iostream>

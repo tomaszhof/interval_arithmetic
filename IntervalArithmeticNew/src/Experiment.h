@@ -8,6 +8,7 @@
 #ifndef EXPERIMENT_H_
 #define EXPERIMENT_H_
 
+#include "Utils.h"
 //#include "Interval.cpp"
 //#include "DiffPoisson.h"
 #include "BoundaryConditions.h"
@@ -30,7 +31,7 @@
 #include "PoissonSolver4Order.h"
 #include "PoissonSolver4OrderAM.h"
 #include "PoissonSolver6Order.h"
-#include "Utils.h"
+
 
 using namespace std;
 using namespace interval_arithmetic;
