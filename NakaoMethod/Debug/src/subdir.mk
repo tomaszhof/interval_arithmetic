@@ -6,17 +6,23 @@
 CPP_SRCS += \
 ../src/NakaoExperiment.cpp \
 ../src/NakaoExperiment2D.cpp \
-../src/NakaoMethod.cpp 
+../src/NakaoExperimentApprox.cpp \
+../src/NakaoMethod.cpp \
+../src/nintlib.cpp 
 
 OBJS += \
 ./src/NakaoExperiment.o \
 ./src/NakaoExperiment2D.o \
-./src/NakaoMethod.o 
+./src/NakaoExperimentApprox.o \
+./src/NakaoMethod.o \
+./src/nintlib.o 
 
 CPP_DEPS += \
 ./src/NakaoExperiment.d \
 ./src/NakaoExperiment2D.d \
-./src/NakaoMethod.d 
+./src/NakaoExperimentApprox.d \
+./src/NakaoMethod.d \
+./src/nintlib.d 
 
 
 # Each subdirectory must supply rules for building sources it contributes

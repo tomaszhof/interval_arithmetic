@@ -73,7 +73,6 @@ template<typename T> Interval<T> DICos(const Interval<T>& x, int & st);
 template<typename T> Interval<T> DIExp(const Interval<T>& x);
 
 template<typename T> int SetRounding(int rounding);
-
 template<> Interval<mpreal> IntRead(const string & sa);
 
 template<typename T> class Interval {
@@ -166,6 +165,24 @@ inline Interval<T>::Interval(T a, T b) {
 template<typename T>
 inline IAMode Interval<T>::GetMode() {
 	return Interval<T>::mode;
+}
+
+//template<>
+//inline int SetRounding<mpreal>(int rounding) {
+//	if (rounding == FE_UPWARD) {
+//		mpreal::set_default_rnd(MPFR_RNDU);
+//	} else if (rounding == FE_DOWNWARD) {
+//		mpreal::set_default_rnd(MPFR_RNDD);
+//	} else {
+//		mpreal::set_default_rnd(MPFR_RNDN);
+//	}
+//	return rounding;
+//}
+
+template<typename T>
+int SetRounding(int rounding) {
+	fesetround(rounding);
+	return rounding;
 }
 
 template<typename T>
@@ -1483,11 +1500,7 @@ inline Interval<T> operator /(Interval<T> x, const Interval<T>& y) {
 	}
 }
 
-template<typename T>
-int SetRounding(int rounding) {
-	fesetround(rounding);
-	return rounding;
-}
+
 
 template<>
 inline void Interval<mpreal>::IEndsToStrings(string& left, string& right) {
@@ -1541,17 +1554,7 @@ inline mpreal DIntWidth<mpreal>(const Interval<mpreal>& x) {
 		return w2;
 }
 
-template<>
-inline int SetRounding<mpreal>(int rounding) {
-	if (rounding == FE_UPWARD) {
-		mpreal::set_default_rnd(MPFR_RNDU);
-	} else if (rounding == FE_DOWNWARD) {
-		mpreal::set_default_rnd(MPFR_RNDD);
-	} else {
-		mpreal::set_default_rnd(MPFR_RNDN);
-	}
-	return rounding;
-}
+
 
 //template<>
 //inline mpreal Interval<mpreal>::GetWidth() {

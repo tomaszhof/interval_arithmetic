@@ -1,23 +1,60 @@
 /*
- * NakaoExperiment.cpp
+ * NakaoExperimentApprox.cpp
  *
  *  Created on: Feb 25, 2018
  *      Author: numeric
  */
 
-#include "NakaoExperiment.h"
+#include "NakaoExperimentApprox.h"
+#include "Integration.h"
 
-NakaoExperiment::NakaoExperiment() {
+using namespace integration;
+
+NakaoExperimentApprox::NakaoExperimentApprox() {
 	// TODO Auto-generated constructor stub
 	output = NULL;
 	answer = NULL;
 }
 
-NakaoExperiment::~NakaoExperiment() {
+NakaoExperimentApprox::~NakaoExperimentApprox() {
 	// TODO Auto-generated destructor stub
 }
 
-void NakaoExperiment::execute() {
+long double phi(int i, long double x) {
+	long double h = xv[1] - xv[0];
+	if ((x>=xv[i-1])&&(x<=xv[i+1]))
+		return (1.0L - (std::abs(x-xv[i])/h));
+
+	return 0.0L;
+}
+
+long double phi_p(int i, long double x) {
+	long double h = xv[1] - xv[0];
+	if ((x>=xv[i-1])&&(x<=xv[i]))
+		return (1.0L/h);
+
+	if ((x>xv[i])&&(x<=xv[i+1]))
+		return (-1.0L/h);
+
+	return 0.0L;
+}
+
+void NakaoExperimentApprox::initialize() {
+}
+
+void NakaoExperimentApprox::initialize_vx(long double a, long double b, int n) {
+	h = (b-a)/n;
+	for (int i=0; i<=n; ++i)
+		{
+			xv.push_back(a + h*i);
+		}
+}
+
+long double f(long double x) {
+	return (M_PI - 1)*std::sin(M_PI*x);
+}
+
+void NakaoExperimentApprox::execute() {
 	//global setting
 	cout.setf(std::ios_base::scientific);
 
@@ -75,13 +112,24 @@ void NakaoExperiment::execute() {
 	a = 2.0 * (1.0 / (h * h) - M_PIl / 3.0);
 	alpha = std::pow(2.0 * std::sin(M_PIl * h / 2.0) / (M_PIl * h), 2)
 			* (M_PIl - 1.0);
-	y[0] = alpha * sin(M_PIl * h) / a;
+
+	initialize_vx(0.0L, 1.0L, n);
+//	c = -M_PI;
+//	long double f_1 = GaussLegendreTH(f, 4, GL_X4, GL_A4, xv[0], xv[2], error);
+//	long double d_1 = 1.0/h * f_1;
+//	a = GaussLegendreTH(phi_p, 1, 1, 4, GL_X4, GL_A4, 0.0L, 1.0L, error);
+//	a = a + c*GaussLegendreTH(phi, 1, 1, 4, GL_X4, GL_A4, 0.0L, 1.0L, error);
+//	a = a/h;
+
+	long double d_0 = GaussLegendreTH(f, phi, 1, 4, GL_X4, GL_A4, xv[0], xv[2], error) / h;
+	y[0] = d_0 * sin(M_PIl * h) / a;
 	z[0] = b / a;
 	for (int i = 1; i < n - 2; ++i)
 		z[i] = b / (a - b * z[i - 1]);
 
 	for (int i = 0; i < n - 2; ++i) {
-		y[i + 1] = alpha * std::sin((i + 2.0) * M_PIl * h);
+		long double d_i = GaussLegendreTH(f, phi, i+1, 4, GL_X4, GL_A4, xv[i], xv[i+2], error) / h;
+		y[i + 1] = d_i * std::sin((i + 2.0) * M_PIl * h);
 		y[i + 1] = (y[i + 1] - b * y[i]) / (a - b * z[i]);
 	}
 	u[n - 1 - 1] = y[n - 1 - 1];
@@ -423,7 +471,5 @@ void NakaoExperiment::execute() {
 	cout << endl;
 	cout << "END OF PROGRAM" << endl;
 	std::getchar();
-
-	return ;
 }
 
