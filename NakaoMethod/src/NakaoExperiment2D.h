@@ -31,7 +31,7 @@ private:
 	beta, c, d, delta, epsilon, exact, h,
 	max, norm_u, norm_uij, s, sph;
 	Interval<long double> ia, ia1, ialpha, ib, ib1, ibeta, ic, ic1,
-	id, id1, ih, imax, interval_s, ipi, iz;
+	id, id1, ih,ih2, imax, interval_s, ipi, ipi12, iz;
 	int *r;
 	long double *a1, *b1, *x;
 	Interval<long double> *interval_a1, *interval_b1, *interval_x;
@@ -42,9 +42,13 @@ private:
 	string file_name, left, right, st, tmpstr;
 	fstream results;
 
+	const Interval<long double> im1 = {-1.0, -1.0};
 	const Interval<long double> i0 = {0.0, 0.0};
 	const Interval<long double> i1 = {1.0, 1.0};
+	const Interval<long double> i2 = {2.0, 2.0};
+	const Interval<long double> i4 = {4.0, 4.0};
 	const Interval<long double> i6 = {6.0, 6.0};
+	const Interval<long double> i12 = {12.0, 12.0};
 	const Interval<long double> im11 = {-1.0, 1.0};
 
 

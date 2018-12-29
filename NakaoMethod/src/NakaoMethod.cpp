@@ -7,9 +7,9 @@
 //============================================================================
 
 #include <iostream>
-//#include "Interval.h"
-//#include "NakaoExperiment.h"
-//#include "NakaoExperiment2D.h"
+#include "Interval.h"
+#include "NakaoExperiment.h"
+#include "NakaoExperiment2D.h"
 //#include "Integration.h"
 
 #include "NakaoExperimentApprox.h"
@@ -37,13 +37,13 @@ int main() {
 //	exper1D->execute();
 //	delete exper1D;
 
-//	NakaoExperiment2D* exper = new NakaoExperiment2D();
-//	exper->execute();
-//	delete exper;
+	NakaoExperiment2D* exper = new NakaoExperiment2D();
+	exper->execute();
+	delete exper;
 
-	    	NakaoExperimentApprox* exper1D = new NakaoExperimentApprox();
-	    	exper1D->execute();
-	    	delete exper1D;
+//	    	NakaoExperimentApprox* exper1D = new NakaoExperimentApprox();
+//	    	exper1D->execute();
+//	    	delete exper1D;
 
 	return 0;
 }

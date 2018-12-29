@@ -43,7 +43,7 @@ void NakaoExperiment2D::execute() {
 			file_name = file_name + ".txt";
 			cout << "The program will create a resulting file:       "
 					<< file_name << endl;
-			cout << "Do you accept this name (y - yes, n - no) answetr = ";
+			cout << "Do you accept this name (y - yes, n - no) answer = ";
 			cin >> answer;
 		}
 		cout << endl;
@@ -236,48 +236,73 @@ void NakaoExperiment2D::execute() {
 		results << endl;
 	}
 
-	a = 4.0 / (h * h);
-	tmpstr = boost::lexical_cast<string>(a);
-	ia.a = LeftRead<long double>(tmpstr);
-	ia.b = RightRead<long double>(tmpstr);
-
-	b = -1.0 / (h * h);
-	tmpstr = boost::lexical_cast<string>(b);
-	ib.a = LeftRead<long double>(tmpstr);
-	ib.b = RightRead<long double>(tmpstr);
-
-	tmpstr = boost::lexical_cast<string>(d);
-	id.a = LeftRead<long double>(tmpstr);
-	id.b = RightRead<long double>(tmpstr);
-
-
-	c = std::sqrt(2.0) / 2.0;
-	tmpstr = boost::lexical_cast<string>(c);
-	ic.a = LeftRead<long double>(tmpstr);
-	ic.b = RightRead<long double>(tmpstr);
-	ic = im11 * ic;
-
-	tmpstr = boost::lexical_cast<string>(PI / 12.0);
-	ipi.a = LeftRead<long double>(tmpstr);
-	ipi.b = RightRead<long double>(tmpstr);
-
+	ipi = Interval<long double>::IPi();
 	tmpstr = boost::lexical_cast<string>(h);
 	ih.a = LeftRead<long double>(tmpstr);
 	ih.b = RightRead<long double>(tmpstr);
 
-	tmpstr = boost::lexical_cast<string>(pow(PI * h, 2.0) / 2.0);
-	ia1.a = LeftRead<long double>(tmpstr);
-	ia1.b = RightRead<long double>(tmpstr);
+	ih2 = ISqr(ih, error);
 
-	beta = (2.0 / PI - 4.0) * (1.0 - cos(PI * h));
-	tmpstr = boost::lexical_cast<string>(beta);
-	ib1.a = LeftRead<long double>(tmpstr);
-	ib1.b = RightRead<long double>(tmpstr);
+//	a = 4.0 / (h * h);
+//	tmpstr = boost::lexical_cast<string>(a);
+//	ia.a = LeftRead<long double>(tmpstr);
+//	ia.b = RightRead<long double>(tmpstr);
 
-	tmpstr = boost::lexical_cast<string>(
-			pow((2.0 * PI - 1.0), 2.0) / 4.0);
-	ic1.a = LeftRead<long double>(tmpstr);
-	ic1.b = RightRead<long double>(tmpstr);
+	ia = i4/ih2;
+
+//	b = -1.0 / (h * h);
+//	tmpstr = boost::lexical_cast<string>(b);
+//	ib.a = LeftRead<long double>(tmpstr);
+//	ib.b = RightRead<long double>(tmpstr);
+
+	ib = im1 / ih2;
+
+//	tmpstr = boost::lexical_cast<string>(d);
+//	id.a = LeftRead<long double>(tmpstr);
+//	id.b = RightRead<long double>(tmpstr);
+
+	id = ICos(ipi * ih);
+	id = (i1 - id)/(ISqr(ipi * ih, error));
+	id = (i1 - (i2*ipi)) * id;
+
+//	c = std::sqrt(2.0) / 2.0;
+//	tmpstr = boost::lexical_cast<string>(c);
+//	ic.a = LeftRead<long double>(tmpstr);
+//	ic.b = RightRead<long double>(tmpstr);
+//	ic = im11 * ic;
+
+	ic = im11 * (Interval<long double>::ISqr2()/i2);
+
+//	tmpstr = boost::lexical_cast<string>(PI / 12.0);
+//	ipi.a = LeftRead<long double>(tmpstr);
+//	ipi.b = RightRead<long double>(tmpstr);
+
+	ipi12 = ipi/i12;
+
+//	tmpstr = boost::lexical_cast<string>(h);
+//	ih.a = LeftRead<long double>(tmpstr);
+//	ih.b = RightRead<long double>(tmpstr);
+
+//	tmpstr = boost::lexical_cast<string>(pow(PI * h, 2.0) / 2.0);
+//	ia1.a = LeftRead<long double>(tmpstr);
+//	ia1.b = RightRead<long double>(tmpstr);
+
+	ia1 = ISqr(ipi*ih, error) / i2;
+
+//	beta = (2.0 / PI - 4.0) * (1.0 - cos(PI * h));
+//	tmpstr = boost::lexical_cast<string>(beta);
+//	ib1.a = LeftRead<long double>(tmpstr);
+//	ib1.b = RightRead<long double>(tmpstr);
+
+	ib1 = i1 - ICos(ipi*ih);
+	ib1 = ((i2/ipi) - i4) * ib1;
+
+//	tmpstr = boost::lexical_cast<string>(
+//			pow((2.0 * PI - 1.0), 2.0) / 4.0);
+//	ic1.a = LeftRead<long double>(tmpstr);
+//	ic1.b = RightRead<long double>(tmpstr);
+
+	ic1 = ISqr(((i2 * ipi) - i1), error) / i4;
 
 	alpha_k = new long double*[n];
 	alpha_km1 = new long double*[n];
@@ -390,7 +415,7 @@ void NakaoExperiment2D::execute() {
 				}
 			}
 
-			id1 = ipi * id1;
+			id1 = ipi12 * id1;
 			d = cos(PI * (i + j) * h) - sph * cos(PI * (i - j) * h);
 			tmpstr = boost::lexical_cast<string>(d);
 			iz.a = LeftRead<long double>(tmpstr);
@@ -624,25 +649,25 @@ void NakaoExperiment2D::execute() {
 				} // end of for (i,j) loop
 
 			if (output == 's') {
-				cout << "Press Enter to continue..." << endl;
-				std::getchar();
+				//cout << "Press Enter to continue..." << endl;
+				//std::getchar();
 			}
 		}
 	} //end of while(!finish) loop
 
-	for (int i = 0; i < n; ++i) {
-			delete[] alpha_k[i];
-			delete[] alpha_km1[i];
-			delete[] iu_k[i];
-			delete[] iu_km1[i];
-		}
+//	for (int i = 0; i < n; ++i) {
+//			delete[] alpha_k[i];
+//			delete[] alpha_km1[i];
+//			delete[] iu_k[i];
+//			delete[] iu_km1[i];
+//		}
 
-	delete[] interval_a1;
+	//delete[] interval_a1;
 	delete[] interval_b1;
 	delete[] interval_x;
 	delete[] r;
-	delete[] iu_km1;
-	delete[] iu_k;
+	//delete[] iu_km1;
+	//delete[] iu_k;
 
 	if (output == 'f')
 		results.close();
@@ -650,5 +675,7 @@ void NakaoExperiment2D::execute() {
 	cout << endl;
 	cout << "END OF PROGRAM" << endl;
 	std::getchar();
+
+	return;
 }
 
