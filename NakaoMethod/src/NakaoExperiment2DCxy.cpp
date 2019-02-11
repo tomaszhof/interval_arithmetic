@@ -100,26 +100,31 @@ void NakaoExperiment2DCxy::execute() {
 		l2 = l1 + n - 1;
 		i_over_24 = i / 24.0L;
 		j_over_24 = j / 24.0L;
-		ij_over_12 = i*j / 12.0L;
+		ij_over_12 = i * j / 12.0L;
 		if (i > 1) {
-			a1[l1 - 1] = b - twenty_h2*(ij_over_12-j_over_24-1.0L/360.0L);
+			a1[l1 - 1] = b
+					- twenty_h2 * (ij_over_12 - j_over_24 - 1.0L / 360.0L);
 			if (j < n - 1) {
-				a1[l1] = -twenty_h2*(ij_over_12 + i_over_24 - j_over_24 - 1.0L/45.0L);
+				a1[l1] = -twenty_h2
+						* (ij_over_12 + i_over_24 - j_over_24 - 1.0L / 45.0L);
 			}
 		}
-		a1[l2 - 1] = a - twenty_h2 * (i*j/2.0L - 1.0L/36.0L);
+		a1[l2 - 1] = a - twenty_h2 * (i * j / 2.0L - 1.0L / 36.0L);
 		if (j > 1)
-			a1[l2 - 2] = b - twenty_h2*(ij_over_12-i_over_24-1.0L/360.0L);
+			a1[l2 - 2] = b
+					- twenty_h2 * (ij_over_12 - i_over_24 - 1.0L / 360.0L);
 		if (j < n - 1)
-			a1[l2] = -twenty_h2*(ij_over_12+i_over_24-1.0L/360.0L);;
+			a1[l2] = -twenty_h2 * (ij_over_12 + i_over_24 - 1.0L / 360.0L);
+		;
 		l1 = l2 + n - 1;
 		if (i < n - 1) {
-			a1[l1 - 1] = b - twenty_h2*(ij_over_12+j_over_24-1.0L/360.0L);
+			a1[l1 - 1] = b
+					- twenty_h2 * (ij_over_12 + j_over_24 - 1.0L / 360.0L);
 			if (j > 1)
-				a1[l1 - 2] = -twenty_h2*(ij_over_12 - i_over_24 + j_over_24 - 1.0L/45.0L);
+				a1[l1 - 2] = -twenty_h2
+						* (ij_over_12 - i_over_24 + j_over_24 - 1.0L / 45.0L);
 		}
-		a1[n2 - 1] = d
-				* (cos(PI * (i + j) * h) - sph * cos(PI * (i - j) * h));
+		a1[n2 - 1] = d * (cos(PI * (i + j) * h) - sph * cos(PI * (i - j) * h));
 		for (i = 1; i <= n1; ++i) {
 			rh = r[i - 1];
 			if (rh != 0)
@@ -132,7 +137,7 @@ void NakaoExperiment2DCxy::execute() {
 			if (r[j1 - 1] == 0) {
 				s = a1[j1 - 1];
 				l = l + 1;
-				q =l;
+				q = l;
 				for (i = 1; i <= kh; ++i) {
 					s = s - b1[i - 1] * x[q - 1];
 					q = q + p;
@@ -196,7 +201,7 @@ void NakaoExperiment2DCxy::execute() {
 		}
 	}
 	u = new long double*[n];
-	for (i = 0; i <= n-1; ++i)
+	for (i = 0; i <= n - 1; ++i)
 		u[i] = new long double[n];
 
 	for (i = 1; i <= n - 1; ++i) {
@@ -246,66 +251,20 @@ void NakaoExperiment2DCxy::execute() {
 
 	ih2 = ISqr(ih, error);
 
-//	a = 4.0 / (h * h);
-//	tmpstr = boost::lexical_cast<string>(a);
-//	ia.a = LeftRead<long double>(tmpstr);
-//	ia.b = RightRead<long double>(tmpstr);
-
-	ia = i4/ih2;
-
-//	b = -1.0 / (h * h);
-//	tmpstr = boost::lexical_cast<string>(b);
-//	ib.a = LeftRead<long double>(tmpstr);
-//	ib.b = RightRead<long double>(tmpstr);
+	ia = i4 / ih2;
 
 	ib = im1 / ih2;
 
-//	tmpstr = boost::lexical_cast<string>(d);
-//	id.a = LeftRead<long double>(tmpstr);
-//	id.b = RightRead<long double>(tmpstr);
-
 	id = ICos(ipi * ih);
-	id = (i1 - id)/(ISqr(ipi * ih, error));
-	id = (i1 - (i2*ipi)) * id;
+	id = (i1 - id) / (ISqr(ipi * ih, error));
+	id = (i1 - (i2 * ipi)) * id;
 
-//	c = std::sqrt(2.0) / 2.0;
-//	tmpstr = boost::lexical_cast<string>(c);
-//	ic.a = LeftRead<long double>(tmpstr);
-//	ic.b = RightRead<long double>(tmpstr);
-//	ic = im11 * ic;
+	ic = im11 * (Interval<long double>::ISqr2() / i2);
 
-	ic = im11 * (Interval<long double>::ISqr2()/i2);
+	i20h4 = (i20 * (ih2 * ih2));
 
-//	tmpstr = boost::lexical_cast<string>(PI / 12.0);
-//	ipi.a = LeftRead<long double>(tmpstr);
-//	ipi.b = RightRead<long double>(tmpstr);
-
-	ipi12 = ipi/i12;
-
-//	tmpstr = boost::lexical_cast<string>(h);
-//	ih.a = LeftRead<long double>(tmpstr);
-//	ih.b = RightRead<long double>(tmpstr);
-
-//	tmpstr = boost::lexical_cast<string>(pow(PI * h, 2.0) / 2.0);
-//	ia1.a = LeftRead<long double>(tmpstr);
-//	ia1.b = RightRead<long double>(tmpstr);
-
-	ia1 = ISqr(ipi*ih, error) / i2;
-
-//	beta = (2.0 / PI - 4.0) * (1.0 - cos(PI * h));
-//	tmpstr = boost::lexical_cast<string>(beta);
-//	ib1.a = LeftRead<long double>(tmpstr);
-//	ib1.b = RightRead<long double>(tmpstr);
-
-	ib1 = i1 - ICos(ipi*ih);
-	ib1 = ((i2/ipi) - i4) * ib1;
-
-//	tmpstr = boost::lexical_cast<string>(
-//			pow((2.0 * PI - 1.0), 2.0) / 4.0);
-//	ic1.a = LeftRead<long double>(tmpstr);
-//	ic1.b = RightRead<long double>(tmpstr);
-
-	ic1 = ISqr(((i2 * ipi) - i1), error) / i4;
+	isph = ISin(ipi * ih);
+	isph = (isph / (ipi * ih));
 
 	alpha_k = new long double*[n];
 	alpha_km1 = new long double*[n];
@@ -315,11 +274,11 @@ void NakaoExperiment2DCxy::execute() {
 	for (int i = 0; i < n; ++i) {
 		alpha_k[i] = new long double[n];
 		alpha_km1[i] = new long double[n];
-		iu_k[i] = new Interval<long double>[n];
-		iu_km1[i] = new Interval<long double>[n];
+		iu_k[i] = new Interval<long double> [n];
+		iu_km1[i] = new Interval<long double> [n];
 	}
 
-	iu_km1[0][0] = i0;
+	//iu_km1[0][0] = i0; ??
 	for (int i = 1; i <= n - 1; ++i) {
 		for (int j = 1; j <= n - 1; ++j) {
 			tmpstr = boost::lexical_cast<string>(u[i][j]);
@@ -332,9 +291,9 @@ void NakaoExperiment2DCxy::execute() {
 
 	it = 0;
 	finish = false;
-	delta = 1e-8;
-	epsilon = 1e-8;
-	interval_a1 = new Interval<long double> [n2 + 1];
+	delta = 1e-3;
+	epsilon = 1e-4;
+	interval_a1 = new Interval<long double> [n1 + 1];
 	interval_b1 = new Interval<long double> [n1 + 1];
 	interval_x = new Interval<long double> [(n1 + 2) * (n1 + 2) / 4];
 
@@ -351,7 +310,7 @@ void NakaoExperiment2DCxy::execute() {
 
 		while (k != n1) {
 			k = k + 1;
-			for (i = 0; i <= n2+1; ++i) {
+			for (i = 1; i <= n1; ++i) {
 				interval_a1[i - 1] = i0;
 			}
 			j = j + 1;
@@ -376,54 +335,188 @@ void NakaoExperiment2DCxy::execute() {
 				interval_a1[l1 - 1] = ib;
 			}
 
-			id1 = i6 * iu_km1[i][j];
+			interval_i.a = i;
+			interval_i.b = i;
+			interval_j.a = j;
+			interval_j.b = j;
+
+			iz = ((interval_i * interval_j) / i2) - (i1 / i36);
+			iz = i20h4 * iz;
+			id1 = id1 + iz * iu_km1[i][j];
 
 			if (i == 1) {
 				if (j == 1) {
-					id1 = id1 + (iu_km1[1][2] + iu_km1[2][1]);
+					iz = (interval_i * interval_j) / i12 - (interval_i / i24);
+					iz = i20h4 * (iz - (i1 / i360));
+					id1 = id1 + (iz * iu_km1[1][2]);
+
+					iz = (interval_i * interval_j) / i12 - (interval_j / i24);
+					iz = i20h4 * (iz - (i1 / i360));
+					id1 = id1 + (iz * iu_km1[2][1]);
 				} else {
 					if (j == n - 1) {
-						id1 = id1 + iu_km1[1][n - 2] + iu_km1[2][n - 2]
-								+ iu_km1[2][n - 1];
+						iz = ((interval_i * interval_j) / i12)
+								- (interval_i / i24);
+						iz = i20h4 * (iz - (i1 / i360));
+						id1 = id1 + iz * iu_km1[1][n - 2];
+
+						iz = ((interval_i * interval_j) / i12)
+								- (interval_i / i24);
+						iz = iz + interval_j / i24;
+						iz = i20h4 * (iz - i1 / i45);
+						id1 = id1 + iz * iu_km1[2][n - 2];
+
+						iz = ((interval_i * interval_j) / i12)
+								+ (interval_j / i24);
+						iz = i20h4 * (iz - (i1 / i360));
+						id1 = id1 + iz * iu_km1[2][n - 1];
 					} else {
-						id1 = id1 + iu_km1[1][j - 1] + iu_km1[1][j + 1]
-								+ iu_km1[2][j - 1] + iu_km1[2][j];
+						iz = ((interval_i * interval_j) / i12)
+								- (interval_i / i24);
+						iz = i20h4 * (iz - (i1 / i360));
+						id1 = id1 + iz * iu_km1[1][j - 1];
+
+						iz = (interval_i * interval_j) / i12
+								+ (interval_i / i24);
+						iz = i20h4 * (iz - (i1 / i360));
+						id1 = id1 + iz * iu_km1[1][j + 1];
+
+						iz = ((interval_i * interval_j) / i12)
+								- (interval_i / i24);
+						iz = iz + (interval_j / i24);
+						iz = i20h4 * (iz - i1 / i45);
+						id1 = id1 + iz * iu_km1[2][j - 1];
+
+						iz = ((interval_i * interval_j) / i12)
+								+ (interval_j / i24);
+						iz = i20h4 * (iz - (i1 / i360));
+						id1 = id1 + iz * iu_km1[2][j];
 					}
 				}
 			} else if (i == n - 1) {
 				if (j == 1) {
-					id1 = id1 + iu_km1[n - 2][1] + iu_km1[n - 2][2]
-							+ iu_km1[n - 1][2];
+					iz = ((interval_i * interval_j) / i12) - (interval_j / i24);
+					iz = i20h4 * (iz - (i1 / i360));
+					id1 = id1 + iz * iu_km1[n - 2][1];
+
+					iz = ((interval_i * interval_j) / i12) + (interval_i / i24);
+					iz = iz - (interval_j / i24);
+					iz = i20h4 * (iz - i1 / i45);
+					id1 = id1 +iz*iu_km1[n - 2][2];
+
+					iz = ((interval_i * interval_j) / i12) + (interval_i / i24);
+					iz = i20h4 * (iz - (i1 / i360));
+					id1 =id1 + iz * iu_km1[n - 1][2];
 				} else {
 					if (j == n - 1) {
-						id1 = id1 + iu_km1[n - 1][n - 2] + iu_km1[n - 2][n - 1];
+						iz = ((interval_i * interval_j) / i12) - (interval_j / i24);
+						iz = i20h4 * (iz - (i1 / i360));
+						id1 = id1 + iz * iu_km1[n - 2][n - 1];
+
+
+						iz = ((interval_i * interval_j) / i12) - (interval_i / i24);
+						iz = i20h4 * (iz - (i1 / i360));
+						id1 = id1 + iz*iu_km1[n - 1][n - 2];
 					} else {
-						id1 = id1 + iu_km1[n - 1][j + 1] + iu_km1[n - 1][j - 1]
-								+ iu_km1[n - 2][j + 1] + iu_km1[n - 2][j];
+						iz = ((interval_i * interval_j) / i12) - (interval_j / i24);
+						iz = i20h4 * (iz - (i1 / i360));
+						id1 =id1 + iz*iu_km1[n-2][j];
+
+						iz = ((interval_i * interval_j) / i12) + (interval_i / i24);
+						iz = iz - (interval_j / i24);
+						iz = i20h4 * (iz - i1 / i45);
+						id1 = id1 + iz*iu_km1[n-2][j+1];
+
+						iz = ((interval_i * interval_j) / i12) + (interval_i / i24);
+						iz = i20h4 * (iz - (i1 / i360));
+						id1 = id1 + iz * iu_km1[n-1][j-1];
+
+						iz = ((interval_i * interval_j) / i12) + (interval_i / i24);
+						iz = i20h4 * (iz - (i1 / i360));
+						id1 = id1 + iz * iu_km1[n-1][j+1];
+
+//						id1 = id1 + iu_km1[n - 1][j + 1] + iu_km1[n - 1][j - 1]
+//								+ iu_km1[n - 2][j + 1] + iu_km1[n - 2][j];
 					}
 				}
 			} else {
 				if (j == 1) {
-					id1 = id1 + iu_km1[i - 1][1] + iu_km1[i - 1][2]
-							+ iu_km1[i][2] + iu_km1[i + 1][1];
+					iz = ((interval_i * interval_j) / i12) - (interval_j / i24);
+					iz = i20h4 * (iz - (i1 / i360));
+					id1 = id1 + iz*iu_km1[i - 1][1];
+
+					iz = ((interval_i * interval_j) / i12) + (interval_i / i24);
+					iz = iz - (interval_j / i24);
+					iz = i20h4 * (iz - i1 / i45);
+					id1 = id1 + iz * iu_km1[i - 1][2];
+
+					iz = ((interval_i * interval_j) / i12) + (interval_i / i24);
+					iz = i20h4 * (iz - (i1 / i360));
+					id1 = id1 + iz*iu_km1[i][2];
+
+					iz = ((interval_i * interval_j) / i12) + (interval_j / i24);
+					iz = i20h4 * (iz - (i1 / i360));
+					id1 = id1 + iz*iu_km1[i + 1][1];
 				} else {
 					if (j == n - 1) {
-						id1 = id1 + iu_km1[i - 1][n - 1] + iu_km1[i][n - 2]
-								+ iu_km1[i + 1][n - 2] + iu_km1[i + 1][n - 1];
+						iz = ((interval_i * interval_j) / i12) - (interval_j / i24);
+						iz = i20h4 * (iz - (i1 / i360));
+						id1 = id1 + iz * iu_km1[i-1][n-1];
+
+						iz = ((interval_i * interval_j) / i12) - (interval_i / i24);
+						iz = i20h4 * (iz - (i1 / i360));
+						id1 = id1 + iz*iu_km1[i][n-2];
+
+						iz = ((interval_i * interval_j) / i12) - (interval_i / i24);
+						iz = iz + (interval_j / i24);
+						iz = i20h4 * (iz - i1 / i45);
+						id1 = id1 + iz * iu_km1[i+1][n-2];
+
+						iz = ((interval_i * interval_j) / i12) + (interval_j / i24);
+						iz = i20h4 * (iz - (i1 / i360));
+						id1 = id1 + iz * iu_km1[i+1][n-1];
+
+//						id1 = id1 + iu_km1[i - 1][n - 1] + iu_km1[i][n - 2]
+//								+ iu_km1[i + 1][n - 2] + iu_km1[i + 1][n - 1];
 					} else {
-						id1 = id1 + iu_km1[i - 1][j] + iu_km1[i - 1][j + 1]
-								+ iu_km1[i][j - 1] + iu_km1[i][j + 1]
-								+ iu_km1[i + 1][j - 1] + iu_km1[i + 1][j];
+						iz = ((interval_i * interval_j) / i12) - (interval_j / i24);
+						iz = i20h4 * (iz - (i1 / i360));
+						id1 = id1 + iz*iu_km1[i-1][j];
+
+						iz = ((interval_i * interval_j) / i12) + (interval_i / i24);
+						iz = iz - (interval_j / i24);
+						iz = i20h4 * (iz - i1 / i45);
+						id1 = id1 + iz * iu_km1[i-1][j+1];
+
+						iz = ((interval_i * interval_j) / i12) - (interval_i / i24);
+						iz = i20h4 * (iz - (i1 / i360));
+						id1 = id1 + iz*iu_km1[i][j-1];
+
+
+						iz = ((interval_i * interval_j) / i12) + (interval_i / i24);
+						iz = i20h4 * (iz - (i1 / i360));
+						id1 = id1 + iz * iu_km1[i][j+1];
+
+						iz = ((interval_i * interval_j) / i12) - (interval_i / i24);
+						iz = iz - (interval_j / i24);
+						iz = i20h4 * (iz - i1 / i45);
+						id1 = id1 + iz*iu_km1[i+1][j-1];
+
+						iz = ((interval_i * interval_j) / i12) + (interval_j / i24);
+						iz = i20h4 * (iz - (i1 / i360));
+						id1 = id1 + iz*iu_km1[i+1][j];
+
+//						id1 = id1 + iu_km1[i - 1][j] + iu_km1[i - 1][j + 1]
+//								+ iu_km1[i][j - 1] + iu_km1[i][j + 1]
+//								+ iu_km1[i + 1][j - 1] + iu_km1[i + 1][j];
 					}
 				}
 			}
 
-			id1 = ipi12 * id1;
-			d = cos(PI * (i + j) * h) - sph * cos(PI * (i - j) * h);
-			tmpstr = boost::lexical_cast<string>(d);
-			iz.a = LeftRead<long double>(tmpstr);
-			iz.b = RightRead<long double>(tmpstr);
-
+			i_plus_j_ih = (interval_i + interval_j) * ih;
+			i_minus_j_ih = (interval_i-interval_j) * ih;
+			iz = isph*ICos(ipi * i_minus_j_ih);
+			iz = ICos(ipi*i_plus_j_ih)-iz;
 			id1 = id1 + (id * iz);
 
 			tmpstr = boost::lexical_cast<string>(alpha_km1[i][j]);
@@ -441,7 +534,6 @@ void NakaoExperiment2DCxy::execute() {
 			kh = k - 1;
 			l = 0;
 			imax = i0;
-
 
 			for (j1 = 1; j1 <= n2; ++j1) {
 				if (r[j1 - 1] == 0) {
@@ -534,8 +626,7 @@ void NakaoExperiment2DCxy::execute() {
 					iu_k[i][j].IEndsToStrings(left, right);
 					cout << "    u(" << i * h << ", " << j * h << ") = ["
 							<< left << ", " << right << "]" << endl;
-					exact = (1 / PI) * sin(PI * i * h)
-							* sin(PI * j * h);
+					exact = (1 / PI) * sin(PI * i * h) * sin(PI * j * h);
 					cout << "          exact = " << exact << endl;
 				}
 			}
@@ -553,7 +644,7 @@ void NakaoExperiment2DCxy::execute() {
 				ibeta = interval_arithmetic::ISqrt(ibeta, error);
 				if (error == 0) {
 					tmpstr = boost::lexical_cast<string>(
-					PI * h * alpha_km1[i][j]);
+							PI * h * alpha_km1[i][j]);
 					id1.a = LeftRead<long double>(tmpstr);
 					id1.b = RightRead<long double>(tmpstr);
 					ibeta = ih * (ibeta + id1);
@@ -635,8 +726,7 @@ void NakaoExperiment2DCxy::execute() {
 								<< ", " << iu_k[i][j].b << "]" << endl;
 					}
 
-					exact = (1.0 / PI) * sin(PI * i * h)
-							* sin(PI * j * h);
+					exact = (1.0 / PI) * sin(PI * i * h) * sin(PI * j * h);
 					if (output == 's')
 						cout << "           exact = " << exact << endl;
 					else

@@ -331,7 +331,7 @@ void NakaoExperiment2D::execute() {
 	finish = false;
 	delta = 1e-8;
 	epsilon = 1e-8;
-	interval_a1 = new Interval<long double> [n2 + 1];
+	interval_a1 = new Interval<long double> [n1 + 1];
 	interval_b1 = new Interval<long double> [n1 + 1];
 	interval_x = new Interval<long double> [(n1 + 2) * (n1 + 2) / 4];
 
@@ -348,7 +348,7 @@ void NakaoExperiment2D::execute() {
 
 		while (k != n1) {
 			k = k + 1;
-			for (i = 0; i <= n2+1; ++i) {
+			for (i = 1; i <= n1; ++i) {
 				interval_a1[i - 1] = i0;
 			}
 			j = j + 1;
