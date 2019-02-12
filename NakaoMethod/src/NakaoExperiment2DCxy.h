@@ -30,7 +30,7 @@ private:
 	long double a, abs_alpha, abs_alphaij, b, b_dash,
 	beta, c, d, delta, epsilon, exact, h,
 	max, norm_u, norm_uij, s, sph, ij_over_12, i_over_24, j_over_24, twenty_h2;
-	Interval<long double> ia, ia1, ialpha, ib, ib1, ibeta, ic, ic1,
+	Interval<long double> ia, ia1, ialpha, ib, ib1, ibeta, ibeta1, ic, ic1,
 	id, id1, ih,ih2, imax, interval_s, isph, ipi, ipi12, iz, i20h4,
 	i_plus_j_ih, i_minus_j_ih, interval_i, interval_j, interval_ij;
 	int *r;

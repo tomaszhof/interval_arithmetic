@@ -634,6 +634,23 @@ void NakaoExperiment2DCxy::execute() {
 
 		for (int i = 1; i <= n - 1; ++i) {
 			for (int j = 1; j <= n - 1; ++j) {
+				interval_i.a = i;
+				interval_i.b = i;
+				interval_j.a = j;
+				interval_j.b = j;
+				interval_ij = interval_i * interval_j;
+				iz = ISqr(interval_ij, error);
+				iz = (iz*(interval_i + interval_j))/i2;
+				ibeta1 = im1*iz;
+				iz = (interval_i * interval_i) + (interval_ij / i2);
+				iz = iz + (interval_j * interval_j);
+				iz = (interval_ij*iz)/i3;
+				ibeta1 = ibeta1 - iz;
+				iz = ISqr(interval_i, error)*interval_i;
+				iz = (iz/i3) + (interval_ij * (interval_i + interval_j));
+				iz = iz + (ISqr(interval_j, error)*interval_j / i3);
+				ibeta1 = ibeta1 - (iz / i4);
+
 				d = cos(PI * (i + j) * h) - sph * cos(PI * (i - 1) * h);
 				tmpstr = boost::lexical_cast<string>(d);
 				ibeta.a = LeftRead<long double>(tmpstr);
