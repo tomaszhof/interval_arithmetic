@@ -54,7 +54,7 @@ void NakaoExperiment2DCxy::execute() {
 
 		results << "Solving the boundary value problem" << endl;
 		results
-				<< "  -d^2u/dx^2 - d^2*u/dy^2 -pi*u = (2*pi - 1) * sin(pi*x)*sin(pi*y),"
+				<< "  -d^2u/dx^2 - d^2*u/dy^2 -20*x*y*u = (2*pi - 1) * sin(pi*x)*sin(pi*y),"
 				<< endl;
 		results << "  u(x, 0) = u(0,y) = u(x,1) = u(1,y) = 0" << endl;
 		results << "by the Galerkin approximation and Nakao''s method." << endl;
@@ -87,7 +87,7 @@ void NakaoExperiment2DCxy::execute() {
 	b_dash = (-1.0 * PI) / 12.0;
 	d = (1.0 - 2.0 * PI) * (1.0 - cos(PI * h)) / pow(PI * h, 2.0);
 	sph = sin(PI * h) / (PI * h);
-	twenty_h2 = 20 * pow(h, 2.0);
+	twenty_h2 = 20.0L * pow(h, 2.0);
 	finish = false;
 	while (k != n1) {
 		k = k + 1;
@@ -115,7 +115,6 @@ void NakaoExperiment2DCxy::execute() {
 					- twenty_h2 * (ij_over_12 - i_over_24 - 1.0L / 360.0L);
 		if (j < n - 1)
 			a1[l2] = -twenty_h2 * (ij_over_12 + i_over_24 - 1.0L / 360.0L);
-		;
 		l1 = l2 + n - 1;
 		if (i < n - 1) {
 			a1[l1 - 1] = b
@@ -154,6 +153,7 @@ void NakaoExperiment2DCxy::execute() {
 			} //end if inside for
 		} //end for loop (find max value)
 		max = 1.0 / a1[lh - 1];
+		cout << max << endl;
 		r[jh - 1] = k;
 		for (i = 1; i <= p; ++i) {
 			a1[i - 1] = max * a1[i - 1];
@@ -214,17 +214,12 @@ void NakaoExperiment2DCxy::execute() {
 
 	for (i = 1; i <= n - 1; ++i)
 		for (j = 1; j <= n - 1; ++j) {
-			exact = (1.0 / M_PI) * sin(M_PI * i * h) * sin(M_PI * j * h);
 			if (output == 's') {
 				cout << "u(" << i * h << "," << j * h << ") = " << u[i][j]
 						<< endl;
-				cout << "         exact = " << exact;
-				cout << "   error = " << abs(u[i][j] - exact) << endl;
 			} else {
 				results << "u(" << i * h << "," << j * h << ") = " << u[i][j]
 						<< endl;
-				results << "         exact = " << exact;
-				results << "   error = " << abs(u[i][j] - exact) << endl;
 			}
 
 		} //end of double for loop
@@ -435,8 +430,6 @@ void NakaoExperiment2DCxy::execute() {
 						iz = i20h4 * (iz - (i1 / i360));
 						id1 = id1 + iz * iu_km1[n-1][j+1];
 
-//						id1 = id1 + iu_km1[n - 1][j + 1] + iu_km1[n - 1][j - 1]
-//								+ iu_km1[n - 2][j + 1] + iu_km1[n - 2][j];
 					}
 				}
 			} else {
@@ -476,8 +469,6 @@ void NakaoExperiment2DCxy::execute() {
 						iz = i20h4 * (iz - (i1 / i360));
 						id1 = id1 + iz * iu_km1[i+1][n-1];
 
-//						id1 = id1 + iu_km1[i - 1][n - 1] + iu_km1[i][n - 2]
-//								+ iu_km1[i + 1][n - 2] + iu_km1[i + 1][n - 1];
 					} else {
 						iz = ((interval_i * interval_j) / i12) - (interval_j / i24);
 						iz = i20h4 * (iz - (i1 / i360));
@@ -506,9 +497,6 @@ void NakaoExperiment2DCxy::execute() {
 						iz = i20h4 * (iz - (i1 / i360));
 						id1 = id1 + iz*iu_km1[i+1][j];
 
-//						id1 = id1 + iu_km1[i - 1][j] + iu_km1[i - 1][j + 1]
-//								+ iu_km1[i][j - 1] + iu_km1[i][j + 1]
-//								+ iu_km1[i + 1][j - 1] + iu_km1[i + 1][j];
 					}
 				}
 			}
@@ -650,21 +638,65 @@ void NakaoExperiment2DCxy::execute() {
 				iz = (iz/i3) + (interval_ij * (interval_i + interval_j));
 				iz = iz + (ISqr(interval_j, error)*interval_j / i3);
 				ibeta1 = ibeta1 - (iz / i4);
+				iz = iz + (ISqr(interval_i, error)/i3) + interval_ij;
+				iz = iz + (ISqr(interval_j, error)/i3);
+				ibeta1 = ibeta1 - (iz/i15);
 
-				d = cos(PI * (i + j) * h) - sph * cos(PI * (i - 1) * h);
-				tmpstr = boost::lexical_cast<string>(d);
-				ibeta.a = LeftRead<long double>(tmpstr);
-				ibeta.b = RightRead<long double>(tmpstr);
-				ibeta = ib1 * ibeta * iu_km1[i][j];
-				ibeta = ibeta + (ia1 * iu_km1[i][j] * iu_km1[i][j]);
-				ibeta = ibeta + ic1;
-				ibeta = interval_arithmetic::ISqrt(ibeta, error);
+				iz = ((interval_i + interval_j)/i180);
+				ibeta1 = (ibeta1 - iz) + (i1 / i120);
+
+				iz = ISqr(ih2, error) * ih2;
+				ibeta1 = iz * ibeta1;
+				ibeta1 = ISqr((i20 * iu_km1[i][j]), error) * ibeta1;
+				i_plus_j_ih = (i+j)*ih;
+				i_minus_j_ih = (i-j)*ih;
+				ipih = ipi*ih;
+				i2pih = i2 * ipih;
+				iz1 = ih * (ICos(i2pih) + ICos(ipih));
+				iz1 = iz1 - (i3 * ISin(i2pih))/(i2 * ipi);
+				iz = (interval_i - interval_j)*iz1;
+				iz1 = (i3 * interval_i)-(i7*interval_j)+i4;
+				iz1 = (iz1 * ISin(ipi)/ipi); //sin(pi) = 0! zweryfikować tę linię!
+				iz = iz + iz1;
+				iz1 = ipi * i_minus_j_ih;
+				ibeta2 = (iz*ISin(iz1)) / (i2*ipi);
+				iz = interval_ij * ih;
+				iz1 = i5 / (i2 * (ISqr(ipi, error) * ih));
+				iz = iz + iz1;
+				iz1 = (i2*ISin(ipih)) - ISin(i2pih);
+				iz = (iz*iz1) + (ih * (ISin(i2pih)));
+				iz1 = (i3 * ICos(i2pih))-ICos(ipih);
+				iz = iz + (iz1 / ipi);
+				iz1 = (ipi * i_minus_j_ih);
+				ibeta2 = ibeta2 + (iz*ICos(iz1)) / (i2 * ipi);
+				iz1 = (i1 / ipi) - ((ih * ISin(ipih))/i2);
+				iz = (interval_i + interval_j) * iz1;
+				iz1 = ((i2 * interval_i)*ICos(ipih))/ipi;
+				iz = iz - iz1;
+				iz1 = ipi * i_plus_j_ih;
+				ibeta2 = ibeta2 + ih*iz*ISin(iz1);
+				iz1 = (i1 / ipi) - ih*ISin(ipih);
+				iz = iz1 * ipi;
+				iz1 = (interval_ij+(i1/i6)) * ICos(ipih);
+				iz1 = iz1 + ((i1 / i3) - interval_ij);
+				iz1 = iz + (ISqr(ih, error)*iz1);
+				iz1 = ipi * i_plus_j_ih;
+				ibeta2 = ibeta2 + iz * ICos(iz1);
+				iz1 = i_minus_j_ih * ISin(ipi * (interval_j*ih));
+				iz1 = iz1 - (ICos(ipi * (interval_j*ih))/ipi);
+				iz = (i2 * iz1) / ipi;
+				iz1 = ICos(ipi*ih)*ICos(ipi*(interval_i*ih));
+				ibeta2 = ibeta2 + (iz*iz1);
+				iz = i20 * ((i2*ipi)-i1);
+				iz =  (iz*iu_km1[i][j])/ ISqr(ipi, error);
+				ibeta2 = iz * ibeta2;
+				iz = ISqr(((i2*ipi) - i1), error);
+				ibeta = ibeta1 + (i2 * ibeta2) + (iz*i4);
+				ibeta = ISqrt(ibeta, error);
+
 				if (error == 0) {
-					tmpstr = boost::lexical_cast<string>(
-							PI * h * alpha_km1[i][j]);
-					id1.a = LeftRead<long double>(tmpstr);
-					id1.b = RightRead<long double>(tmpstr);
-					ibeta = ih * (ibeta + id1);
+					iz = (i20 * ih)*(alpha_km1[i][j]);
+					ibeta = ih * (ibeta + iz);
 					alpha_k[i][j] = ibeta.b;
 				} else {
 					cout << "Impossible to calculate Sqrt(ibeta) for i=" << i
@@ -742,12 +774,6 @@ void NakaoExperiment2DCxy::execute() {
 						results << "                  = [" << iu_k[i][j].a
 								<< ", " << iu_k[i][j].b << "]" << endl;
 					}
-
-					exact = (1.0 / PI) * sin(PI * i * h) * sin(PI * j * h);
-					if (output == 's')
-						cout << "           exact = " << exact << endl;
-					else
-						results << "        exact = " << exact << endl;
 				} // end for (i,j) loop
 		}
 
@@ -759,8 +785,8 @@ void NakaoExperiment2DCxy::execute() {
 				} // end of for (i,j) loop
 
 			if (output == 's') {
-				//cout << "Press Enter to continue..." << endl;
-				//std::getchar();
+				cout << "Press Enter to continue..." << endl;
+				std::getchar();
 			}
 		}
 	} //end of while(!finish) loop

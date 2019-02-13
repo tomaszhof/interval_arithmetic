@@ -92,6 +92,8 @@ public:
 	Interval operator+(const Interval<T>& i);
 	Interval operator-(const Interval<T>& i);
 	Interval operator*(const Interval<T>& i);
+	Interval operator*(const long double & l);
+	Interval operator*(const int & i);
 	Interval operator/(const Interval<T>& i);
 	Interval Projection();
 	Interval Opposite();
@@ -1458,6 +1460,58 @@ inline Interval<T> Interval<T>::operator *(const Interval<T>& y) {
 }
 
 template<typename T>
+inline Interval<T> operator *(int i, const Interval<T>& y) {
+	Interval<T> x = {i, i};
+	switch (Interval<T>::mode) {
+	case PINT_MODE:
+		return IMul<T>(x, y);
+	case DINT_MODE:
+		return DIMul<T>(x, y);
+	default:
+		return IMul<T>(x, y);
+	}
+}
+
+template<typename T>
+inline Interval<T> operator *(const Interval<T>& y, int i) {
+	Interval<T> x = {i, i};
+	switch (Interval<T>::mode) {
+	case PINT_MODE:
+		return IMul<T>(x, y);
+	case DINT_MODE:
+		return DIMul<T>(x, y);
+	default:
+		return IMul<T>(x, y);
+	}
+}
+
+template<typename T>
+inline Interval<T> operator *(long double i, const Interval<T>& y) {
+	Interval<T> x = {i, i};
+	switch (Interval<T>::mode) {
+	case PINT_MODE:
+		return IMul<T>(x, y);
+	case DINT_MODE:
+		return DIMul<T>(x, y);
+	default:
+		return IMul<T>(x, y);
+	}
+}
+
+template<typename T>
+inline Interval<T> operator *(const Interval<T>& y, long double i) {
+	Interval<T> x = {i, i};
+	switch (Interval<T>::mode) {
+	case PINT_MODE:
+		return IMul<T>(x, y);
+	case DINT_MODE:
+		return DIMul<T>(x, y);
+	default:
+		return IMul<T>(x, y);
+	}
+}
+
+template<typename T>
 inline Interval<T> operator *(Interval<T> x, const Interval<T>& y) {
 	switch (Interval<T>::mode) {
 	case PINT_MODE:
@@ -1467,6 +1521,46 @@ inline Interval<T> operator *(Interval<T> x, const Interval<T>& y) {
 	default:
 		return IMul<T>(x, y);
 	}
+}
+
+template<typename T>
+inline Interval<T> Interval<T>::operator *(const long double& l) {
+	Interval<T> x(this->a, this->b);
+	Interval<T> y = { l, l };
+	Interval<T> r = { 0, 0 };
+	switch (mode) {
+	case PINT_MODE:
+		r = IMul<T>(x, y);
+		break;
+	case DINT_MODE:
+		r = DIMul<T>(x, y);
+		break;
+	default:
+		r = IMul<T>(x, y);
+		break;
+	}
+
+	return r;
+}
+
+template<typename T>
+inline Interval<T> Interval<T>::operator *(const int& i) {
+	Interval<T> x(this->a, this->b);
+	Interval<T> y = { i, i };
+	Interval<T> r = { 0, 0 };
+	switch (mode) {
+	case PINT_MODE:
+		r = IMul<T>(x, y);
+		break;
+	case DINT_MODE:
+		r = DIMul<T>(x, y);
+		break;
+	default:
+		r = IMul<T>(x, y);
+		break;
+	}
+
+	return r;
 }
 
 template<typename T>
