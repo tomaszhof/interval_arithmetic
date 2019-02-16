@@ -106,7 +106,7 @@ void NakaoExperiment2DCxy::execute() {
 			a1[l1 - 1] = b
 					- twenty_h2 * (ij_over_12 - j_over_24 - 1.0L / 360.0L);
 			if (j < n - 1) {
-				a1[l1] = - twenty_h2
+				a1[l1] = -twenty_h2
 						* (ij_over_12 + i_over_24 - j_over_24 - 1.0L / 45.0L);
 			}
 		}
@@ -115,13 +115,13 @@ void NakaoExperiment2DCxy::execute() {
 			a1[l2 - 2] = b
 					- twenty_h2 * (ij_over_12 - i_over_24 - 1.0L / 360.0L);
 		if (j < n - 1)
-			a1[l2] =b - twenty_h2 * (ij_over_12 + i_over_24 - 1.0L / 360.0L);
+			a1[l2] = b - twenty_h2 * (ij_over_12 + i_over_24 - 1.0L / 360.0L);
 		l1 = l2 + n - 1;
 		if (i < n - 1) {
 			a1[l1 - 1] = b
 					- twenty_h2 * (ij_over_12 + j_over_24 - 1.0L / 360.0L);
 			if (j > 1)
-				a1[l1 - 2] = - twenty_h2
+				a1[l1 - 2] = -twenty_h2
 						* (ij_over_12 - i_over_24 + j_over_24 - 1.0L / 45.0L);
 		}
 		a1[n2 - 1] = d * (cos(PI * (i + j) * h) - sph * cos(PI * (i - j) * h));
@@ -336,177 +336,172 @@ void NakaoExperiment2DCxy::execute() {
 			interval_j.a = j;
 			interval_j.b = j;
 
+			interval_i_over_24 = interval_i / i24;
+			interval_j_over_24 = interval_j / i24;
+			interval_ij_over_12 = (interval_i * interval_j) / i12;
+
 			iz = ((interval_i * interval_j) / i2) - (i1 / i36);
 			iz = i20h4 * iz;
 			id1 = iz * iu_km1[i][j];
 
 			if (i == 1) {
 				if (j == 1) {
-					iz = ((interval_i * interval_j) / i12) + (interval_i / i24);
+					iz = interval_ij_over_12 + interval_i_over_24;
 					iz = i20h4 * (iz - (i1 / i360));
 					id1 = id1 + (iz * iu_km1[1][2]);
 
-					iz = ((interval_i * interval_j) / i12) + (interval_j / i24);
+					iz = interval_ij_over_12 + interval_j_over_24;
 					iz = i20h4 * (iz - (i1 / i360));
 					id1 = id1 + (iz * iu_km1[2][1]);
 				} else {
 					if (j == n - 1) {
-						iz = ((interval_i * interval_j) / i12)
-								- (interval_i / i24);
+						iz = interval_ij_over_12 - interval_i_over_24;
 						iz = i20h4 * (iz - (i1 / i360));
 						id1 = id1 + iz * iu_km1[1][n - 2];
 
-						iz = ((interval_i * interval_j) / i12)
-								- (interval_i / i24);
-						iz = iz + interval_j / i24;
+						iz = interval_ij_over_12 - interval_i_over_24
+								+ interval_j_over_24;
 						iz = i20h4 * (iz - i1 / i45);
 						id1 = id1 + iz * iu_km1[2][n - 2];
 
-						iz = ((interval_i * interval_j) / i12)
-								+ (interval_j / i24);
+						iz = interval_ij_over_12 + interval_j_over_24;
 						iz = i20h4 * (iz - (i1 / i360));
 						id1 = id1 + iz * iu_km1[2][n - 1];
 					} else {
-						iz = ((interval_i * interval_j) / i12)
-								- (interval_i / i24);
+						iz = interval_ij_over_12 - interval_i_over_24;
 						iz = i20h4 * (iz - (i1 / i360));
 						id1 = id1 + iz * iu_km1[1][j - 1];
 
-						iz = (interval_i * interval_j) / i12
-								+ (interval_i / i24);
+						iz = interval_ij_over_12 + interval_i_over_24;
 						iz = i20h4 * (iz - (i1 / i360));
 						id1 = id1 + iz * iu_km1[1][j + 1];
 
-						iz = ((interval_i * interval_j) / i12)
-								- (interval_i / i24);
-						iz = iz + (interval_j / i24);
+						iz = interval_ij_over_12 - interval_i_over_24;
+						iz = iz + interval_j_over_24;
 						iz = i20h4 * (iz - i1 / i45);
 						id1 = id1 + iz * iu_km1[2][j - 1];
 
-						iz = ((interval_i * interval_j) / i12)
-								+ (interval_j / i24);
+						iz = interval_ij_over_12 + interval_j_over_24;
 						iz = i20h4 * (iz - (i1 / i360));
 						id1 = id1 + iz * iu_km1[2][j];
 					}
 				}
 			} else if (i == n - 1) {
 				if (j == 1) {
-					iz = ((interval_i * interval_j) / i12) - (interval_j / i24);
+					iz = interval_ij_over_12 - interval_j_over_24;
 					iz = i20h4 * (iz - (i1 / i360));
 					id1 = id1 + iz * iu_km1[n - 2][1];
 
-					iz = ((interval_i * interval_j) / i12) + (interval_i / i24);
-					iz = iz - (interval_j / i24);
+					iz = interval_ij_over_12 + interval_i_over_24;
+					iz = iz - interval_j_over_24;
 					iz = i20h4 * (iz - i1 / i45);
-					id1 = id1 +iz*iu_km1[n - 2][2];
+					id1 = id1 + iz * iu_km1[n - 2][2];
 
-					iz = ((interval_i * interval_j) / i12) + (interval_i / i24);
+					iz = interval_ij_over_12 + interval_i_over_24;
 					iz = i20h4 * (iz - (i1 / i360));
-					id1 =id1 + iz * iu_km1[n - 1][2];
+					id1 = id1 + iz * iu_km1[n - 1][2];
 				} else {
 					if (j == n - 1) {
-						iz = ((interval_i * interval_j) / i12) - (interval_j / i24);
+						iz = interval_ij_over_12 - interval_j_over_24;
 						iz = i20h4 * (iz - (i1 / i360));
 						id1 = id1 + iz * iu_km1[n - 2][n - 1];
 
-
-						iz = ((interval_i * interval_j) / i12) - (interval_i / i24);
+						iz = interval_ij_over_12 - interval_i_over_24;
 						iz = i20h4 * (iz - (i1 / i360));
-						id1 = id1 + iz*iu_km1[n - 1][n - 2];
+						id1 = id1 + iz * iu_km1[n - 1][n - 2];
 					} else {
-						iz = ((interval_i * interval_j) / i12) - (interval_j / i24);
+						iz = interval_ij_over_12 - interval_j_over_24;
 						iz = i20h4 * (iz - (i1 / i360));
-						id1 =id1 + iz*iu_km1[n-2][j];
+						id1 = id1 + iz * iu_km1[n - 2][j];
 
-						iz = ((interval_i * interval_j) / i12) + (interval_i / i24);
-						iz = iz - (interval_j / i24);
+						iz = interval_ij_over_12 + interval_i_over_24;
+						iz = iz - interval_j_over_24;
 						iz = i20h4 * (iz - i1 / i45);
-						id1 = id1 + iz*iu_km1[n-2][j+1];
+						id1 = id1 + iz * iu_km1[n - 2][j + 1];
 
-						iz = ((interval_i * interval_j) / i12) + (interval_i / i24);
+						iz = interval_ij_over_12 + interval_i_over_24;
 						iz = i20h4 * (iz - (i1 / i360));
-						id1 = id1 + iz * iu_km1[n-1][j-1];
+						id1 = id1 + iz * iu_km1[n - 1][j - 1];
 
-						iz = ((interval_i * interval_j) / i12) + (interval_i / i24);
+						iz = interval_ij_over_12 + interval_i_over_24;
 						iz = i20h4 * (iz - (i1 / i360));
-						id1 = id1 + iz * iu_km1[n-1][j+1];
+						id1 = id1 + iz * iu_km1[n - 1][j + 1];
 
 					}
 				}
 			} else {
 				if (j == 1) {
-					iz = ((interval_i * interval_j) / i12) - (interval_j / i24);
+					iz = interval_ij_over_12 - interval_j_over_24;
 					iz = i20h4 * (iz - (i1 / i360));
-					id1 = id1 + iz*iu_km1[i - 1][1];
+					id1 = id1 + iz * iu_km1[i - 1][1];
 
-					iz = ((interval_i * interval_j) / i12) + (interval_i / i24);
-					iz = iz - (interval_j / i24);
+					iz = interval_ij_over_12 + interval_i_over_24;
+					iz = iz - interval_j_over_24;
 					iz = i20h4 * (iz - i1 / i45);
 					id1 = id1 + iz * iu_km1[i - 1][2];
 
-					iz = ((interval_i * interval_j) / i12) + (interval_i / i24);
+					iz = interval_ij_over_12 + interval_i_over_24;
 					iz = i20h4 * (iz - (i1 / i360));
-					id1 = id1 + iz*iu_km1[i][2];
+					id1 = id1 + iz * iu_km1[i][2];
 
-					iz = ((interval_i * interval_j) / i12) + (interval_j / i24);
+					iz = interval_ij_over_12 + interval_j_over_24;
 					iz = i20h4 * (iz - (i1 / i360));
-					id1 = id1 + iz*iu_km1[i + 1][1];
+					id1 = id1 + iz * iu_km1[i + 1][1];
 				} else {
 					if (j == n - 1) {
-						iz = ((interval_i * interval_j) / i12) - (interval_j / i24);
+						iz = interval_ij_over_12 - interval_j_over_24;
 						iz = i20h4 * (iz - (i1 / i360));
-						id1 = id1 + iz * iu_km1[i-1][n-1];
+						id1 = id1 + iz * iu_km1[i - 1][n - 1];
 
-						iz = ((interval_i * interval_j) / i12) - (interval_i / i24);
+						iz = interval_ij_over_12 - interval_i_over_24;
 						iz = i20h4 * (iz - (i1 / i360));
-						id1 = id1 + iz*iu_km1[i][n-2];
+						id1 = id1 + iz * iu_km1[i][n - 2];
 
-						iz = ((interval_i * interval_j) / i12) - (interval_i / i24);
-						iz = iz + (interval_j / i24);
+						iz = interval_ij_over_12 - interval_i_over_24;
+						iz = iz + interval_j_over_24;
 						iz = i20h4 * (iz - i1 / i45);
-						id1 = id1 + iz * iu_km1[i+1][n-2];
+						id1 = id1 + iz * iu_km1[i + 1][n - 2];
 
-						iz = ((interval_i * interval_j) / i12) + (interval_j / i24);
+						iz = interval_ij_over_12 + interval_j_over_24;
 						iz = i20h4 * (iz - (i1 / i360));
-						id1 = id1 + iz * iu_km1[i+1][n-1];
+						id1 = id1 + iz * iu_km1[i + 1][n - 1];
 
 					} else {
-						iz = ((interval_i * interval_j) / i12) - (interval_j / i24);
+						iz = interval_ij_over_12 - interval_j_over_24;
 						iz = i20h4 * (iz - (i1 / i360));
-						id1 = id1 + iz*iu_km1[i-1][j];
+						id1 = id1 + iz * iu_km1[i - 1][j];
 
-						iz = ((interval_i * interval_j) / i12) + (interval_i / i24);
-						iz = iz - (interval_j / i24);
+						iz = interval_ij_over_12 + interval_i_over_24;
+						iz = iz - interval_j_over_24;
 						iz = i20h4 * (iz - i1 / i45);
-						id1 = id1 + iz * iu_km1[i-1][j+1];
+						id1 = id1 + iz * iu_km1[i - 1][j + 1];
 
-						iz = ((interval_i * interval_j) / i12) - (interval_i / i24);
+						iz = interval_ij_over_12 - interval_i_over_24;
 						iz = i20h4 * (iz - (i1 / i360));
-						id1 = id1 + iz*iu_km1[i][j-1];
+						id1 = id1 + iz * iu_km1[i][j - 1];
 
-
-						iz = ((interval_i * interval_j) / i12) + (interval_i / i24);
+						iz = interval_ij_over_12 + interval_i_over_24;
 						iz = i20h4 * (iz - (i1 / i360));
-						id1 = id1 + iz * iu_km1[i][j+1];
+						id1 = id1 + iz * iu_km1[i][j + 1];
 
-						iz = ((interval_i * interval_j) / i12) - (interval_i / i24);
-						iz = iz - (interval_j / i24);
+						iz = interval_ij_over_12 - interval_i_over_24;
+						iz = iz - interval_j_over_24;
 						iz = i20h4 * (iz - i1 / i45);
-						id1 = id1 + iz*iu_km1[i+1][j-1];
+						id1 = id1 + iz * iu_km1[i + 1][j - 1];
 
-						iz = ((interval_i * interval_j) / i12) + (interval_j / i24);
+						iz = interval_ij_over_12 + interval_j_over_24;
 						iz = i20h4 * (iz - (i1 / i360));
-						id1 = id1 + iz*iu_km1[i+1][j];
+						id1 = id1 + iz * iu_km1[i + 1][j];
 
 					}
 				}
 			}
 
 			i_plus_j_ih = (interval_i + interval_j) * ih;
-			i_minus_j_ih = (interval_i-interval_j) * ih;
-			iz = isph*ICos(ipi * i_minus_j_ih);
-			iz = ICos(ipi*i_plus_j_ih)-iz;
-			id1 = id1 + (id * iz);
+			i_minus_j_ih = (interval_i - interval_j) * ih;
+			iz = isph * ICos(ipi * i_minus_j_ih);
+			iz = ICos(ipi * i_plus_j_ih) - iz;
+			id1 = id1/ih2 + (id * iz);
 
 			tmpstr = boost::lexical_cast<string>(alpha_km1[i][j]);
 			iz.a = LeftRead<long double>(tmpstr);
@@ -629,74 +624,74 @@ void NakaoExperiment2DCxy::execute() {
 				interval_j.b = j;
 				interval_ij = interval_i * interval_j;
 				iz = ISqr(interval_ij, error);
-				iz = (iz*(interval_i + interval_j))/i2;
-				ibeta1 = im1*iz;
+				iz = (iz * (interval_i + interval_j)) / i2;
+				ibeta1 = im1 * iz;
 				iz = (interval_i * interval_i) + (interval_ij / i2);
 				iz = iz + (interval_j * interval_j);
-				iz = (interval_ij*iz)/i3;
+				iz = (interval_ij * iz) / i3;
 				ibeta1 = ibeta1 - iz;
-				iz = ISqr(interval_i, error)*interval_i;
-				iz = (iz/i3) + (interval_ij * (interval_i + interval_j));
-				iz = iz + (ISqr(interval_j, error)*interval_j / i3);
+				iz = ISqr(interval_i, error) * interval_i;
+				iz = (iz / i3) + (interval_ij * (interval_i + interval_j));
+				iz = iz + (ISqr(interval_j, error) * interval_j / i3);
 				ibeta1 = ibeta1 - (iz / i4);
-				iz = iz + (ISqr(interval_i, error)/i3) + interval_ij;
-				iz = iz + (ISqr(interval_j, error)/i3);
-				ibeta1 = ibeta1 - (iz/i15);
+				iz = iz + (ISqr(interval_i, error) / i3) + interval_ij;
+				iz = iz + (ISqr(interval_j, error) / i3);
+				ibeta1 = ibeta1 - (iz / i15);
 
-				iz = ((interval_i + interval_j)/i180);
+				iz = ((interval_i + interval_j) / i180);
 				ibeta1 = (ibeta1 - iz) + (i1 / i120);
 
 				iz = ISqr(ih2, error) * ih2;
 				ibeta1 = iz * ibeta1;
 				ibeta1 = ISqr((i20 * iu_km1[i][j]), error) * ibeta1;
-				i_plus_j_ih = (i+j)*ih;
-				i_minus_j_ih = (i-j)*ih;
-				ipih = ipi*ih;
+				i_plus_j_ih = (interval_i + interval_j) * ih;
+				i_minus_j_ih = (interval_i - interval_j) * ih;
+				ipih = ipi * ih;
 				i2pih = i2 * ipih;
 				iz1 = ih * (ICos(i2pih) + ICos(ipih));
-				iz1 = iz1 - (i3 * ISin(i2pih))/(i2 * ipi);
-				iz = (interval_i - interval_j)*iz1;
-				iz1 = (i3 * interval_i)-(i7*interval_j)+i4;
-				iz1 = (iz1 * ISin(ipi)/ipi); //sin(pi) = 0! zweryfikować tę linię!
+				iz1 = iz1 - (i3 * ISin(i2pih)) / (i2 * ipi);
+				iz = (interval_i - interval_j) * iz1;
+				iz1 = (i3 * interval_i) - (i7 * interval_j) + i4;
+				iz1 = (iz1 * ISin(ipih) / ipi); //sin(pi) = 0! zweryfikować tę linię!
 				iz = iz + iz1;
 				iz1 = ipi * i_minus_j_ih;
-				ibeta2 = (iz*ISin(iz1)) / (i2*ipi);
+				ibeta2 = (iz * ISin(iz1)) / (i2 * ipi);
 				iz = interval_ij * ih;
 				iz1 = i5 / (i2 * (ISqr(ipi, error) * ih));
 				iz = iz + iz1;
-				iz1 = (i2*ISin(ipih)) - ISin(i2pih);
-				iz = (iz*iz1) + (ih * (ISin(i2pih)));
-				iz1 = (i3 * ICos(i2pih))-ICos(ipih);
+				iz1 = (i2 * ISin(ipih)) - ISin(i2pih);
+				iz = (iz * iz1) + (ih * (ISin(i2pih)));
+				iz1 = (i3 * ICos(i2pih)) - ICos(ipih);
 				iz = iz + (iz1 / ipi);
 				iz1 = (ipi * i_minus_j_ih);
-				ibeta2 = ibeta2 + (iz*ICos(iz1)) / (i2 * ipi);
-				iz1 = (i1 / ipi) - ((ih * ISin(ipih))/i2);
+				ibeta2 = ibeta2 + (iz * ICos(iz1)) / (i2 * ipi);
+				iz1 = (i1 / ipi) - ((ih * ISin(ipih)) / i2);
 				iz = (interval_i + interval_j) * iz1;
-				iz1 = ((i2 * interval_i)*ICos(ipih))/ipi;
+				iz1 = ((i2 * interval_i) * ICos(ipih)) / ipi;
 				iz = iz - iz1;
 				iz1 = ipi * i_plus_j_ih;
-				ibeta2 = ibeta2 + ih*iz*ISin(iz1);
-				iz1 = (i1 / ipi) - ih*ISin(ipih);
+				ibeta2 = ibeta2 + ih * iz * ISin(iz1);
+				iz1 = (i1 / ipi) - ih * ISin(ipih);
 				iz = iz1 * ipi;
-				iz1 = (interval_ij+(i1/i6)) * ICos(ipih);
-				iz1 = iz1 + ((i1 / i3) - interval_ij);
-				iz1 = iz + (ISqr(ih, error)*iz1);
+				iz1 = (interval_ij + (i1 / i6)) * ICos(ipih);
+				iz1 = iz1 + (i1 / i3) - interval_ij;
+				iz1 = iz + (ISqr(ih, error) * iz1);
 				iz1 = ipi * i_plus_j_ih;
 				ibeta2 = ibeta2 + iz * ICos(iz1);
-				iz1 = i_minus_j_ih * ISin(ipi * (interval_j*ih));
-				iz1 = iz1 - (ICos(ipi * (interval_j*ih))/ipi);
+				iz1 = i_minus_j_ih * ISin(ipi * interval_j * ih);
+				iz1 = iz1 - (ICos(ipi * interval_j * ih) / ipi);
 				iz = (i2 * iz1) / ipi;
-				iz1 = ICos(ipi*ih)*ICos(ipi*(interval_i*ih));
-				ibeta2 = ibeta2 + (iz*iz1);
-				iz = i20 * ((i2*ipi)-i1);
-				iz =  (iz*iu_km1[i][j])/ ISqr(ipi, error);
+				iz1 = ICos(ipi * ih) * ICos(ipi * interval_i * ih);
+				ibeta2 = ibeta2 + (iz * iz1);
+				iz = i20 * ((i2 * ipi) - i1);
+				iz = (iz * iu_km1[i][j]) / ISqr(ipi, error);
 				ibeta2 = iz * ibeta2;
-				iz = ISqr(((i2*ipi) - i1), error);
-				ibeta = ibeta1 + (i2 * ibeta2) + (iz*i4);
+				iz = ISqr(((i2 * ipi) - i1), error);
+				ibeta = ibeta1 + (i2 * ibeta2) + (iz / i4);
 				ibeta = ISqrt(ibeta, error);
 
 				if (error == 0) {
-					iz = (i20 * ih)*(alpha_km1[i][j]);
+					iz = (i20 * ih) * (alpha_km1[i][j]);
 					ibeta = ih * (ibeta + iz);
 					alpha_k[i][j] = ibeta.b;
 				} else {

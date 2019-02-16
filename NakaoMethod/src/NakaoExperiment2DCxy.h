@@ -32,7 +32,8 @@ private:
 	max, norm_u, norm_uij, s, sph, ij_over_12, i_over_24, j_over_24, twenty_h2;
 	Interval<long double> ia, ia1, ialpha, ib, ib1, ibeta, ibeta1, ibeta2, ic, ic1,
 	id, id1, ih,ih2, imax, interval_s, isph, ipi, ipi12, iz, i20h4,
-	i_plus_j_ih, i_minus_j_ih, interval_i, interval_j, interval_ij, ipih, i2pih,iz1;
+	i_plus_j_ih, i_minus_j_ih, interval_i, interval_j, interval_ij, ipih, i2pih,iz1,
+	interval_ij_over_12, interval_i_over_24, interval_j_over_24;
 	int *r;
 	long double *a1, *b1, *x;
 	Interval<long double> *interval_a1, *interval_b1, *interval_x;
