@@ -53,14 +53,14 @@ private:
 	const Interval<long double> i6 = {6.0, 6.0};
 	const Interval<long double> i7 = {7.0, 7.0};
 	const Interval<long double> i12 = {12.0, 12.0};
-	const Interval<long double> i15 = {12.0, 12.0};
-	const Interval<long double> i20 = {12.0, 12.0};
-	const Interval<long double> i24 = {12.0, 12.0};
-	const Interval<long double> i36 = {12.0, 12.0};
-	const Interval<long double> i45 = {12.0, 12.0};
-	const Interval<long double> i120 = {12.0, 12.0};
-	const Interval<long double> i180 = {12.0, 12.0};
-	const Interval<long double> i360 = {12.0, 12.0};
+	const Interval<long double> i15 = {15.0, 15.0};
+	const Interval<long double> i20 = {20.0, 20.0};
+	const Interval<long double> i24 = {24.0, 24.0};
+	const Interval<long double> i36 = {36.0, 36.0};
+	const Interval<long double> i45 = {45.0, 45.0};
+	const Interval<long double> i120 = {120.0, 120.0};
+	const Interval<long double> i180 = {180.0, 180.0};
+	const Interval<long double> i360 = {360.0, 360.0};
 	const Interval<long double> im1 = {-1.0, -1.0};
 	const Interval<long double> im11 = {-1.0, 1.0};
 

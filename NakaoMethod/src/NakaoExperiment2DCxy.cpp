@@ -101,11 +101,12 @@ void NakaoExperiment2DCxy::execute() {
 		i_over_24 = i / 24.0L;
 		j_over_24 = j / 24.0L;
 		ij_over_12 = i * j / 12.0L;
+		cout << "i=" << i << endl << "j=" << j << endl;
 		if (i > 1) {
 			a1[l1 - 1] = b
 					- twenty_h2 * (ij_over_12 - j_over_24 - 1.0L / 360.0L);
 			if (j < n - 1) {
-				a1[l1] = -twenty_h2
+				a1[l1] = - twenty_h2
 						* (ij_over_12 + i_over_24 - j_over_24 - 1.0L / 45.0L);
 			}
 		}
@@ -114,13 +115,13 @@ void NakaoExperiment2DCxy::execute() {
 			a1[l2 - 2] = b
 					- twenty_h2 * (ij_over_12 - i_over_24 - 1.0L / 360.0L);
 		if (j < n - 1)
-			a1[l2] = -twenty_h2 * (ij_over_12 + i_over_24 - 1.0L / 360.0L);
+			a1[l2] =b - twenty_h2 * (ij_over_12 + i_over_24 - 1.0L / 360.0L);
 		l1 = l2 + n - 1;
 		if (i < n - 1) {
 			a1[l1 - 1] = b
 					- twenty_h2 * (ij_over_12 + j_over_24 - 1.0L / 360.0L);
 			if (j > 1)
-				a1[l1 - 2] = -twenty_h2
+				a1[l1 - 2] = - twenty_h2
 						* (ij_over_12 - i_over_24 + j_over_24 - 1.0L / 45.0L);
 		}
 		a1[n2 - 1] = d * (cos(PI * (i + j) * h) - sph * cos(PI * (i - j) * h));
@@ -337,15 +338,15 @@ void NakaoExperiment2DCxy::execute() {
 
 			iz = ((interval_i * interval_j) / i2) - (i1 / i36);
 			iz = i20h4 * iz;
-			id1 = id1 + iz * iu_km1[i][j];
+			id1 = iz * iu_km1[i][j];
 
 			if (i == 1) {
 				if (j == 1) {
-					iz = (interval_i * interval_j) / i12 - (interval_i / i24);
+					iz = ((interval_i * interval_j) / i12) + (interval_i / i24);
 					iz = i20h4 * (iz - (i1 / i360));
 					id1 = id1 + (iz * iu_km1[1][2]);
 
-					iz = (interval_i * interval_j) / i12 - (interval_j / i24);
+					iz = ((interval_i * interval_j) / i12) + (interval_j / i24);
 					iz = i20h4 * (iz - (i1 / i360));
 					id1 = id1 + (iz * iu_km1[2][1]);
 				} else {
@@ -614,8 +615,8 @@ void NakaoExperiment2DCxy::execute() {
 					iu_k[i][j].IEndsToStrings(left, right);
 					cout << "    u(" << i * h << ", " << j * h << ") = ["
 							<< left << ", " << right << "]" << endl;
-					exact = (1 / PI) * sin(PI * i * h) * sin(PI * j * h);
-					cout << "          exact = " << exact << endl;
+//					exact = (1 / PI) * sin(PI * i * h) * sin(PI * j * h);
+//					cout << "          exact = " << exact << endl;
 				}
 			}
 		} // if output = 's'
