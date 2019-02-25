@@ -16,8 +16,9 @@ template<typename T>
 Solver<T>::Solver() {
 	this->_initparams = false;
 	this->_estimateMN = false;
-	this->maxM = 0;
-	this->maxN = 0;
+	this->maxP = 0;
+	this->maxQ = 0;
+	this->maxR = 0;
 	this->X = NULL;
 	this->bc = NULL;
 	this->u = NULL;
@@ -293,10 +294,16 @@ int Solver<T>::ConstMExperiment() {
 		this->params.m = (i + 1) * 10;
 		this->params.n = this->params.m;
 		this->SolveFP();
-		this->vecConstM.push_back(this->GetMaxM());
-		this->vecConstN.push_back(this->GetMaxN());
-		cout << "M = " << this->GetMaxM() << endl;
-		cout << "N = " << this->GetMaxN() << endl;
+		this->vecConstP.push_back(this->GetMaxP());
+		this->vecConstQ.push_back(this->GetMaxQ());
+		this->vecConstR.push_back(this->GetMaxR());
+		this->vecConstS.push_back(this->GetMaxS());
+		cout << "--------------------------------" << endl;
+	    cout << "m=n=" << this->params.m <<  endl;
+		cout << "P = " << this->GetMaxP() << endl;
+		cout << "Q = " << this->GetMaxQ() << endl;
+		cout << "R = " << this->GetMaxR() << endl;
+		cout << "S = " << this->GetMaxS() << endl;
 	}
 	return 0;
 }
@@ -305,16 +312,20 @@ template<typename T>
 void Solver<T>::WriteConstMResults() {
 	fstream filestr;
 	filestr.open(params.file_name.c_str(), fstream::out);
-	filestr << "CONST M EXPERIMENT RESULTS" << endl;
-	if (vecConstM.size() != vecConstN.size())
+	filestr << "INTERVAL METHODS CONSTANTS ESTIMATION EXPERIMENT RESULTS" << endl;
+	if (vecConstP.size() != vecConstQ.size())
 		return;
 
-	long double constM = 0;
-	long double constN = 0;
-	for (int i = 0; i < vecConstM.size(); ++i) {
-		constM = this->vecConstM.at(i);
-		constN = this->vecConstN.at(i);
-		filestr << constM << ";" << constN << endl;
+	long double constP = 0;
+	long double constQ = 0;
+	long double constR = 0;
+	long double constS = 0;
+	for (int i = 0; i < vecConstP.size(); ++i) {
+		constP = this->vecConstP.at(i);
+		constQ = this->vecConstQ.at(i);
+		constR = this->vecConstR.at(i);
+		constS = this->vecConstS.at(i);
+		filestr << constP << ";" << constQ << ";" << constR << ";" << constS << endl;
 	}
 	filestr.close();
 }
@@ -400,13 +411,23 @@ bool Solver<T>::GetEstimateMN() {
 }
 
 template<typename T>
-long double Solver<T>::GetMaxM() {
-	return this->maxM;
+long double Solver<T>::GetMaxP() {
+	return this->maxP;
 }
 
 template<typename T>
-long double Solver<T>::GetMaxN() {
-	return this->maxN;
+long double Solver<T>::GetMaxQ() {
+	return this->maxQ;
+}
+
+template<typename T>
+long double Solver<T>::GetMaxR() {
+	return this->maxR;
+}
+
+template<typename T>
+long double Solver<T>::GetMaxS() {
+	return this->maxS;
 }
 
 template<typename T>

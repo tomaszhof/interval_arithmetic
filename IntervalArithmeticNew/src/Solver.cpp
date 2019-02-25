@@ -16,8 +16,8 @@ template<typename T>
 Solver<T>::Solver() {
 	this->_initparams = false;
 	this->_estimateMN = false;
-	this->maxM = 0;
-	this->maxN = 0;
+	this->maxP = 0;
+	this->maxQ = 0;
 	this->X = NULL;
 	this->bc = NULL;
 	this->u = NULL;
@@ -293,10 +293,10 @@ int Solver<T>::ConstMExperiment() {
 		this->params.m = (i + 1) * 10;
 		this->params.n = this->params.m;
 		this->SolveFP();
-		this->vecConstM.push_back(this->GetMaxM());
-		this->vecConstN.push_back(this->GetMaxN());
-		cout << "M = " << this->GetMaxM() << endl;
-		cout << "N = " << this->GetMaxN() << endl;
+		this->vecConstP.push_back(this->GetMaxP());
+		this->vecConstQ.push_back(this->GetMaxQ());
+		cout << "M = " << this->GetMaxP() << endl;
+		cout << "N = " << this->GetMaxQ() << endl;
 	}
 	return 0;
 }
@@ -306,14 +306,14 @@ void Solver<T>::WriteConstMResults() {
 	fstream filestr;
 	filestr.open(params.file_name.c_str(), fstream::out);
 	filestr << "CONST M EXPERIMENT RESULTS" << endl;
-	if (vecConstM.size() != vecConstN.size())
+	if (vecConstP.size() != vecConstQ.size())
 		return;
 
 	long double constM = 0;
 	long double constN = 0;
-	for (int i = 0; i < vecConstM.size(); ++i) {
-		constM = this->vecConstM.at(i);
-		constN = this->vecConstN.at(i);
+	for (int i = 0; i < vecConstP.size(); ++i) {
+		constM = this->vecConstP.at(i);
+		constN = this->vecConstQ.at(i);
 		filestr << constM << ";" << constN << endl;
 	}
 	filestr.close();
@@ -390,13 +390,13 @@ bool Solver<T>::GetEstimateMN() {
 }
 
 template<typename T>
-long double Solver<T>::GetMaxM() {
-	return this->maxM;
+long double Solver<T>::GetMaxP() {
+	return this->maxP;
 }
 
 template<typename T>
-long double Solver<T>::GetMaxN() {
-	return this->maxN;
+long double Solver<T>::GetMaxQ() {
+	return this->maxQ;
 }
 
 template<typename T>

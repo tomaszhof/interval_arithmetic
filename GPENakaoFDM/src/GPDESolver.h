@@ -25,8 +25,10 @@ using Solver<T>::bc;
 using Solver<T>::params;
 using Solver<T>::u;
 //using Solver<T>::X;
-using Solver<T>::maxM;
-using Solver<T>::maxN;
+using Solver<T>::maxP;
+using Solver<T>::maxQ;
+using Solver<T>::maxR;
+using Solver<T>::maxS;
 using Solver<T>::_initparams;
 
 T alphax(T xi, T yj);

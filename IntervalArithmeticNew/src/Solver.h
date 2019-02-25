@@ -36,10 +36,10 @@ protected:
 	Parameters<long double> params;
 	BoundaryConditions<T>* bc;
 	long double** u;
-	long double maxM;
-	long double maxN;
-	vector<long double> vecConstM;
-	vector<long double> vecConstN;
+	long double maxP;
+	long double maxQ;
+	vector<long double> vecConstP;
+	vector<long double> vecConstQ;
 public:
 	Interval<T>* X;
 	Solver();
@@ -57,8 +57,8 @@ public:
 	int SolveInterval();
 	bool SetEstimateMN(bool b);
 	bool GetEstimateMN();
-	long double GetMaxM();
-	long double GetMaxN();
+	long double GetMaxP();
+	long double GetMaxQ();
 	virtual int SolveFP();
 	virtual int SolvePIA();
 	virtual int SolveDIA();

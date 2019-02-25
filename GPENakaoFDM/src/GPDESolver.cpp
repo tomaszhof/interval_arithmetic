@@ -80,7 +80,8 @@ T GPDESolver<T>::betay(T xi, T yj) {
 template<typename T>
 int GPDESolver<T>::SolveFP() {
 	int i, j, jh, j1, k, kh, l, lh, l1, l2, n1, n2, p, q, rh, st;
-	long double a1f, a2f, h1, k1, h2, k2, hh1, kk1, max, s, tmpM, tmpN;
+	long double a1f, a2f, h1, k1, h2, k2, hh1, kk1, max, s, tmpP, tmpQ, tmpR,
+			tmpS;
 
 	if (!Solver<T>::_initparams)
 		throw runtime_error("Parameters not initialized!");
@@ -179,27 +180,44 @@ int GPDESolver<T>::SolveFP() {
 			s = bc->f(hh1, kk1);
 
 			if (i == 1) {
-				s = s - (alphax(hh1, kk1) / h2
-						- betax(hh1, kk1) / (2.0 * h1)) * bc->phi1(kk1); // h1
+				s = s
+						- (alphax(hh1, kk1) / h2 - betax(hh1, kk1) / (2.0 * h1))
+								* bc->phi1(kk1); // h1
 				if (j == 1)
-					s = s - (alphay(hh1, kk1) / k2
-							- betay(hh1, kk1) / (2.0 * k1)) * bc->phi2(hh1);// / k1;
+					s = s
+							- (alphay(hh1, kk1) / k2
+									- betay(hh1, kk1) / (2.0 * k1))
+									* bc->phi2(hh1); // / k1;
 				if (j == m - 1)
-					s = s - (alphay(hh1, kk1) / k2 + betay(hh1, kk1) / (2.0 * k1)) * bc->phi4(hh1);// / k1;
+					s = s
+							- (alphay(hh1, kk1) / k2
+									+ betay(hh1, kk1) / (2.0 * k1))
+									* bc->phi4(hh1); // / k1;
 			} else if (i == n - 1) {
-				s = s - (alphax(hh1, kk1) / h2
-						+ betax(hh1, kk1) / (2.0 * h1)) * bc->phi3(kk1);// / k1;
+				s = s
+						- (alphax(hh1, kk1) / h2 + betax(hh1, kk1) / (2.0 * h1))
+								* bc->phi3(kk1); // / k1;
 				if (j == 1)
-					s = s - (alphay(hh1, kk1) / k2
-							- betay(hh1, kk1) / (2.0 * k1)) * bc->phi2(hh1);// / k1;
+					s = s
+							- (alphay(hh1, kk1) / k2
+									- betay(hh1, kk1) / (2.0 * k1))
+									* bc->phi2(hh1); // / k1;
 				if (j == m - 1)
-					s = s - (alphay(hh1, kk1) / k2 + betay(hh1, kk1) / (2.0 * k1)) * bc->phi4(hh1);// / k1;
+					s = s
+							- (alphay(hh1, kk1) / k2
+									+ betay(hh1, kk1) / (2.0 * k1))
+									* bc->phi4(hh1); // / k1;
 			} else {
 				if (j == 1)
-					s = s - (alphay(hh1, kk1) / k2
-							- betay(hh1, kk1) / (2.0 * k1)) * bc->phi2(hh1);// / k1;
+					s = s
+							- (alphay(hh1, kk1) / k2
+									- betay(hh1, kk1) / (2.0 * k1))
+									* bc->phi2(hh1); // / k1;
 				if (j == m - 1)
-					s = s - (alphay(hh1, kk1) / k2 + betay(hh1, kk1) / (2.0 * k1)) * bc->phi4(hh1);// / k1;
+					s = s
+							- (alphay(hh1, kk1) / k2
+									+ betay(hh1, kk1) / (2.0 * k1))
+									* bc->phi4(hh1); // / k1;
 			}
 			a1[n2 - 1] = s;
 			for (int i = 1; i <= n1; i++) {
@@ -297,24 +315,46 @@ int GPDESolver<T>::SolveFP() {
 				u[n][j] = bc->phi3(kk1);
 			}
 
-			maxM = 0;
-			maxN = 0;
+			maxP = 0;
+			maxQ = 0;
+			maxR = 0;
+			maxS = 0;
 			if (this->_estimateMN) {
 
 				for (int i = 2; i <= n - 2; i++)
 					for (int j = 2; j <= m - 2; j++) {
-						tmpM = abs(
-								6 * u[i][j] - 4 * u[i - 1][j] - 4 * u[i + 1][j]
-										+ u[i - 2][j] + u[i + 2][j]);
-						tmpM = (1 / (h1 * h1 * h1 * h1)) * tmpM;
-						if (tmpM > maxM)
-							maxM = tmpM;
-						tmpN = abs(
-								6 * u[i][j] - 4 * u[i][j - 1] - 4 * u[i][j + 1]
-										+ u[i][j - 2] + u[i][j + 2]);
-						tmpN = (1 / (k1 * k1 * k1 * k1)) * tmpN;
-						if (tmpN > maxN)
-							maxN = tmpN;
+						tmpP = abs(
+								u[i + 2][j + 1] - 2 * u[i][j + 1]
+										+ u[i - 2][j + 1] - u[i + 2][j - 1]
+										+ 2 * u[i][j - 1] - u[i - 2][j - 1]);
+						tmpP = (1 / (8 * h1 * h1 * k1)) * tmpP;
+						if (tmpP > maxP)
+							maxP = tmpP;
+
+						tmpQ = abs(
+								u[i + 1][j + 2] - 2 * u[i+1][j]
+										+ u[i +1][j - 2] - u[i - 1][j + 2]
+										+ 2 * u[i-1][j] - u[i - 1][j - 2]);
+						tmpQ = (1 / (8 * h1 * k1 * k1)) * tmpQ;
+						if (tmpQ > maxQ)
+							maxQ = tmpQ;
+
+						tmpR = abs(
+								u[i + 2][j + 2] - 2 * u[i][j + 2]
+										+ u[i - 2][j + 2] - 2 * u[i + 2][j]
+										+ 4 * u[i][j] - 2 * u[i - 2][j]
+										+ u[i + 2][j - 2] - 2 * u[i][j - 2]
+										+ u[i - 2][j - 2]);
+						tmpR = (1 / (16 * h1 * h1 * k1 * k1)) * tmpR;
+						if (tmpR > maxR)
+							maxR = tmpR;
+
+						tmpS = abs(
+								-u[i - 2][j] + 2 * u[i - 1][j] - 2 * u[i + 1][j]
+										+ u[i + 2][j]);
+						tmpS = (1 / (2 * h1 * h1 * h1)) * tmpS;
+						if (tmpS > maxS)
+							maxS = tmpS;
 					}
 
 				for (int i = 0; i <= n; i++)
