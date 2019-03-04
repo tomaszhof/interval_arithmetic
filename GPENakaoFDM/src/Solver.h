@@ -43,6 +43,13 @@ protected:
 	//steps sizes
 	T h;
 	T k;
+
+	Interval<T> ih;
+	Interval<T> ih2;
+
+	Interval<T> ik;
+	Interval<T> ik2;
+
 	vector<long double> vecConstP;
 	vector<long double> vecConstQ;
 	vector<long double> vecConstR;

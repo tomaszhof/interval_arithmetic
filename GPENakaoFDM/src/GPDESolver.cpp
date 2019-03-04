@@ -11,7 +11,6 @@ namespace interval_arithmetic {
 
 template<typename T>
 GPDESolver<T>::GPDESolver() {
-	// TODO Auto-generated constructor stub
 
 }
 
@@ -74,6 +73,47 @@ T GPDESolver<T>::betay(T xi, T yj) {
 	T result = 0.0;
 	T k2d6 = this->k * this->k / 6.0;
 	result = k2d6 * bc->dcdy(xi, yj);
+	return result;
+}
+
+template<typename T>
+Interval<T> GPDESolver<T>::IAlphaX(Interval<T> xi, Interval<T> yj) {
+	Interval<T> result = { 0.0L, 0.0L };
+	int st = 0;
+	Interval<T> h2d12 = this->ih2 / this->i12;
+	Interval<T> k2d12 = this->ik2 / this->i12;
+	result = bc->A1(xi, yj, st) + h2d12 * bc->D2A1DX2(xi, yj, st)
+			+ h2d12 * bc->C(xi, yj, st) + k2d12 * bc->D2A1DY2(xi, yj, st);
+	return result;
+}
+
+template<typename T>
+Interval<T> GPDESolver<T>::IAlphaY(Interval<T> xi, Interval<T> yj) {
+	Interval<T> result = { 0.0L, 0.0L };
+	int st = 0;
+	Interval<T> h2d12 = this->ih2 / this->i12;
+	Interval<T> k2d12 = this->ik2 / this->i12;
+	result = bc->A2(xi, yj, st) + k2d12 * bc->D2A2DY2(xi, yj, st)
+			+ k2d12 * bc->C(xi, yj, st) + h2d12 * bc->D2A1DX2(xi, yj, st);
+
+	return result;
+}
+
+template<typename T>
+Interval<T> GPDESolver<T>::IBetaX(Interval<T> xi, Interval<T> yj) {
+	Interval<T> result = { 0.0L, 0.0L };
+	int st = 0;
+	Interval<T> h2d6 = this->ih2 / this->i6;
+	result = h2d6 * bc->DCDX(xi, yj, st);
+	return result;
+}
+
+template<typename T>
+Interval<T> GPDESolver<T>::IBetaY(Interval<T> xi, Interval<T> yj) {
+	Interval<T> result = { 0.0L, 0.0L };
+	int st;
+	Interval<T> k2d6 = this->ik2 / this->i6;
+	result = k2d6 * bc->DCDY(xi, yj, st);
 	return result;
 }
 
@@ -182,43 +222,46 @@ int GPDESolver<T>::SolveFP() {
 			if (i == 1) {
 				s = s
 						- (alphax(hh1, kk1) / h2 - betax(hh1, kk1) / (2.0 * h1))
-								* bc->phi1(kk1); // h1
+								* bc->phi1(kk1);
 				if (j == 1)
 					s = s
 							- (alphay(hh1, kk1) / k2
 									- betay(hh1, kk1) / (2.0 * k1))
-									* bc->phi2(hh1); // / k1;
+									* bc->phi2(hh1);
 				if (j == m - 1)
 					s = s
 							- (alphay(hh1, kk1) / k2
 									+ betay(hh1, kk1) / (2.0 * k1))
-									* bc->phi4(hh1); // / k1;
+									* bc->phi4(hh1);
 			} else if (i == n - 1) {
 				s = s
 						- (alphax(hh1, kk1) / h2 + betax(hh1, kk1) / (2.0 * h1))
-								* bc->phi3(kk1); // / k1;
+								* bc->phi3(kk1);
 				if (j == 1)
 					s = s
 							- (alphay(hh1, kk1) / k2
 									- betay(hh1, kk1) / (2.0 * k1))
-									* bc->phi2(hh1); // / k1;
+									* bc->phi2(hh1);
 				if (j == m - 1)
 					s = s
 							- (alphay(hh1, kk1) / k2
 									+ betay(hh1, kk1) / (2.0 * k1))
-									* bc->phi4(hh1); // / k1;
+									* bc->phi4(hh1);
 			} else {
 				if (j == 1)
 					s = s
 							- (alphay(hh1, kk1) / k2
 									- betay(hh1, kk1) / (2.0 * k1))
-									* bc->phi2(hh1); // / k1;
+									* bc->phi2(hh1);
 				if (j == m - 1)
 					s = s
 							- (alphay(hh1, kk1) / k2
 									+ betay(hh1, kk1) / (2.0 * k1))
-									* bc->phi4(hh1); // / k1;
+									* bc->phi4(hh1);
 			}
+
+			cout << k << " S= [" << s << "]" << endl;
+
 			a1[n2 - 1] = s;
 			for (int i = 1; i <= n1; i++) {
 				rh = r[i - 1];
@@ -332,9 +375,9 @@ int GPDESolver<T>::SolveFP() {
 							maxP = tmpP;
 
 						tmpQ = abs(
-								u[i + 1][j + 2] - 2 * u[i+1][j]
-										+ u[i +1][j - 2] - u[i - 1][j + 2]
-										+ 2 * u[i-1][j] - u[i - 1][j - 2]);
+								u[i + 1][j + 2] - 2 * u[i + 1][j]
+										+ u[i + 1][j - 2] - u[i - 1][j + 2]
+										+ 2 * u[i - 1][j] - u[i - 1][j - 2]);
 						tmpQ = (1 / (8 * h1 * k1 * k1)) * tmpQ;
 						if (tmpQ > maxQ)
 							maxQ = tmpQ;
@@ -397,9 +440,9 @@ int GPDESolver<T>::SolvePIA() {
 	Interval<T> tmpi = { 0, 0 };
 	int i, j, jh, j1, k, kh, l, lh, l1, l2, n1, n2, n3, p, q, rh;
 	int num;
-	Interval<T> AF, BB0, BB1, CF, H1, HH, HH1, II, JJ, K1, KK, KK1, MAX, MM, AA,
-			CC, MMconst, NNconst, NN, S, S1, S2, S3, S4, S5, H1POW2, K1POW2,
-			H1POW2K1POW2;
+	Interval<T> AF, BB0, BB1, CF, H1, HH, HH1, MHH, II, JJ, K1, KK, KK1, MKK,
+			MAX, MM, AA, CC, Pconst, Qconst, Rconst, Sconst, NN, S, S1, S2, S3,
+			S4, S5, ERR, H1POW2, K1POW2, H1POW2K1POW2, A1F, A2F, H2D12, K2D12;
 	bool list_exists;
 	Interval<T> aij;
 	int* r;
@@ -411,10 +454,14 @@ int GPDESolver<T>::SolvePIA() {
 	NN.b = n;
 	MM.a = m;
 	MM.b = m;
-	MMconst.a = -bc->GetConstM();
-	MMconst.b = bc->GetConstM();
-	NNconst.a = -bc->GetConstN();
-	NNconst.b = bc->GetConstN();
+	Pconst.a = -bc->GetConstP();
+	Pconst.b = bc->GetConstP();
+	Qconst.a = -bc->GetConstQ();
+	Qconst.b = bc->GetConstQ();
+	Rconst.a = -bc->GetConstR();
+	Rconst.b = bc->GetConstR();
+	Sconst.a = -bc->GetConstS();
+	Sconst.b = bc->GetConstS();
 
 	if ((n < 2) || (m < 2))
 		st = 1;
@@ -518,114 +565,123 @@ int GPDESolver<T>::SolvePIA() {
 			JJ.b = j;
 			HH1 = ALPHA + (II * H1);
 			KK1 = BETA + (JJ * K1);
-			AA = bc->A(HH1, KK1, st);
-			CC = bc->C(HH1, KK1, st);
-			AF = AA * K1;
-			CF = CC * H1;
-			S1 = AF * K1;
+
+			//parameters functions in order to generalize to elliptic PDE
+			A1F = bc->A1(HH1, KK1, st);
+			A2F = bc->A2(HH1, KK1, st);
+
 			if (i > 1) {
+				//u_i-1_j
+				S1 = IAlphaX(HH1, KK1) / this->ih2
+						- IBetaX(HH1, KK1) / (i2 * H1);
 				bm.ToMap(l1 - 1, S1);
+
 			}
+
+			//u_i_j
+			S1 = bc->C(HH1, KK1, st)
+					- i2
+							* (this->IAlphaX(HH1, KK1) / this->ih2
+									+ this->IAlphaY(HH1, KK1) / this->ik2);
+			bm.ToMap(l2 - 1, S1);
+
 			if (j > 1) {
-				bm.ToMap(l2 - 2, (CF * H1));
+				//u_i_j-1
+				S1 = this->IAlphaY(HH1, KK1) / this->ik2
+						- this->IBetaY(HH1, KK1) / (i2 * K1);
+				bm.ToMap(l2 - 2, S1);
 			}
 
-			S = S1 + (CF * H1);
-			S = itwo * S;
-			aij.a = -S.b;
-			aij.b = -S.a;
-			bm.ToMap(l2 - 1, aij);
-
-			S = CF * H1;
 			if (j < m - 1) {
-				bm.ToMap(l2, S);
+				//u_i_j+1
+				S1 = IAlphaY(HH1, KK1) / this->ik2
+						+ this->IBetaY(HH1, KK1) / (i2 * K1);
+				bm.ToMap(l2, S1);
 			}
-			l1 = l2 + m - 1;
+
+			l1 = l2 + m - 1; //update index to next row position i -> i+1
+
 			if (i < n - 1) {
+				//u_i+1_j
+				S1 = IAlphaX(HH1, KK1) / this->ih2
+						+ IBetaX(HH1, KK1) / (i2 * H1);
 				bm.ToMap(l1 - 1, S1);
 			}
 
-			S = H1POW2K1POW2 * bc->F(HH1, KK1, st);
-//			filestr << k << " B: S= [" << S.a << " ; " << S.b << "]" << endl;
-			if (st == 0) {
-				//S1 = ia.IMul(H1, H1);
-				//S2 = ia.IMul(K1, K1);
-				//S4 = ia.IMul(S1, S2);
+			S = bc->F(HH1, KK1, st);
+			ERR = (this->ih2 / i12)
+					* (bc->D2FDX2(HH1 + HH, KK1, st)
+							+ i2 * (bc->DA1DX(HH1 + HH, KK1, st)) * Rconst
+							+ i2 * bc->DA2DX(HH1 + HH, KK1, st) * Qconst
+							+ bc->A2(HH1 + HH, KK1, st) * Sconst);
+			S = S + ERR;
 
-				S5 = ((AA * H1POW2) * H1POW2K1POW2) * MMconst;
-				S3 = ((CC * K1POW2) * H1POW2K1POW2) * NNconst;
-				//S5 = ia.IMul(S1, S5);
-				//S3 = ia.IMul(S2, S3);
+			ERR = (this->ik2 / i12)
+					* (bc->D2FDY2(HH1, KK1 + KK, st)
+							+ i2 * (bc->DA2DY(HH1, KK1 + KK, st)) * Rconst
+							+ i2 * bc->DA1DY(HH1, KK1 + KK, st) * Pconst
+							+ bc->A1(HH1, KK1 + KK, st) * Sconst);
+			S = S + ERR;
 
-				if (st == 0) {
-					//S4 = bc->OMEGA(HH1, ia.IAdd(KK1, KK), st);
-					if (st == 0) {
-						//S1 = ia.IMul(S1, S3);
-						//S2 = ia.IMul(S2, S4);
-						S1 = S3 + S5; //ia.IAdd(ia.DIAdd(S1, S2), S5);
-						S = S + (S1 / itwelve);
+//			S = S
+//					+ (this->ih2 / i12)
+//							* (bc->D2FDX2(HH1, KK1, st)
+//									+ i2 * (bc->DA1DX(HH1, KK1, st)) * Rconst
+//									+ i2 * bc->DA2DX(HH1, KK1, st) * Qconst
+//									+ bc->A2(HH1, KK1, st) * Sconst);
+//			S = S
+//					+ (this->ik2 / i12)
+//							* (bc->D2FDY2(HH1, KK1, st)
+//									+ i2 * (bc->DA2DY(HH1, KK1, st)) * Rconst
+//									+ i2 * bc->DA1DY(HH1, KK1, st) * Pconst
+//									+ bc->A1(HH1, KK1, st) * Sconst);
 
-						if (i == 1) {
-							S1 = bc->PHI1(KK1, st);
-							if (st == 0) {
-								S1 = (AF * S1) * K1;
-								S = S - S1;
-								if (j == 1) {
-									S1 = bc->PHI2(HH1, st);
-									if (st == 0) {
-										S1 = (CF * S1) * H1;
-										S = S - S1;
-									}
-								}
-								if (j == m - 1) {
-									S1 = bc->PHI4(HH1, st);
-									if (st == 0) {
-										S1 = (CF * S1) * H1;
-										S = S - S1;
-									}
-								}
-							}
-						} else if (i == n - 1) {
-							S1 = bc->PHI3(KK1, st);
-							if (st == 0) {
-								S1 = (AF * S1) * H1;
-								S = S - S1;
-
-								if (j == 1) {
-									S1 = bc->PHI2(HH1, st);
-									if (st == 0) {
-										S1 = (CF * S1) * H1;
-										S = S - S1;
-									}
-								}
-								if (j == m - 1) {
-									S1 = bc->PHI4(HH1, st);
-									if (st == 0) {
-										S1 = (CF * S1) * H1;
-										S = S - S1;
-									}
-								}
-							}
-						} else {
-							if (j == 1) {
-								S1 = bc->PHI2(HH1, st);
-								if (st == 0) {
-									S1 = (CF * S1) * H1;
-									S = S - S1;
-								}
-							}
-							if (j == m - 1) {
-								S1 = bc->PHI4(HH1, st);
-								if (st == 0) {
-									S1 = (CF * S1) * H1;
-									S = S - S1;
-								}
-							}
-						}
-
-					}
-				}
+			if (i == 1) {
+				S = S
+						- (IAlphaX(HH1, KK1) / this->ih2
+								- IBetaX(HH1, KK1) / (i2 * H1))
+								* bc->PHI1(KK1, st);
+				if (j == 1)
+					S = S
+							- (IAlphaY(HH1, KK1) / this->ik2
+									- IBetaY(HH1, KK1) / (i2 * K1))
+									* bc->PHI2(HH1, st);
+				if (j == m - 1)
+					S = S
+							- (IAlphaY(HH1, KK1) / this->ik2
+									+ IBetaY(HH1, KK1) / (i2 * K1))
+									* bc->PHI4(HH1, st);
+			} else if (i == n - 1) {
+				S = S
+						- (IAlphaX(HH1, KK1) / this->ih2
+								+ IBetaX(HH1, KK1) / (i2 * H1))
+								* bc->PHI3(KK1, st);
+				if (j == 1)
+					S = S
+							- (IAlphaY(HH1, KK1) / this->ik2
+									- IBetaY(HH1, KK1) / (i2 * K1))
+									* bc->PHI2(HH1, st);
+				if (j == m - 1)
+					S = S
+							- (IAlphaY(HH1, KK1) / this->ik2
+									+ IBetaY(HH1, KK1) / (i2 * K1))
+									* bc->PHI4(HH1, st);
+			} else {
+				if (j == 1)
+					S = S
+							- (IAlphaY(HH1, KK1) / this->ik2
+									- IBetaY(HH1, KK1) / (i2 * K1))
+									* bc->PHI2(HH1, st);
+				if (j == m - 1)
+					S = S
+							- (IAlphaY(HH1, KK1) / this->ik2
+									+ IBetaY(HH1, KK1) / (i2 * K1))
+									* bc->PHI4(HH1, st);
 			}
+
+			//filestr
+			cout << k << " B: S= [" << S.a << " ; " << S.b << "]" << endl;
+			cout << k << " B: ERR= [" << ERR.a << " ; " << ERR.b << "]" << endl;
 
 //			filestr << k << " E: S= [" << S.a << " ; " << S.b << "]" << endl;
 			if (st == 0) {
@@ -771,7 +827,8 @@ int GPDESolver<T>::SolveDIA() {
 	int i, j, jh, j1, k, kh, l, lh, l1, l2, n1, n2, n3, p, q, rh;
 	int num;
 	Interval<T> AF, BB0, BB1, CF, H1, HH, HH1, II, JJ, K1, KK, KK1, MAX, MM, AA,
-			CC, MMconst, NNconst, NN, S, S1, S2, S3, S4, S5;
+			CC, Pconst, Qconst, Rconst, Sconst, NN, S, S1, S2, S3, S4, S5, A1F,
+			ERR, A2F;
 	bool list_exists;
 	Interval<T> aij;
 	int* r;
@@ -783,10 +840,14 @@ int GPDESolver<T>::SolveDIA() {
 	NN.b = n;
 	MM.a = m;
 	MM.b = m;
-	MMconst.a = bc->GetConstM();
-	MMconst.b = -bc->GetConstM();
-	NNconst.a = bc->GetConstN();
-	NNconst.b = -bc->GetConstN();
+	Pconst.a = -bc->GetConstP();
+	Pconst.b = bc->GetConstP();
+	Qconst.a = -bc->GetConstQ();
+	Qconst.b = bc->GetConstQ();
+	Rconst.a = -bc->GetConstR();
+	Rconst.b = bc->GetConstR();
+	Sconst.a = -bc->GetConstS();
+	Sconst.b = bc->GetConstS();
 
 	if ((n < 2) || (m < 2))
 		st = 1;
@@ -887,114 +948,121 @@ int GPDESolver<T>::SolveDIA() {
 			JJ.b = j;
 			HH1 = (ALPHA + (II * H1));
 			KK1 = (BETA + (JJ * K1));
-			AA = bc->A(HH1, KK1, st);
-			CC = bc->C(HH1, KK1, st);
-			AF = AA / H1;
-			CF = CC / K1;
-			S1 = AF / H1;
+			//parameters functions in order to generalize to elliptic PDE
+			A1F = bc->A1(HH1, KK1, st);
+			A2F = bc->A2(HH1, KK1, st);
+
 			if (i > 1) {
+				//u_i-1_j
+				S1 = IAlphaX(HH1, KK1) / this->ih2
+						- IBetaX(HH1, KK1) / (i2 * H1);
 				bm.ToMap(l1 - 1, S1);
+
 			}
+
+			//u_i_j
+			S1 = bc->C(HH1, KK1, st)
+					- i2
+							* (this->IAlphaX(HH1, KK1) / this->ih2
+									+ this->IAlphaY(HH1, KK1) / this->ik2);
+			bm.ToMap(l2 - 1, S1);
+
 			if (j > 1) {
-				bm.ToMap(l2 - 2, (CF / K1));
+				//u_i_j-1
+				S1 = this->IAlphaY(HH1, KK1) / this->ik2
+						- this->IBetaY(HH1, KK1) / (i2 * K1);
+				bm.ToMap(l2 - 2, S1);
 			}
 
-			S = S1 + (CF / K1);
-			S = itwo * S;
-			aij.a = -S.b;
-			aij.b = -S.a;
-			bm.ToMap(l2 - 1, aij);
-
-			S = (CF / K1);
 			if (j < m - 1) {
-				bm.ToMap(l2, S);
+				//u_i_j+1
+				S1 = IAlphaY(HH1, KK1) / this->ik2
+						+ this->IBetaY(HH1, KK1) / (i2 * K1);
+				bm.ToMap(l2, S1);
 			}
-			l1 = l2 + m - 1;
+
+			l1 = l2 + m - 1; //update index to next row position i -> i+1
+
 			if (i < n - 1) {
+				//u_i+1_j
+				S1 = IAlphaX(HH1, KK1) / this->ih2
+						+ IBetaX(HH1, KK1) / (i2 * H1);
 				bm.ToMap(l1 - 1, S1);
 			}
 
 			S = bc->F(HH1, KK1, st);
-			if (st == 0) {
-				S1 = (H1 * H1);
-				S2 = (K1 * K1);
+			ERR = (im1 * this->ih2 / i12)
+					* (bc->D2FDX2(HH1 + HH, KK1, st)
+							+ i2 * (bc->DA1DX(HH1 + HH, KK1, st)) * Rconst
+							+ i2 * bc->DA2DX(HH1 + HH, KK1, st) * Qconst
+							+ bc->A2(HH1 + HH, KK1, st) * Sconst);
+			S = S + ERR.Opposite();
 
-				S5 = ((AA * S1) * MMconst);
-				S3 = ((CC * S2) * NNconst);
+			ERR = (im1 * this->ik2 / i12)
+					* (bc->D2FDY2(HH1, KK1 + KK, st)
+							+ i2 * (bc->DA2DY(HH1, KK1 + KK, st)) * Rconst
+							+ i2 * bc->DA1DY(HH1, KK1 + KK, st) * Pconst
+							+ bc->A1(HH1, KK1 + KK, st) * Sconst);
+			S = S + ERR.Opposite();
 
-				if (st == 0) {
-					S1 = (S3 + S5);
-					S = S - (S1 / itwelve);
+//			S = S
+//					+ ((im1 * this->ih2 / i12)
+//							* (bc->D2FDX2(HH1, KK1, st)
+//									+ i2 * (bc->DA1DX(HH1, KK1, st)) * Rconst
+//									+ i2 * bc->DA2DX(HH1, KK1, st) * Qconst
+//									+ bc->A2(HH1, KK1, st) * Sconst)).Opposite();
+//			S = S
+//					+ (im1 * this->ik2 / i12)
+//							* ((bc->D2FDY2(HH1, KK1, st)
+//									+ i2 * (bc->DA2DY(HH1, KK1, st)) * Rconst
+//									+ i2 * bc->DA1DY(HH1, KK1, st) * Pconst
+//									+ bc->A1(HH1, KK1, st) * Sconst)).Opposite();
+//			filestr << k << " B: S= [" << S.a << " ; " << S.b << "]" << endl;
 
-					if (i == 1) {
-						S1 = bc->PHI1(KK1, st);
-						S1 = S1.Opposite();
-						if (st == 0) {
-							S1 = (AF * S1) / H1;
-							S = S + S1;
-							if (j == 1) {
-								S1 = bc->PHI2(HH1, st);
-								S1 = S1.Opposite();
-								if (st == 0) {
-									S1 = ((CF * S1) / K1);
-									S = (S + S1);
-								}
-							}
-							if (j == m - 1) {
-								S1 = bc->PHI4(HH1, st);
-								S1 = S1.Opposite();
-
-								if (st == 0) {
-									S1 = (CF * S1) / K1;
-									S = S + S1;
-								}
-							}
-						}
-					} else if (i == n - 1) {
-						S1 = bc->PHI3(KK1, st);
-						S1 = S1.Opposite();
-						if (st == 0) {
-							S1 = (AF * S1) / K1;
-							S = S + S1;
-
-							if (j == 1) {
-								S1 = bc->PHI2(HH1, st);
-								S1 = S1.Opposite();
-								if (st == 0) {
-									S1 = (CF * S1) / K1;
-									S = S + S1;
-								}
-							}
-							if (j == m - 1) {
-								S1 = bc->PHI4(HH1, st);
-								S1 = S1.Opposite();
-								if (st == 0) {
-									S1 = (CF * S1) / K1;
-									S = S + S1;
-								}
-							}
-						}
-					} else {
-						if (j == 1) {
-							S1 = bc->PHI2(HH1, st);
-							S1 = S1.Opposite();
-							if (st == 0) {
-								S1 = (CF * S1) / K1;
-								S = S + S1;
-							}
-						}
-						if (j == m - 1) {
-							S1 = bc->PHI4(HH1, st);
-							S1 = S1.Opposite();
-							if (st == 0) {
-								S1 = (CF * S1) / K1;
-								S = S + S1;
-							}
-						}
-					}
-
-				}
+			if (i == 1) {
+				S = S
+						- (IAlphaX(HH1, KK1) / this->ih2
+								- IBetaX(HH1, KK1) / (i2 * H1))
+								* bc->PHI1(KK1, st);
+				if (j == 1)
+					S = S
+							- (IAlphaY(HH1, KK1) / this->ik2
+									- IBetaY(HH1, KK1) / (i2 * K1))
+									* bc->PHI2(HH1, st);
+				if (j == m - 1)
+					S = S
+							- (IAlphaY(HH1, KK1) / this->ik2
+									+ IBetaY(HH1, KK1) / (i2 * K1))
+									* bc->PHI4(HH1, st);
+			} else if (i == n - 1) {
+				S = S
+						- (IAlphaX(HH1, KK1) / this->ih2
+								+ IBetaX(HH1, KK1) / (i2 * H1))
+								* bc->PHI3(KK1, st);
+				if (j == 1)
+					S = S
+							- (IAlphaY(HH1, KK1) / this->ik2
+									- IBetaY(HH1, KK1) / (i2 * K1))
+									* bc->PHI2(HH1, st);
+				if (j == m - 1)
+					S = S
+							- (IAlphaY(HH1, KK1) / this->ik2
+									+ IBetaY(HH1, KK1) / (i2 * K1))
+									* bc->PHI4(HH1, st);
+			} else {
+				if (j == 1)
+					S = S
+							- (IAlphaY(HH1, KK1) / this->ik2
+									- IBetaY(HH1, KK1) / (i2 * K1))
+									* bc->PHI2(HH1, st);
+				if (j == m - 1)
+					S = S
+							- (IAlphaY(HH1, KK1) / this->ik2
+									+ IBetaY(HH1, KK1) / (i2 * K1))
+									* bc->PHI4(HH1, st);
 			}
+
+			cout << k << " B: S= [" << S.a << " ; " << S.b << "]" << endl;
 
 			if (st == 0) {
 				bm.ToMap(n2 - 1, S);

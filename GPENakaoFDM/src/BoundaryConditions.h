@@ -31,22 +31,47 @@ public:
 	virtual Interval<T> OMEGA(const Interval<T>& ix, const Interval<T>& iy,
 			int& st);
 	virtual Interval<T> THETA(const Interval<T>& ix, const Interval<T>& iy,
-				int& st);
+			int& st);
 	virtual Interval<T> KSI(const Interval<T>& ix, const Interval<T>& iy,
-				int& st);
+			int& st);
 	virtual Interval<T> PSI1(const Interval<T>& ix, const Interval<T>& iy,
-				int& st);
+			int& st);
 	virtual Interval<T> PSI2(const Interval<T>& ix, const Interval<T>& iy,
-				int& st);
+			int& st);
 	virtual Interval<T> PSI3(const Interval<T>& ix, const Interval<T>& iy,
-				int& st);
+			int& st);
 	virtual Interval<T> PSI4(const Interval<T>& ix, const Interval<T>& iy,
-				int& st);
-	virtual Interval<T> A(const Interval<T>& ix, const Interval<T>& iy,
+			int& st);
+	virtual Interval<T> A1(const Interval<T>& ix, const Interval<T>& iy,
+			int& st);
+	virtual Interval<T> A2(const Interval<T>& ix, const Interval<T>& iy,
+			int& st);
+	virtual Interval<T> DA1DX(const Interval<T>& ix, const Interval<T>& iy,
+			int& st);
+	virtual Interval<T> DA1DY(const Interval<T>& ix, const Interval<T>& iy,
+			int& st);
+	virtual Interval<T> DA2DX(const Interval<T>& ix, const Interval<T>& iy,
+			int& st);
+	virtual Interval<T> DA2DY(const Interval<T>& ix, const Interval<T>& iy,
+			int& st);
+	virtual Interval<T> D2A1DX2(const Interval<T>& ix, const Interval<T>& iy,
+			int& st);
+	virtual Interval<T> D2A1DY2(const Interval<T>& ix, const Interval<T>& iy,
+			int& st);
+	virtual Interval<T> D2A2DX2(const Interval<T>& ix, const Interval<T>& iy,
+			int& st);
+	virtual Interval<T> D2A2DY2(const Interval<T>& ix, const Interval<T>& iy,
 			int& st);
 	virtual Interval<T> C(const Interval<T>& ix, const Interval<T>& iy,
 			int& st);
-
+	virtual Interval<T> DCDX(const Interval<T>& ix, const Interval<T>& iy,
+			int& st);
+	virtual Interval<T> DCDY(const Interval<T>& ix, const Interval<T>& iy,
+			int& st);
+	virtual Interval<T> D2FDX2(const Interval<T>& ix, const Interval<T>& iy,
+			int& st);
+	virtual Interval<T> D2FDY2(const Interval<T>& ix, const Interval<T>& iy,
+			int& st);
 	//floating-point arithmetic functions
 	virtual long double f(const T& x, const T& y);
 	virtual long double phi1(const T& y);
@@ -75,6 +100,8 @@ public:
 	virtual long double GetConstN();
 	virtual long double GetConstP();
 	virtual long double GetConstQ();
+	virtual long double GetConstR();
+	virtual long double GetConstS();
 	virtual void SetArithmeticMode(int mode);
 };
 
@@ -90,8 +117,7 @@ BoundaryConditions<T>::~BoundaryConditions() {
 }
 
 template<typename T>
-long double BoundaryConditions<T>::f(const T& x,
-		const T& y) {
+long double BoundaryConditions<T>::f(const T& x, const T& y) {
 	return 0;
 }
 
@@ -116,8 +142,7 @@ long double BoundaryConditions<T>::phi4(const T& x) {
 }
 
 template<typename T>
-long double BoundaryConditions<T>::psi(const T& x,
-		const T& y) {
+long double BoundaryConditions<T>::psi(const T& x, const T& y) {
 	return 0;
 }
 
@@ -258,7 +283,6 @@ Interval<T> BoundaryConditions<T>::KSI(const Interval<T>& ix,
 	return r;
 }
 
-
 template<typename T>
 Interval<T> BoundaryConditions<T>::PSI1(const Interval<T>& ix,
 		const Interval<T>& iy, int& st) {
@@ -295,13 +319,15 @@ Interval<T> BoundaryConditions<T>::PSI4(const Interval<T>& ix,
 	return r;
 }
 template<typename T>
-Interval<T> BoundaryConditions<T>::A(const Interval<T>& ix,
+Interval<T> BoundaryConditions<T>::A1(const Interval<T>& ix,
 		const Interval<T>& iy, int& st) {
 	Interval<T> r = { 0, 0 };
 	st = 0;
 
 	return r;
 }
+
+
 
 template<typename T>
 Interval<T> BoundaryConditions<T>::C(const Interval<T>& ix,
@@ -340,6 +366,16 @@ template<typename T>
 long double BoundaryConditions<T>::GetConstQ() {
 	long double constQ = 0;
 	return constQ;
+}
+
+template<typename T>
+inline long double BoundaryConditions<T>::GetConstR() {
+	return 0.0L;
+}
+
+template<typename T>
+inline long double BoundaryConditions<T>::GetConstS() {
+	return 0.0L;
 }
 
 template<typename T>
@@ -398,6 +434,123 @@ int BoundaryConditions<T>::boundconds(const Interval<T>& B1,
 	}
 
 	return r;
+}
+
+template<typename T>
+inline Interval<T> BoundaryConditions<T>::A2(const Interval<T>& ix,
+		const Interval<T>& iy, int& st) {
+	Interval<T> r = { 0, 0 };
+	st = 0;
+
+	return r;
+}
+
+template<typename T>
+inline Interval<T> BoundaryConditions<T>::D2A1DX2(const Interval<T>& ix,
+		const Interval<T>& iy, int& st) {
+	Interval<T> r = { 0, 0 };
+	st = 0;
+
+	return r;
+}
+
+template<typename T>
+inline Interval<T> BoundaryConditions<T>::D2A1DY2(const Interval<T>& ix,
+		const Interval<T>& iy, int& st) {
+	Interval<T> r = { 0, 0 };
+	st = 0;
+
+	return r;
+}
+
+template<typename T>
+inline Interval<T> BoundaryConditions<T>::D2A2DX2(const Interval<T>& ix,
+		const Interval<T>& iy, int& st) {
+	Interval<T> r = { 0, 0 };
+	st = 0;
+
+	return r;
+}
+
+template<typename T>
+inline Interval<T> BoundaryConditions<T>::D2A2DY2(const Interval<T>& ix,
+		const Interval<T>& iy, int& st) {
+	Interval<T> r = { 0, 0 };
+	st = 0;
+
+	return r;
+}
+
+template<typename T>
+inline Interval<T> BoundaryConditions<T>::DCDX(const Interval<T>& ix,
+		const Interval<T>& iy, int& st) {
+	Interval<T> r = { 0, 0 };
+	st = 0;
+
+	return r;
+}
+
+template<typename T>
+inline Interval<T> BoundaryConditions<T>::DCDY(const Interval<T>& ix,
+		const Interval<T>& iy, int& st) {
+	Interval<T> r = { 0, 0 };
+	st = 0;
+
+	return r;
+}
+
+template<typename T>
+inline Interval<T> BoundaryConditions<T>::D2FDX2(const Interval<T>& ix,
+		const Interval<T>& iy, int& st) {
+	Interval<T> r = { 0, 0 };
+	st = 0;
+
+	return r;
+}
+
+template<typename T>
+inline Interval<T> BoundaryConditions<T>::D2FDY2(const Interval<T>& ix,
+		const Interval<T>& iy, int& st) {
+	Interval<T> r = { 0, 0 };
+	st = 0;
+
+	return r;
+}
+
+template<typename T>
+inline Interval<T> BoundaryConditions<T>::DA1DX(const Interval<T>& ix,
+		const Interval<T>& iy, int& st) {
+	Interval<T> r = { 0, 0 };
+		st = 0;
+
+		return r;
+}
+
+template<typename T>
+inline Interval<T> BoundaryConditions<T>::DA1DY(const Interval<T>& ix,
+		const Interval<T>& iy, int& st) {
+	Interval<T> r = { 0, 0 };
+		st = 0;
+
+		return r;
+}
+
+template<typename T>
+inline Interval<T> BoundaryConditions<T>::DA2DX(const Interval<T>& ix,
+		const Interval<T>& iy, int& st) {
+	Interval<T> r = { 0, 0 };
+		st = 0;
+
+		return r;
+}
+
+template<typename T>
+inline Interval<T> BoundaryConditions<T>::DA2DY(const Interval<T>& ix,
+		const Interval<T>& iy, int& st) {
+	Interval<T> r = { 0, 0 };
+		st = 0;
+
+		return r;
 }
 
 template<typename T>

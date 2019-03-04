@@ -31,10 +31,23 @@ using Solver<T>::maxR;
 using Solver<T>::maxS;
 using Solver<T>::_initparams;
 
+using Solver<T>::ih;
+using Solver<T>::ik;
+
+const Interval<T> im1 = {-1.0L, -1.0L};
+const Interval<T> i2 = {2.0L, 2.0L};
+const Interval<T> i6 = {6.0L, 6.0L};
+const Interval<T> i12 = {12.0L, 12.0L};
+
 T alphax(T xi, T yj);
 T alphay(T xi, T yj);
 T betax(T xi, T yj);
 T betay(T xi, T yj);
+
+Interval<T> IAlphaX(Interval<T> xi, Interval<T> yj);
+Interval<T> IAlphaY(Interval<T> xi, Interval<T> yj);
+Interval<T> IBetaX(Interval<T> xi, Interval<T> yj);
+Interval<T> IBetaY(Interval<T> xi, Interval<T> yj);
 
 public:
 	GPDESolver();

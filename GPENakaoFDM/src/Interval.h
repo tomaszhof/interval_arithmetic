@@ -474,105 +474,76 @@ T DIntWidth(const Interval<T>& x) {
 template<typename T>
 Interval<T> ISin(const Interval<T>& x) {
 	bool is_even, finished;
-	int k;
-	int st = 0;
-	Interval<T> d, s, w, w1, x2, tmp;
-	Interval<T> izero(0, 0);
-	string left, right;
-	T eps = 1E-18; //Interval<T>::GetEpsilon();
-	T diff = std::numeric_limits<T>::max();
-	if (x.a > x.b)
-		st = 1;
-	else {
-		s = x;
-		w = x;
-		x2 = IMul(x, x);
-		k = 1;
-		is_even = true;
-		finished = false;
-		st = 0;
+		int k;
+		int st = 0;
+		Interval<T> d, s, w, w1, x2;
+		if (x.a > x.b)
+			st = 1;
+		else {
+			s = x;
+			w = x;
+			x2 = IMul(x, x);
+			k = 1;
+			is_even = true;
+			finished = false;
+			st = 0;
 
-		do {
-			d.a = (k + 1) * (k + 2);
-			d.b = d.a;
-			s = IMul(s, IDiv(x2, d));
-			if (is_even)
-				w1 = ISub(w, s);
-			else
-				w1 = IAdd(w, s);
-
-//			T oldMid = (w.a + w.b) / 2;
-//			T newMid = (w1.a + w1.b) / 2;
-//			T currDiff = abs(oldMid - newMid);
-//			finished = (currDiff > diff);
-//			diff = currDiff;
-
-			if ((w.a == 0) && (w.b == 0)) {
-				return izero;
-			}
-
-			if ((w.a != 0) && (w.b != 0)) {
-				if ((abs(w.a - w1.a) / abs(w.a) < eps)
-						&& (abs(w.b - w1.b) / abs(w.b) < eps))
-					finished = true;
+			do {
+				d.a = (k + 1) * (k + 2);
+				d.b = d.a;
+				s = IMul(s, IDiv(x2, d));
+				if (is_even)
+					w1 = ISub(w, s);
 				else
-					;
-			} else if ((w.a == 0) && (w.b != 0)) {
-				if ((abs(w.a - w1.a) < eps)
-						&& (abs(w.b - w1.b) / abs(w.b) < eps))
-					finished = true;
-				else
-					;
-			} else if (w.a != 0) {
-				if ((abs(w.a - w1.a) / abs(w.a) < eps)
-						& (abs(w.b - w1.b) < eps))
-					finished = true;
-				else if ((abs(w.a - w1.a) < eps) & (abs(w.b - w1.b) < eps))
-					finished = true;
-			}
-
-			if (finished) {
-				if (w1.b > 1) {
-					w1.b = 1;
-					if (w1.a > 1)
-						w1.a = 1;
+					w1 = IAdd(w, s);
+				if ((w.a != 0) && (w.b != 0)) {
+					if ((abs(w.a - w1.a) / abs(w.a) < 1e-18)
+							&& (abs(w.b - w1.b) / abs(w.b) < 1e-18))
+						finished = true;
+					else
+						;
+				} else if ((w.a == 0) && (w.b != 0)) {
+					if ((abs(w.a - w1.a) < 1e-18)
+							&& (abs(w.b - w1.b) / abs(w.b) < 1e-18))
+						finished = true;
+					else
+						;
 				}
-				if (w1.a < -1) {
-					w1.a = -1;
-					if (w1.b < -1)
-						w1.b = -1;
-				}
-				return w1;
-			} else {
-				w = w1;
-				k = k + 2;
-				is_even = !is_even;
-//				if ((w.a <= 0.0)&&(w.b >=0.0))
-//				{
-//					finished = true;
-//					w = {0,0};
-//					return w;
-//				}
-//				if (k>10000)
-//				{
-//					T wdth = w.GetWidth();
-//					tmp.IEndsToStrings(left, right);
-//					cout << "x=[" << left << "," << right << "]" << endl;
-//					w.IEndsToStrings(left, right);
-//					cout << "[" << left << "," << right << "]" << endl;
-//								cout << "      width =  " << std::setprecision(17) << wdth
-//										<< endl;
-//				}
-			}
-		} while (!(finished || (k > INT_MAX / 2)));
-	}
-	if (!finished)
-		st = 2;
 
-	Interval<T> r;
-	r.a = 0;
-	r.b = 0;
-	return r;
+				else if (w.a != 0) {
+					if ((abs(w.a - w1.a) / abs(w.a) < 1e-18)
+							& (abs(w.b - w1.b) < 1e-18))
+						finished = true;
+					else if ((abs(w.a - w1.a) < 1e-18) & (abs(w.b - w1.b) < 1e-18))
+						finished = true;
+				}
+
+				if (finished) {
+					if (w1.b > 1) {
+						w1.b = 1;
+						if (w1.a > 1)
+							w1.a = 1;
+					}
+					if (w1.a < -1) {
+						w1.a = -1;
+						if (w1.b < -1)
+							w1.b = -1;
+					}
+					return w1;
+				} else {
+					w = w1;
+					k = k + 2;
+					is_even = !is_even;
+				}
+			} while (!(finished || (k > INT_MAX / 2)));
+		}
+		if (!finished)
+			st = 2;
+
+		Interval<T> r;
+		r.a = 0;
+		r.b = 0;
+		return r;
 }
 
 template<typename T>

@@ -364,6 +364,17 @@ void Solver<T>::SetParameters(Parameters<long double>& p) {
 	h = (gamma - alpha) / n;
 	k = (delta - beta) / m;
 
+	string hstr = boost::lexical_cast<string>(h);
+	ih.a = LeftRead<long double>(hstr);
+	ih.b = RightRead<long double>(hstr);
+	ih2 = ih * ih;
+
+	string kstr = boost::lexical_cast<string>(k);
+	ik.a = LeftRead<long double>(kstr);
+	ik.b = RightRead<long double>(kstr);
+	ik2 =  ik * ik;
+
+
 	_initparams = true;
 }
 
