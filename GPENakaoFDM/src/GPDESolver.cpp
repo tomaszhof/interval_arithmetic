@@ -28,6 +28,9 @@ int GPDESolver<T>::SetExample(int eid) {
 	case 2:
 		bc = new ExampleGPE02<T>();
 		break;
+	case 3:
+		bc = new ExampleGPE03<T>();
+		break;
 	default:
 		bc = NULL;
 		break;
@@ -54,7 +57,7 @@ T GPDESolver<T>::alphay(T xi, T yj) {
 	T h2d12 = this->h * this->h / 12.0;
 	T k2d12 = this->k * this->k / 12.0;
 	result = bc->a2(xi, yj) + k2d12 * bc->d2a2dy2(xi, yj)
-			+ k2d12 * bc->c(xi, yj) + h2d12 * bc->d2a1dx2(xi, yj);
+			+ k2d12 * bc->c(xi, yj) + h2d12 * bc->d2a2dx2(xi, yj);
 	return result;
 
 	return result;
@@ -137,8 +140,8 @@ int GPDESolver<T>::SolveFP() {
 	st = 0;
 	if ((n < 2) || (m < 2))
 		st = 1;
-	else if ((alpha < 0) || (beta < 0))
-		st = 2;
+//	else if ((alpha < 0) || (beta < 0))
+//		st = 2;
 	if (st == 0) {
 		st = this->bc->boundconds_classic(bc->phi1(beta), bc->phi2(alpha), eps);
 		if (st == 0) {
@@ -185,8 +188,8 @@ int GPDESolver<T>::SolveFP() {
 			kk1 = beta + j * k1;
 
 			//parameters functions in order to generalize to elliptic PDE
-			a1f = bc->a1(hh1, kk1) / h1; //1 / h1;
-			a2f = bc->a2(hh1, kk1) / k1; //1 / k1;
+			a1f = bc->a1(hh1, kk1) / h1;
+			a2f = bc->a2(hh1, kk1) / k1;
 
 			if (i > 1) {
 				//u_i-1_j
@@ -260,7 +263,10 @@ int GPDESolver<T>::SolveFP() {
 									* bc->phi4(hh1);
 			}
 
-			cout << k << " S= [" << s << "]" << endl;
+//			cout << k << " S= [" << s << "]" << endl;
+//			if (k == 81){
+//				cout << k << " S= [" << s << "]" << endl;
+//			}
 
 			a1[n2 - 1] = s;
 			for (int i = 1; i <= n1; i++) {
@@ -290,6 +296,7 @@ int GPDESolver<T>::SolveFP() {
 					}
 				}
 			}
+
 
 			if (max == 0)
 				st = 5;
@@ -330,7 +337,7 @@ int GPDESolver<T>::SolveFP() {
 				u[i] = new long double[m + 1];
 			for (k = 1; k <= n1; k++) {
 				rh = r[k - 1];
-				if (rh != k) {
+				if ((rh != k)&&(rh != 0)) {
 					s = x[k - 1];
 					x[k - 1] = x[rh - 1];
 					i = r[rh - 1];

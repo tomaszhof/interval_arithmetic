@@ -12,6 +12,7 @@
 #include "THashMap.h"
 #include "ExampleGPE01.h"
 #include "ExampleGPE02.h"
+#include "ExampleGPE03.h"
 
 using namespace interval_arithmetic;
 
