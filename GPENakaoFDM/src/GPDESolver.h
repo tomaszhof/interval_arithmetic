@@ -13,6 +13,7 @@
 #include "ExampleGPE01.h"
 #include "ExampleGPE02.h"
 #include "ExampleGPE03.h"
+#include "ExampleGPE04.h"
 
 using namespace interval_arithmetic;
 

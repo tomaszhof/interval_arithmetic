@@ -31,6 +31,9 @@ int GPDESolver<T>::SetExample(int eid) {
 	case 3:
 		bc = new ExampleGPE03<T>();
 		break;
+	case 4:
+		bc = new ExampleGPE04<T>();
+		break;
 	default:
 		bc = NULL;
 		break;
@@ -263,7 +266,7 @@ int GPDESolver<T>::SolveFP() {
 									* bc->phi4(hh1);
 			}
 
-//			cout << k << " S= [" << s << "]" << endl;
+			cout << k << " S= [" << s << "]" << endl;
 //			if (k == 81){
 //				cout << k << " S= [" << s << "]" << endl;
 //			}
