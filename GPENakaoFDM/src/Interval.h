@@ -658,8 +658,8 @@ Interval<T> IExp(const Interval<T>& x) {
 	Interval<T> tmp = x;
 	T eps = 1E-18; //2*Interval<T>::GetEpsilon();
 	T diff = std::numeric_limits<T>::max();
-	if ((x.a < 0) && (x.b > 0))
-		return {1,1};
+//	if ((x.a < 0) && (x.b > 0))
+//		return {1,1};
 	if (x.a > x.b)
 		st = 1;
 	else {
@@ -678,8 +678,8 @@ Interval<T> IExp(const Interval<T>& x) {
 			T newMid = (w1.a + w1.b) / 2;
 			T currDiff = abs(oldMid - newMid);
 			//finished = (currDiff >= diff);
-			T tmpDiff = diff - currDiff;
-			diff = currDiff;
+//			T tmpDiff = diff - currDiff;
+//			diff = currDiff;
 			if ((abs(w.a - w1.a) / abs(w.a) < eps)
 					&& (abs(w.b - w1.b) / abs(w.b) < eps)) {
 				finished = true;
@@ -687,18 +687,18 @@ Interval<T> IExp(const Interval<T>& x) {
 			} else {
 				w = w1;
 				k = k + 1;
-				if (k > 100000) {
-					T wdth = w.GetWidth();
-
-					tmp.IEndsToStrings(left, right);
-					cout << "x=[" << left << "," << right << "]" << endl;
-					w.IEndsToStrings(left, right);
-					cout << "[" << left << "," << right << "]" << endl;
-					cout << "      width =  " << std::setprecision(17) << wdth
-							<< endl << " diff = " << diff << endl
-							<< " tmpDiff = " << tmpDiff << endl << "eps = "
-							<< eps << endl;
-				}
+//				if (k > 100000) {
+//					T wdth = w.GetWidth();
+//
+//					tmp.IEndsToStrings(left, right);
+//					cout << "x=[" << left << "," << right << "]" << endl;
+//					w.IEndsToStrings(left, right);
+//					cout << "[" << left << "," << right << "]" << endl;
+//					cout << "      width =  " << std::setprecision(17) << wdth
+//							<< endl << " diff = " << diff << endl
+//							<< " tmpDiff = " << tmpDiff << endl << "eps = "
+//							<< eps << endl;
+//				}
 			}
 		} while (!(finished || (k > INT_MAX / 2)));
 		if (!finished)

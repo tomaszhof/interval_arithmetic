@@ -14,6 +14,7 @@
 #include "ExampleGPE02.h"
 #include "ExampleGPE03.h"
 #include "ExampleGPE04.h"
+#include "ExampleGPE05.h"
 //#include "Example09.h"
 #include <iostream>
 #include <iomanip>

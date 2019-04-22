@@ -34,6 +34,9 @@ int GPDESolver<T>::SetExample(int eid) {
 	case 4:
 		bc = new ExampleGPE04<T>();
 		break;
+	case 5:
+		bc = new ExampleGPE05<T>();
+		break;
 	default:
 		bc = NULL;
 		break;
@@ -266,7 +269,7 @@ int GPDESolver<T>::SolveFP() {
 									* bc->phi4(hh1);
 			}
 
-			cout << k << " S= [" << s << "]" << endl;
+//			cout << k << " S= [" << s << "]" << endl;
 //			if (k == 81){
 //				cout << k << " S= [" << s << "]" << endl;
 //			}
@@ -299,7 +302,6 @@ int GPDESolver<T>::SolveFP() {
 					}
 				}
 			}
-
 
 			if (max == 0)
 				st = 5;
@@ -340,7 +342,7 @@ int GPDESolver<T>::SolveFP() {
 				u[i] = new long double[m + 1];
 			for (k = 1; k <= n1; k++) {
 				rh = r[k - 1];
-				if ((rh != k)&&(rh != 0)) {
+				if ((rh != k) && (rh != 0)) {
 					s = x[k - 1];
 					x[k - 1] = x[rh - 1];
 					i = r[rh - 1];
@@ -374,44 +376,66 @@ int GPDESolver<T>::SolveFP() {
 			maxS = 0;
 			if (this->_estimateMN) {
 
-				for (int i = 2; i <= n - 2; i++)
-					for (int j = 2; j <= m - 2; j++) {
-						tmpP = abs(
-								u[i + 2][j + 1] - 2 * u[i][j + 1]
-										+ u[i - 2][j + 1] - u[i + 2][j - 1]
-										+ 2 * u[i][j - 1] - u[i - 2][j - 1]);
-						tmpP = (1 / (8 * h1 * h1 * k1)) * tmpP;
-						if (tmpP > maxP)
-							maxP = tmpP;
+				for (int i = 3; i <= n - 3; i++)
+					for (int j = 3; j <= m - 3; j++) {
+//						tmpP = u[i + 2][j + 1] - 2 * u[i][j + 1]
+//										+ u[i - 2][j + 1] - u[i + 2][j - 1]
+//										+ 2 * u[i][j - 1] - u[i - 2][j - 1];
+//						tmpP = (1.0 / (8 * h1 * h1 * k1)) * tmpP;
 
-						tmpQ = abs(
-								u[i + 1][j + 2] - 2 * u[i + 1][j]
-										+ u[i + 1][j - 2] - u[i - 1][j + 2]
-										+ 2 * u[i - 1][j] - u[i - 1][j - 2]);
-						tmpQ = (1 / (8 * h1 * k1 * k1)) * tmpQ;
-						if (tmpQ > maxQ)
-							maxQ = tmpQ;
+						tmpP = u[i + 1][j + 1] - u[i + 1][j - 1]
+								- 2.0 * u[i][j + 1] + 2.0 * u[i][j - 1]
+								+ u[i - 1][j + 1] - u[i - 1][j - 1];
+						tmpP = (1.0 / (2.0 * h1 * h1 * k1)) * tmpP;
+						if (abs(tmpP) > maxP)
+							maxP = abs(tmpP);
 
-						tmpR = abs(
-								u[i + 2][j + 2] - 2 * u[i][j + 2]
-										+ u[i - 2][j + 2] - 2 * u[i + 2][j]
-										+ 4 * u[i][j] - 2 * u[i - 2][j]
-										+ u[i + 2][j - 2] - 2 * u[i][j - 2]
-										+ u[i - 2][j - 2]);
-						tmpR = (1 / (16 * h1 * h1 * k1 * k1)) * tmpR;
-						if (tmpR > maxR)
-							maxR = tmpR;
+//						tmpQ = u[i + 1][j + 2] - 2 * u[i + 1][j]
+//								+ u[i + 1][j - 2] - u[i - 1][j + 2]
+//								+ 2 * u[i - 1][j] - u[i - 1][j - 2];
+//						tmpQ = (1.0 / (8 * h1 * k1 * k1)) * tmpQ;
+						tmpQ = u[i + 1][j + 1] + u[i + 1][j - 1]
+								- 2.0 * u[i + 1][j] + 2.0 * u[i - 1][j]
+								- u[i - 1][j + 1] - u[i - 1][j - 1];
+						tmpQ = (1.0 / (2.0 * h1 * k1 * k1)) * tmpQ;
+						if (abs(tmpQ) > maxQ)
+							maxQ = abs(tmpQ);
 
-						tmpS = abs(
-								-u[i - 2][j] + 2 * u[i - 1][j] - 2 * u[i + 1][j]
-										+ u[i + 2][j]);
-						tmpS = (1 / (2 * h1 * h1 * h1)) * tmpS;
-						if (tmpS > maxS)
-							maxS = tmpS;
+//						tmpR = u[i + 2][j + 2] - 2 * u[i][j + 2]
+//								+ u[i - 2][j + 2] - 2 * u[i + 2][j]
+//								+ 4 * u[i][j] - 2 * u[i - 2][j]
+//								+ u[i + 2][j - 2] - 2 * u[i][j - 2]
+//								+ u[i - 2][j - 2];
+//						tmpR = (1.0 / (16 * h1 * h1 * k1 * k1)) * tmpR;
+						tmpR = u[i + 2][j] - 2.0 * u[i + 1][j] + 2.0 * u[i - 1][j]
+								- u[i - 2][j];
+//						cout << "tmpR = " << tmpR << endl;
+						tmpS = (1.0 / (2.0 * h1 * h1 * h1));
+//						cout << "1/(2*h^3) = " << tmpS << endl;
+						tmpR = tmpS * tmpR;
+//						cout << "[1/(2*h^3)] * tmpR = " << tmpR << endl;
+						if (abs(tmpR) > maxR)
+							maxR = abs(tmpR);
+
+//						tmpS = -u[i - 2][j] + 2 * u[i - 1][j] - 2 * u[i + 1][j]
+//								+ u[i + 2][j];
+//						tmpS = (1.0 / (2.0 * h1 * h1 * h1)) * tmpS;
+						tmpS = u[i + 1][j + 1] - 2 * u[i][j + 1]
+								+ u[i - 1][j + 1] - 2 * u[i + 1][j]
+								+ 4 * u[i][j] - 2 * u[i - 1][j]
+								+ u[i + 1][j - 1] - 2 * u[i][j - 1]
+								+ u[i - 1][j - 1];
+						cout << "tmpS = " << tmpS << endl;
+						tmpR = (1.0 / (h1 * h1 * k1 * k1));
+						cout << "1/(h^2*k^2) = " << tmpR << endl;
+						tmpS = tmpR* tmpS;
+						cout << "[1/(h^2*k^2)] * tmpS = " << tmpS << endl;
+						if (abs(tmpS) > maxS)
+							maxS = abs(tmpS);
 					}
 
-				for (int i = 0; i <= n; i++)
-					delete[] u[i];
+//				for (int i = 0; i <= n; i++)
+//					delete[] u[i];
 				delete[] u;
 			}
 
@@ -624,6 +648,10 @@ int GPDESolver<T>::SolvePIA() {
 							+ i2 * (bc->DA1DX(HH1 + HH, KK1, st)) * Rconst
 							+ i2 * bc->DA2DX(HH1 + HH, KK1, st) * Qconst
 							+ bc->A2(HH1 + HH, KK1, st) * Sconst);
+			cout << k << "ADD DX2 B: S= [" << S.a << " ; " << S.b << "]" << endl;
+			cout << k << "ADD1 DX2: ERR= [" << ERR.a << " ; " << ERR.b << "]"
+					<< endl;
+
 			S = S + ERR;
 
 			ERR = (this->ik2 / i12)
@@ -631,6 +659,9 @@ int GPDESolver<T>::SolvePIA() {
 							+ i2 * (bc->DA2DY(HH1, KK1 + KK, st)) * Rconst
 							+ i2 * bc->DA1DY(HH1, KK1 + KK, st) * Pconst
 							+ bc->A1(HH1, KK1 + KK, st) * Sconst);
+			cout << k << "ADD2 DY2: S= [" << S.a << " ; " << S.b << "]" << endl;
+			cout << k << "ADD2 DY2: ERR= [" << ERR.a << " ; " << ERR.b << "]"
+					<< endl;
 			S = S + ERR;
 
 //			S = S

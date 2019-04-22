@@ -19,6 +19,7 @@ Solver<T>::Solver() {
 	this->maxP = 0;
 	this->maxQ = 0;
 	this->maxR = 0;
+	this->maxS = 0;
 	this->X = NULL;
 	this->bc = NULL;
 	this->u = NULL;
@@ -262,7 +263,7 @@ void Solver<T>::WriteResults() {
 		break;
 	case CLASSICAL_EXP:
 		this->WriteFPResultsToFile();
-		if (params.print_csv)
+		if (true)//params.print_csv)
 		{
 			this->WriteFPResultsToCsv();
 		}
@@ -290,7 +291,7 @@ void Solver<T>::InitializeX(int m, int n) {
 template<typename T>
 int Solver<T>::ConstMExperiment() {
 	this->SetEstimateMN(true);
-	for (int i = 2; i < 11; ++i) {
+	for (int i = 0; i < 11; ++i) {
 		this->params.m = (i + 1) * 10;
 		this->params.n = this->params.m;
 		this->SolveFP();
@@ -466,7 +467,7 @@ inline void Solver<T>::WriteFPResultsToCsv() {
 	fs::path p(params.file_name);
 	string fname = fs::basename(params.file_name);
 
-	string dir = p.parent_path().string();
+	string dir = "/home/numeric";//p.parent_path().string();
 	fp_filestr.open((dir + "/" + fname +"_f.csv").c_str(), fstream::out);
 	exact_filestr.open((dir + "/" + fname+"_e.csv").c_str(), fstream::out);
 
@@ -517,7 +518,7 @@ inline void Solver<T>::WriteIntervalResultsToCsv() {
 
 	fs::path p(params.file_name);
 	string fname = fs::basename(params.file_name);
-	string dir = p.parent_path().string();
+	string dir = "/home/numeric";//p.parent_path().string();
 	if (dir.length() > 0)
 		{
 		  dir = dir +"/";
