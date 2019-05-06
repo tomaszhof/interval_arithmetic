@@ -1,26 +1,26 @@
 /*
- * GPDESolver.cpp
+ * GPESolver3C.cpp
  *
- *  Created on: 25-01-2014
- *      Author: thof
+ *  Created on: 01.05.2019
+ *      Author: numeric
  */
 
-#include "GPDESolver.h"
+#include "GPESolver3C.h"
 
 namespace interval_arithmetic {
 
 template<typename T>
-GPDESolver<T>::GPDESolver() {
+GPESolver3C<T>::GPESolver3C() {
 
 }
 
 template<typename T>
-GPDESolver<T>::~GPDESolver() {
+GPESolver3C<T>::~GPESolver3C() {
 	// TODO Auto-generated destructor stub
 }
 
 template<typename T>
-int GPDESolver<T>::SetExample(int eid) {
+int GPESolver3C<T>::SetExample(int eid) {
 	switch (eid) {
 	case 1:
 		bc = new ExampleGPE01<T>();
@@ -48,86 +48,169 @@ int GPDESolver<T>::SetExample(int eid) {
 }
 
 template<typename T>
-T GPDESolver<T>::alphax(T xi, T yj) {
+T GPESolver3C<T>::alphax(T xi, T yj) {
 	T result = 0.0;
 	T h2d12 = this->h * this->h / 12.0;
 	T k2d12 = this->k * this->k / 12.0;
-	result = bc->a1(xi, yj) + h2d12 * bc->d2a1dx2(xi, yj)
-			+ h2d12 * bc->c(xi, yj) + k2d12 * bc->d2a1dy2(xi, yj);
+	T tmp2A1M1 = 2.0 * 1.0 / bc->a1(xi, yj);
+	T tmp2A2M1 = 2.0 * 1.0 / bc->a2(xi, yj);
+
+	result = bc->a1(xi, yj)
+			- h2d12
+					* (tmp2A1M1 * bc->da1dx(xi, yj) * bc->da1dx(xi, yj)
+							- bc->d2a1dx2(xi, yj) - bc->c(xi, yj));
+	result = result
+			- k2d12
+					* (tmp2A2M1 * bc->da2dy(xi, yj) * bc->da1dy(xi, yj)
+							- bc->d2a1dy2(xi, yj));
 	return result;
 }
 
 template<typename T>
-T GPDESolver<T>::alphay(T xi, T yj) {
+T GPESolver3C<T>::alphay(T xi, T yj) {
 	T result = 0.0;
 	T h2d12 = this->h * this->h / 12.0;
 	T k2d12 = this->k * this->k / 12.0;
-	result = bc->a2(xi, yj) + k2d12 * bc->d2a2dy2(xi, yj)
-			+ k2d12 * bc->c(xi, yj) + h2d12 * bc->d2a2dx2(xi, yj);
-	return result;
+	T tmp2A1M1 = 2.0 * 1.0 / bc->a1(xi, yj);
+	T tmp2A2M1 = 2.0 * 1.0 / bc->a2(xi, yj);
 
+	result = bc->a2(xi, yj)
+			- h2d12
+					* (tmp2A1M1 * bc->da1dx(xi, yj) * bc->da2dx(xi, yj)
+							- bc->d2a2dx2(xi, yj));
+	result = result
+			- k2d12
+					* (tmp2A2M1 * bc->da2dy(xi, yj) * bc->da2dy(xi, yj)
+							- bc->d2a2dy2(xi, yj) - bc->c(xi, yj));
 	return result;
 }
 
 template<typename T>
-T GPDESolver<T>::betax(T xi, T yj) {
+T GPESolver3C<T>::betax(T xi, T yj) {
 	T result = 0.0;
-	T h2d6 = this->h * this->h / 6.0;
-	result = h2d6 * bc->dcdx(xi, yj);
+	T h2d6 = (-1.0) * this->h * this->h / 6.0;
+	T tmpA1M1 = 1.0 / bc->a1(xi, yj);
+	result = h2d6
+			* (tmpA1M1 * bc->da1dx(xi, yj) * bc->c(xi, yj) - bc->dcdx(xi, yj));
 	return result;
 }
 
 template<typename T>
-T GPDESolver<T>::betay(T xi, T yj) {
+T GPESolver3C<T>::betay(T xi, T yj) {
 	T result = 0.0;
-	T k2d6 = this->k * this->k / 6.0;
-	result = k2d6 * bc->dcdy(xi, yj);
+	T k2d6 = (-1.0) * this->k * this->k / 6.0;
+	T tmpA2M1 = 1.0 / bc->a2(xi, yj);
+	result = k2d6
+			* (tmpA2M1 * bc->da2dy(xi, yj) * bc->c(xi, yj) - bc->dcdy(xi, yj));
+
 	return result;
 }
 
 template<typename T>
-Interval<T> GPDESolver<T>::IAlphaX(Interval<T> xi, Interval<T> yj) {
+T GPESolver3C<T>::gammaxy(T xi, T yj) {
+	T result = 0.0;
+	T h2d12 = (-1.0) * this->h * this->h / 12.0;
+	T k2d12 = (-1.0) * this->k * this->k / 12.0;
+	T tmpA1M1 = 2.0 / bc->a1(xi, yj);
+	T tmpA2M1 = 2.0 / bc->a2(xi, yj);
+
+	result = bc->c(xi, yj)
+			+ h2d12
+					* (tmpA1M1 * bc->da1dx(xi, yj) * bc->dcdx(xi, yj)
+							- bc->d2cdx2(xi, yj));
+	result = result
+			+ k2d12
+					* (tmpA2M1 * bc->da2dy(xi, yj) * bc->dcdy(xi, yj)
+							- bc->d2cdy2(xi, yj));
+	return result;
+}
+
+template<typename T>
+Interval<T> GPESolver3C<T>::IAlphaX(Interval<T> xi, Interval<T> yj) {
 	Interval<T> result = { 0.0L, 0.0L };
 	int st = 0;
 	Interval<T> h2d12 = this->ih2 / this->i12;
 	Interval<T> k2d12 = this->ik2 / this->i12;
-	result = bc->A1(xi, yj, st) + h2d12 * bc->D2A1DX2(xi, yj, st)
-			+ h2d12 * bc->C(xi, yj, st) + k2d12 * bc->D2A1DY2(xi, yj, st);
+	Interval<T> tmp2A1M1 = i2 / bc->A1(xi, yj, st);
+	Interval<T> tmp2A2M1 = i2 / bc->A2(xi, yj, st);
+
+	result = bc->A1(xi, yj, st)
+			- h2d12
+					* (tmp2A1M1 * bc->DA1DX(xi, yj, st) * bc->DA1DX(xi, yj, st)
+							- bc->D2A1DX2(xi, yj, st) - bc->C(xi, yj, st));
+	result = result
+			- k2d12
+					* (tmp2A2M1 * bc->DA2DY(xi, yj, st) * bc->DA1DY(xi, yj, st)
+							- bc->D2A1DY2(xi, yj, st));
+
 	return result;
 }
 
 template<typename T>
-Interval<T> GPDESolver<T>::IAlphaY(Interval<T> xi, Interval<T> yj) {
+Interval<T> GPESolver3C<T>::IAlphaY(Interval<T> xi, Interval<T> yj) {
 	Interval<T> result = { 0.0L, 0.0L };
 	int st = 0;
 	Interval<T> h2d12 = this->ih2 / this->i12;
 	Interval<T> k2d12 = this->ik2 / this->i12;
-	result = bc->A2(xi, yj, st) + k2d12 * bc->D2A2DY2(xi, yj, st)
-			+ k2d12 * bc->C(xi, yj, st) + h2d12 * bc->D2A1DX2(xi, yj, st);
+	Interval<T> tmp2A1M1 = i2 / bc->A1(xi, yj, st);
+	Interval<T> tmp2A2M1 = i2 / bc->A2(xi, yj, st);
 
+	result = bc->A1(xi, yj, st)
+			- h2d12
+					* (tmp2A1M1 * bc->DA1DX(xi, yj, st) * bc->DA2DX(xi, yj, st)
+							- bc->D2A2DX2(xi, yj, st));
+	result = result
+			- k2d12
+					* (tmp2A2M1 * bc->DA2DY(xi, yj, st) * bc->DA2DY(xi, yj, st)
+							- bc->D2A2DY2(xi, yj, st) - bc->C(xi, yj, st));
 	return result;
 }
 
 template<typename T>
-Interval<T> GPDESolver<T>::IBetaX(Interval<T> xi, Interval<T> yj) {
+Interval<T> GPESolver3C<T>::IBetaX(Interval<T> xi, Interval<T> yj) {
 	Interval<T> result = { 0.0L, 0.0L };
 	int st = 0;
-	Interval<T> h2d6 = this->ih2 / this->i6;
-	result = h2d6 * bc->DCDX(xi, yj, st);
+	Interval<T> h2d6 = im1 * this->ih * this->ih / i6;
+	Interval<T> tmpA1M1 = i1 / bc->A1(xi, yj, st);
+	result = h2d6
+			* (tmpA1M1 * bc->DA1DX(xi, yj, st) * bc->C(xi, yj, st) - bc->DCDX(xi, yj, st));
 	return result;
 }
 
 template<typename T>
-Interval<T> GPDESolver<T>::IBetaY(Interval<T> xi, Interval<T> yj) {
+Interval<T> GPESolver3C<T>::IBetaY(Interval<T> xi, Interval<T> yj) {
 	Interval<T> result = { 0.0L, 0.0L };
 	int st;
-	Interval<T> k2d6 = this->ik2 / this->i6;
-	result = k2d6 * bc->DCDY(xi, yj, st);
+	Interval<T> k2d6 = im1 * this->ik * this->ik / this->i6;
+	Interval<T> tmpA2M1 = i1 / bc->A2(xi, yj, st);
+	result = k2d6
+			* (tmpA2M1 * bc->DA2DY(xi, yj, st) * bc->C(xi, yj, st) - bc->DCDY(xi, yj, st));
+
 	return result;
 }
 
 template<typename T>
-int GPDESolver<T>::SolveFP() {
+Interval<T> GPESolver3C<T>::IGammaXY(Interval<T> xi, Interval<T> yj) {
+	Interval<T> result = { 0.0L, 0.0L };
+	int st;
+	Interval<T> h2d6 = im1 * this->ih * this->ih / i6;
+	Interval<T> k2d6 = im1 * this->ik * this->ik / i6;
+	Interval<T> tmpA1M1 = i1 / bc->A1(xi, yj, st);
+	Interval<T> tmpA2M1 = i1 / bc->A2(xi, yj, st);
+
+	result = bc->C(xi, yj, st)
+			+ h2d6
+					* (tmpA1M1 * bc->DA1DX(xi, yj, st) * bc->DCDX(xi, yj, st)
+							- bc->D2CDX2(xi, yj, st));
+	result = result
+			+ k2d6
+					* (tmpA2M1 * bc->DA2DY(xi, yj, st) * bc->DCDY(xi, yj, st)
+							- bc->D2CDY2(xi, yj, st));
+	return result;
+}
+
+template<typename T>
+int GPESolver3C<T>::SolveFP() {
 	int i, j, jh, j1, k, kh, l, lh, l1, l2, n1, n2, p, q, rh, st;
 	long double a1f, a2f, h1, k1, h2, k2, hh1, kk1, max, s, tmpP, tmpQ, tmpR,
 			tmpS;
@@ -204,7 +287,7 @@ int GPDESolver<T>::SolveFP() {
 			}
 
 			//u_i_j
-			a1[l2 - 1] = bc->c(hh1, kk1)
+			a1[l2 - 1] = gammaxy(hh1, kk1)
 					- 2.0 * (alphax(hh1, kk1) / h2 + alphay(hh1, kk1) / k2);
 
 			if (j > 1) {
@@ -407,8 +490,8 @@ int GPDESolver<T>::SolveFP() {
 //								+ u[i + 2][j - 2] - 2 * u[i][j - 2]
 //								+ u[i - 2][j - 2];
 //						tmpR = (1.0 / (16 * h1 * h1 * k1 * k1)) * tmpR;
-						tmpR = u[i + 2][j] - 2.0 * u[i + 1][j] + 2.0 * u[i - 1][j]
-								- u[i - 2][j];
+						tmpR = u[i + 2][j] - 2.0 * u[i + 1][j]
+								+ 2.0 * u[i - 1][j] - u[i - 2][j];
 //						cout << "tmpR = " << tmpR << endl;
 						tmpS = (1.0 / (2.0 * h1 * h1 * h1));
 //						cout << "1/(2*h^3) = " << tmpS << endl;
@@ -428,7 +511,7 @@ int GPDESolver<T>::SolveFP() {
 						cout << "tmpS = " << tmpS << endl;
 						tmpR = (1.0 / (h1 * h1 * k1 * k1));
 						cout << "1/(h^2*k^2) = " << tmpR << endl;
-						tmpS = tmpR* tmpS;
+						tmpS = tmpR * tmpS;
 						cout << "[1/(h^2*k^2)] * tmpS = " << tmpS << endl;
 						if (abs(tmpS) > maxS)
 							maxS = abs(tmpS);
@@ -448,7 +531,7 @@ int GPDESolver<T>::SolveFP() {
 }
 
 template<typename T>
-int GPDESolver<T>::SolvePIA() {
+int GPESolver3C<T>::SolvePIA() {
 //	fstream filestr;
 //	string fname = "tmpLog.txt";
 //	filestr.open(fname.c_str(), fstream::out);
@@ -649,8 +732,8 @@ int GPDESolver<T>::SolvePIA() {
 							+ i2 * bc->DA2DX(HH1 + HH, KK1, st) * Qconst
 							+ bc->A2(HH1 + HH, KK1, st) * Sconst);
 
-
-			cout << k << "ADD DX2 B: S= [" << S.a << " ; " << S.b << "]" << endl;
+			cout << k << "ADD DX2 B: S= [" << S.a << " ; " << S.b << "]"
+					<< endl;
 			cout << k << "ADD1 DX2: ERR= [" << ERR.a << " ; " << ERR.b << "]"
 					<< endl;
 
@@ -848,7 +931,7 @@ int GPDESolver<T>::SolvePIA() {
 }
 
 template<typename T>
-int GPDESolver<T>::SolveDIA() {
+int GPESolver3C<T>::SolveDIA() {
 	if (!_initparams)
 		throw runtime_error("Parameters not initialized!");
 	int st = 0;
@@ -1226,8 +1309,8 @@ int GPDESolver<T>::SolveDIA() {
 }
 
 //The explicit instantiation part
-template class GPDESolver<long double> ;
-//template class GPDESolver<mpreal> ;
+template class GPESolver3C<long double> ;
+//template class GPESolver3C<mpreal> ;
 
 }
 /* namespace intervalarth */

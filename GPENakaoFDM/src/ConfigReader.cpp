@@ -194,6 +194,8 @@ void ConfigReader<T>::readConfigFile(string fileName)
 
 	if (solver_name == "gpde")
 		this->SetSolverId(GPDE_SOLVER);
+	if (solver_name == "gpe3c")
+			this->SetSolverId(GPE_SOLVER3C);
 	if (solver_name == "poisson")
 			this->SetSolverId(POISSON);
 	if (solver_name == "poissonam")

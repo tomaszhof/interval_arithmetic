@@ -38,6 +38,7 @@ using Solver<T>::ih;
 using Solver<T>::ik;
 
 const Interval<T> im1 = {-1.0L, -1.0L};
+const Interval<T> i1 = {1.0L, 1.0L};
 const Interval<T> i2 = {2.0L, 2.0L};
 const Interval<T> i6 = {6.0L, 6.0L};
 const Interval<T> i12 = {12.0L, 12.0L};

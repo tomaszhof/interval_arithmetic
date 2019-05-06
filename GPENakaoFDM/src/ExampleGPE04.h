@@ -45,6 +45,10 @@ public:
 	Interval<T> C(const Interval<T>& ix, const Interval<T>& iy, int& st);
 	Interval<T> DCDX(const Interval<T>& ix, const Interval<T>& iy, int& st);
 	Interval<T> DCDY(const Interval<T>& ix, const Interval<T>& iy, int& st);
+	Interval<T> D2CDX2(const Interval<T>& ix, const Interval<T>& iy, int& st);
+	Interval<T> D2CDY2(const Interval<T>& ix, const Interval<T>& iy, int& st);
+	Interval<T> DFDX(const Interval<T>& ix, const Interval<T>& iy, int& st);
+	Interval<T> DFDY(const Interval<T>& ix, const Interval<T>& iy, int& st);
 	Interval<T> D2FDX2(const Interval<T>& ix, const Interval<T>& iy, int& st);
 	Interval<T> D2FDY2(const Interval<T>& ix, const Interval<T>& iy, int& st);
 
@@ -56,6 +60,10 @@ public:
 	long double phi4(const long double& x);
 	long double a1(const long double& x, const long double& y);
 	long double a2(const long double& x, const long double& y);
+	long double da1dx(const long double& x, const long double& y);
+	long double da1dy(const long double& x, const long double& y);
+	long double da2dx(const long double& x, const long double& y);
+	long double da2dy(const long double& x, const long double& y);
 	long double d2a1dx2(const long double& x, const long double& y);
 	long double d2a1dy2(const long double& x, const long double& y);
 	long double d2a2dx2(const long double& x, const long double& y);
@@ -63,6 +71,9 @@ public:
 	long double c(const long double& x, const long double& y);
 	long double dcdx(const long double& x, const long double& y);
 	long double dcdy(const long double& x, const long double& y);
+	long double d2cdx2(const long double& x, const long double& y);
+	long double d2cdy2(const long double& x, const long double& y);
+
 
 	int boundconds_classic(const long double& b1, const long double& b2,
 			const long double eps);
@@ -158,8 +169,28 @@ long double ExampleGPE04<T>::dcdy(const long double& x, const long double& y) {
 }
 
 template<typename T>
+long double ExampleGPE04<T>::d2cdx2(const long double& x, const long double& y) {
+	return 0.0;
+}
+
+template<typename T>
+long double ExampleGPE04<T>::d2cdy2(const long double& x, const long double& y) {
+	return 0.0;
+}
+
+template<typename T>
 long double ExampleGPE04<T>::a1(const long double& x, const long double& y) {
 	return (x*x)*sin(PI*y);
+}
+
+template<typename T>
+long double ExampleGPE04<T>::da1dx(const long double& x, const long double& y) {
+	return (2.0*x)*sin(PI*y);
+}
+
+template<typename T>
+long double ExampleGPE04<T>::da1dy(const long double& x, const long double& y) {
+	return (PI*x*x)*cos(PI*y);
 }
 
 template<typename T>
@@ -177,6 +208,16 @@ long double ExampleGPE04<T>::d2a1dy2(const long double& x,
 template<typename T>
 long double ExampleGPE04<T>::a2(const long double& x, const long double& y) {
 	return (y*y)*sin(PI*x);
+}
+
+template<typename T>
+long double ExampleGPE04<T>::da2dx(const long double& x, const long double& y) {
+	return (PI*y*y)*cos(PI*x);
+}
+
+template<typename T>
+long double ExampleGPE04<T>::da2dy(const long double& x, const long double& y) {
+	return (2.0*y)*sin(PI*x);
 }
 
 template<typename T>
@@ -447,6 +488,61 @@ inline Interval<T> ExampleGPE04<T>::DCDY(const Interval<T>& ix,
 	st = 0;
 
 	r = im1 * ix;
+	return r;
+}
+
+template<typename T>
+inline Interval<T> ExampleGPE04<T>::D2CDX2(const Interval<T>& ix,
+		const Interval<T>& iy, int& st) {
+	Interval<T> r = { 0, 0 };
+	st = 0;
+
+	return r;
+}
+
+template<typename T>
+inline Interval<T> ExampleGPE04<T>::D2CDY2(const Interval<T>& ix,
+		const Interval<T>& iy, int& st) {
+	Interval<T> r = { 0, 0 };
+	st = 0;
+
+	return r;
+}
+
+
+template<typename T>
+inline Interval<T> ExampleGPE04<T>::DFDX(const Interval<T>& ix,
+		const Interval<T>& iy, int& st) {
+	Interval<T> r = { 0, 0 };
+	Interval<T> r1 = { 0, 0 };
+	Interval<T> r2 = { 0, 0 };
+
+	st = 0;
+	r1 = iy*IExp(ix*iy) + ix*iy*iy;
+	r1 = r1 * (ix*iy*ISin(ipi*iy) + ix*iy*ISin(ipi*ix) + im1);
+
+	r2 = ix*iy*iy*IExp(ix*iy);
+	r2 = r2 * (ISin(ipi*iy) + ISin(ipi*ix) + ipi* ix * ICos(ipi*ix));
+
+	r = r1 + r2;
+	return r;
+}
+
+template<typename T>
+inline Interval<T> ExampleGPE04<T>::DFDY(const Interval<T>& ix,
+		const Interval<T>& iy, int& st) {
+	Interval<T> r = { 0, 0 };
+	Interval<T> r1 = { 0, 0 };
+	Interval<T> r2 = { 0, 0 };
+
+	st = 0;
+	r1 = ix*IExp(ix*iy) + ix*ix*iy;
+	r1 = r1 * (ix*iy*ISin(ipi*iy) + ix*iy*ISin(ipi*ix) + im1);
+
+	r2 = ix*ix*iy*IExp(ix*iy);
+	r2 = r2 * (ISin(ipi*iy) + ISin(ipi*ix) + ipi * iy * ICos(ipi*iy));
+
+	r = r1 + r2;
 	return r;
 }
 

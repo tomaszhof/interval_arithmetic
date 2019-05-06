@@ -24,6 +24,7 @@
 #include <boost/lexical_cast.hpp>
 #include "ConfigReader.h"
 #include "GPDESolver.h"
+#include "GPESolver3C.h"
 
 
 using namespace std;
