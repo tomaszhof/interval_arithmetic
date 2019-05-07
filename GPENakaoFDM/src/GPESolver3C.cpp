@@ -109,17 +109,17 @@ T GPESolver3C<T>::betay(T xi, T yj) {
 template<typename T>
 T GPESolver3C<T>::gammaxy(T xi, T yj) {
 	T result = 0.0;
-	T h2d12 = (-1.0) * this->h * this->h / 12.0;
-	T k2d12 = (-1.0) * this->k * this->k / 12.0;
+	T h2d12 =  this->h * this->h / 12.0;
+	T k2d12 = this->k * this->k / 12.0;
 	T tmpA1M1 = 2.0 / bc->a1(xi, yj);
 	T tmpA2M1 = 2.0 / bc->a2(xi, yj);
 
 	result = bc->c(xi, yj)
-			+ h2d12
+			- h2d12
 					* (tmpA1M1 * bc->da1dx(xi, yj) * bc->dcdx(xi, yj)
 							- bc->d2cdx2(xi, yj));
 	result = result
-			+ k2d12
+			- k2d12
 					* (tmpA2M1 * bc->da2dy(xi, yj) * bc->dcdy(xi, yj)
 							- bc->d2cdy2(xi, yj));
 	return result;
@@ -155,7 +155,7 @@ Interval<T> GPESolver3C<T>::IAlphaY(Interval<T> xi, Interval<T> yj) {
 	Interval<T> tmp2A1M1 = i2 / bc->A1(xi, yj, st);
 	Interval<T> tmp2A2M1 = i2 / bc->A2(xi, yj, st);
 
-	result = bc->A1(xi, yj, st)
+	result = bc->A2(xi, yj, st)
 			- h2d12
 					* (tmp2A1M1 * bc->DA1DX(xi, yj, st) * bc->DA2DX(xi, yj, st)
 							- bc->D2A2DX2(xi, yj, st));
