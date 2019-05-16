@@ -35,6 +35,7 @@ class GPESolver3C: public Solver<T> {
 	using Solver<T>::ih;
 	using Solver<T>::ik;
 
+	const Interval<T> im2 = { -2.0L, -2.0L };
 	const Interval<T> im1 = { -1.0L, -1.0L };
 	const Interval<T> i1 = { 1.0L, 1.0L };
 	const Interval<T> i2 = { 2.0L, 2.0L };

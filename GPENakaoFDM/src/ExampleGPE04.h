@@ -74,7 +74,6 @@ public:
 	long double d2cdx2(const long double& x, const long double& y);
 	long double d2cdy2(const long double& x, const long double& y);
 
-
 	int boundconds_classic(const long double& b1, const long double& b2,
 			const long double eps);
 
@@ -129,7 +128,8 @@ long double ExampleGPE04<T>::f(const long double& x, const long double& y) {
 ////	cout << "rest=" << rest << endl;
 //	r = r * rest;
 ////	cout << "r*rest=" << r << endl;
-	long double  r= x*y*exp(x*y) * (x*y*sin(PI*y) + x*y*sin(PI*x) - 1);
+	long double r = x * y * exp(x * y)
+			* (x * y * sin(PI * y) + x * y * sin(PI * x) - 1);
 	return r;
 }
 
@@ -155,7 +155,7 @@ long double ExampleGPE04<T>::phi4(const long double& x) {
 
 template<typename T>
 long double ExampleGPE04<T>::c(const long double& x, const long double& y) {
-	return -x*y;
+	return -x * y;
 }
 
 template<typename T>
@@ -169,74 +169,76 @@ long double ExampleGPE04<T>::dcdy(const long double& x, const long double& y) {
 }
 
 template<typename T>
-long double ExampleGPE04<T>::d2cdx2(const long double& x, const long double& y) {
+long double ExampleGPE04<T>::d2cdx2(const long double& x,
+		const long double& y) {
 	return 0.0;
 }
 
 template<typename T>
-long double ExampleGPE04<T>::d2cdy2(const long double& x, const long double& y) {
+long double ExampleGPE04<T>::d2cdy2(const long double& x,
+		const long double& y) {
 	return 0.0;
 }
 
 template<typename T>
 long double ExampleGPE04<T>::a1(const long double& x, const long double& y) {
-	return (x*x)*sin(PI*y);
+	return (x * x) * sin(PI * y);
 }
 
 template<typename T>
 long double ExampleGPE04<T>::da1dx(const long double& x, const long double& y) {
-	return (2.0*x)*sin(PI*y);
+	return (2.0 * x) * sin(PI * y);
 }
 
 template<typename T>
 long double ExampleGPE04<T>::da1dy(const long double& x, const long double& y) {
-	return (PI*x*x)*cos(PI*y);
+	return (PI * x * x) * cos(PI * y);
 }
 
 template<typename T>
 long double ExampleGPE04<T>::d2a1dx2(const long double& x,
 		const long double& y) {
-	return 2.0L*sin(PI*y);
+	return 2.0L * sin(PI * y);
 }
 
 template<typename T>
 long double ExampleGPE04<T>::d2a1dy2(const long double& x,
 		const long double& y) {
-	return -PI*PI*(x*x)*sin(PI*y);
+	return -PI * PI * (x * x) * sin(PI * y);
 }
 
 template<typename T>
 long double ExampleGPE04<T>::a2(const long double& x, const long double& y) {
-	return (y*y)*sin(PI*x);
+	return (y * y) * sin(PI * x);
 }
 
 template<typename T>
 long double ExampleGPE04<T>::da2dx(const long double& x, const long double& y) {
-	return (PI*y*y)*cos(PI*x);
+	return (PI * y * y) * cos(PI * x);
 }
 
 template<typename T>
 long double ExampleGPE04<T>::da2dy(const long double& x, const long double& y) {
-	return (2.0*y)*sin(PI*x);
+	return (2.0 * y) * sin(PI * x);
 }
 
 template<typename T>
 long double ExampleGPE04<T>::d2a2dx2(const long double& x,
 		const long double& y) {
-	return -PI*PI*(y*y)*sin(PI*x);
+	return -PI * PI * (y * y) * sin(PI * x);
 }
 
 template<typename T>
 long double ExampleGPE04<T>::d2a2dy2(const long double& x,
 		const long double& y) {
-	return 2.0L*sin(PI*x);
+	return 2.0L * sin(PI * x);
 }
 
 template<typename T>
 Interval<T> ExampleGPE04<T>::F(const Interval<T>& ix, const Interval<T>& iy,
 		int& st) {
 	//f(x,y)= x*exp(x*y)*(x*x*x*y*sin(PI*y) + x*x*y*y*sin(PI*x) + 2*x*x*sin(PI*y) - y);
-	        //x*exp(x*y)*(x*x*x*y*sin(PI*y) + x*x*y*y*sin(PI*x) + 2*x*x*sin(PI*y) - y);
+	//x*exp(x*y)*(x*x*x*y*sin(PI*y) + x*x*y*y*sin(PI*x) + 2*x*x*sin(PI*y) - y);
 	Interval<T> r = { 0.0L, 0.0L };
 //	r = (ix * IExp(ix * iy));
 //	cout << "[" << ix.a << ", " << ix.b << "] " << "ix*IExp(ix*iy): r= [" << r.a << " ; " << r.b << "]" << endl;
@@ -244,8 +246,8 @@ Interval<T> ExampleGPE04<T>::F(const Interval<T>& ix, const Interval<T>& iy,
 //	cout << "rest= [" << rest.a << " ; " << rest.b << "]" << endl;
 //	r = r * rest;
 //	cout << "r*rest= [" << r.a << " ; " << r.b << "]" << endl;
-	r= ix*iy*IExp(ix*iy);
-	r = r * (ix*iy*ISin(ipi*iy) + ix*iy*ISin(ipi*ix) - i1);
+	r = ix * iy * IExp(ix * iy);
+	r = r * (ix * iy * ISin(ipi * iy) + ix * iy * ISin(ipi * ix) - i1);
 	st = 0;
 	return r;
 }
@@ -404,7 +406,7 @@ inline Interval<T> ExampleGPE04<T>::A1(const Interval<T>& ix,
 		const Interval<T>& iy, int& st) {
 
 	//a1(x,y) = (x*x)*sin(PI*y);
-	Interval<T> r = {0.0L, 0.0L};
+	Interval<T> r = { 0.0L, 0.0L };
 	st = 0;
 
 	r = ix * ix * ISin(PI * iy);
@@ -416,14 +418,12 @@ template<typename T>
 inline Interval<T> ExampleGPE04<T>::A2(const Interval<T>& ix,
 		const Interval<T>& iy, int& st) {
 	//a2(x,y) = (y*y)*sin(PI*x);
-	Interval<T> r = {0.0L, 0.0L};
+	Interval<T> r = { 0.0L, 0.0L };
 	st = 0;
-	r = iy * iy * ISin(PI*ix);
+	r = iy * iy * ISin(PI * ix);
 
 	return r;
 }
-
-
 
 template<typename T>
 inline Interval<T> ExampleGPE04<T>::D2A1DX2(const Interval<T>& ix,
@@ -469,8 +469,6 @@ inline Interval<T> ExampleGPE04<T>::D2A2DY2(const Interval<T>& ix,
 	return r;
 }
 
-
-
 template<typename T>
 inline Interval<T> ExampleGPE04<T>::DCDX(const Interval<T>& ix,
 		const Interval<T>& iy, int& st) {
@@ -509,22 +507,21 @@ inline Interval<T> ExampleGPE04<T>::D2CDY2(const Interval<T>& ix,
 	return r;
 }
 
-
 template<typename T>
 inline Interval<T> ExampleGPE04<T>::DFDX(const Interval<T>& ix,
 		const Interval<T>& iy, int& st) {
 	Interval<T> r = { 0, 0 };
-	Interval<T> r1 = { 0, 0 };
-	Interval<T> r2 = { 0, 0 };
-
 	st = 0;
-	r1 = iy*IExp(ix*iy) + ix*iy*iy;
-	r1 = r1 * (ix*iy*ISin(ipi*iy) + ix*iy*ISin(ipi*ix) + im1);
+	Interval<T> iexpXY = IExp(ix * iy);
+	Interval<T> isinPIX = ISin(ipi * ix);
+	Interval<T> isinPIY = IExp(ipi * iy);
+	Interval<T> icosPIX = IExp(ipi * ix);
 
-	r2 = ix*iy*iy*IExp(ix*iy);
-	r2 = r2 * (ISin(ipi*iy) + ISin(ipi*ix) + ipi* ix * ICos(ipi*ix));
-
-	r = r1 + r2;
+	r = iy * iexpXY
+			* (ix * ix * iy * iy * isinPIX + ix * ix * iy * iy * isinPIX
+					+ ix * ix * iy * iy * isinPIY + ipi * ix * ix * iy * icosPIX
+					- ix * iy + i2 * ix * iy * isinPIX + i2 * ix * iy * isinPIY
+					- i1);
 	return r;
 }
 
@@ -532,17 +529,17 @@ template<typename T>
 inline Interval<T> ExampleGPE04<T>::DFDY(const Interval<T>& ix,
 		const Interval<T>& iy, int& st) {
 	Interval<T> r = { 0, 0 };
-	Interval<T> r1 = { 0, 0 };
-	Interval<T> r2 = { 0, 0 };
+	Interval<T> iexpXY = IExp(ix * iy);
+	Interval<T> isinPIX = ISin(ipi * ix);
+	Interval<T> isinPIY = IExp(ipi * iy);
+	Interval<T> icosPIY = IExp(ipi * iy);
 
 	st = 0;
-	r1 = ix*IExp(ix*iy) + ix*ix*iy;
-	r1 = r1 * (ix*iy*ISin(ipi*iy) + ix*iy*ISin(ipi*ix) + im1);
 
-	r2 = ix*ix*iy*IExp(ix*iy);
-	r2 = r2 * (ISin(ipi*iy) + ISin(ipi*ix) + ipi * iy * ICos(ipi*iy));
-
-	r = r1 + r2;
+	r = ix * iexpXY
+			* (ix * ix * iy * iy * isinPIX + ix * ix * iy * iy * isinPIY
+					+ ipi * ix * iy * iy * icosPIY - ix * iy
+					+ i2 * ix * iy * isinPIX + i2 * ix * iy * isinPIY - i1);
 	return r;
 }
 
@@ -550,18 +547,21 @@ template<typename T>
 inline Interval<T> ExampleGPE04<T>::D2FDX2(const Interval<T>& ix,
 		const Interval<T>& iy, int& st) {
 	Interval<T> r = { 0, 0 };
+	Interval<T> iexpXY = IExp(ix * iy);
+	Interval<T> isinPIX = ISin(ipi * ix);
+	Interval<T> isinPIY = IExp(ipi * iy);
+	Interval<T> icosPIX = IExp(ipi * ix);
+
+	r = iy * (ix * iy * iy * iexpXY)
+			* (ix * iy * isinPIX + ix * iy * isinPIY - i1);
+	r = r
+			+ ix * iy * iexpXY
+					* (i2 * ipi * iy * icosPIX - ipi * ipi * ix * iy * isinPIX);
+	r = r
+			+ i2 * iy * (ix * iy * iexpXY + iexpXY)
+					* (iy * isinPIX + ipi * ix * iy * icosPIX + iy * isinPIY);
 	st = 0;
-	r = ix*ix*ix*ix*iy*iy*iy*ISin(ipi * iy);
-	r = r + ix*ix*ix*iy*iy*iy*iy*ISin(ipi * ix);
-	r = r + i2*ipi*ix*ix*ix*iy*iy*iy*ICos(ipi * ix);
-	r = r - ipi*ipi*ix*ix*ix*iy*iy*ISin(ipi*ix);
-	r = r + i10*ix*ix*ix*iy*iy*ISin(ipi*iy) + i6*ix*ix*iy*iy*iy*ISin(ipi * ix);
-	r = r + i6*ipi*ix*ix*iy*iy*ICos(ipi*ix);
-	r = r + i24*ix*ix*iy*ISin(ipi*iy);
-	r = r - ix*iy*iy*iy + i6*ix*iy*iy*ISin(ipi*ix);
-	r = r + i12*ix*ISin(ipi*iy);
-	r = r - i2*iy*iy;
-	r = r * IExp(ix*iy);
+
 	return r;
 }
 
@@ -570,10 +570,18 @@ inline Interval<T> ExampleGPE04<T>::D2FDY2(const Interval<T>& ix,
 		const Interval<T>& iy, int& st) {
 	Interval<T> r = { 0, 0 };
 	st = 0;
-	r = ix*ix*ix*ix*iy*ISin(ipi*iy)+ix*ix*ix*iy*iy*ISin(ipi*ix)+i4*ix*ix*ix*ISin(ipi*iy)+i2*ipi*ix*ix*ix*iy*ICos(ipi*iy);
-	r = r + i4*ix*ix*iy*ISin(ipi*ix) - ipi*ipi*ix*ix*iy*ISin(ipi*iy) + i6*ipi*ix*ix*ICos(ipi*iy) - ix*iy;
-	r = r - i2*ipi*ipi*ix*ISin(ipi*iy)+i2*ix*ISin(ipi*ix)-i2;
-	r = r * ix * ix * IExp(ix*iy);
+	Interval<T> iexpXY = IExp(ix * iy);
+	Interval<T> isinPIX = ISin(ipi * ix);
+	Interval<T> isinPIY = IExp(ipi * iy);
+	Interval<T> icosPIX = IExp(ipi * ix);
+	Interval<T> icosPIY = IExp(ipi * iy);
+
+	r = ix * ix * iexpXY
+			* (ix * ix * isinPIX + ix * ix * iy * iy * isinPIY
+					+ i2 * ipi * ix * iy * iy * icosPIY - ix * iy
+					+ i4 * ix * iy * isinPIX + i4 * ix * iy * isinPIY
+					+ i2 * isinPIX - ipi * ipi * iy * iy * isinPIY
+					+ i2 * isinPIY + i4 * ipi * iy * icosPIY - i2);
 	return r;
 }
 
@@ -582,7 +590,7 @@ inline Interval<T> ExampleGPE04<T>::DA1DX(const Interval<T>& ix,
 		const Interval<T>& iy, int& st) {
 	Interval<T> r = { 0, 0 };
 	st = 0;
-	r = i2 * ix * ISin(ipi*iy);
+	r = i2 * ix * ISin(ipi * iy);
 	return r;
 }
 
@@ -592,7 +600,7 @@ inline Interval<T> ExampleGPE04<T>::DA1DY(const Interval<T>& ix,
 	Interval<T> r = { 0, 0 };
 	st = 0;
 
-	r = ipi * ix * ix * ICos(ipi*ix);
+	r = ipi * ix * ix * ICos(ipi * ix);
 	return r;
 }
 
@@ -602,7 +610,7 @@ inline Interval<T> ExampleGPE04<T>::DA2DX(const Interval<T>& ix,
 	Interval<T> r = { 0, 0 };
 	st = 0;
 
-	r = ipi * iy * iy * ICos(ipi*ix);
+	r = ipi * iy * iy * ICos(ipi * ix);
 
 	return r;
 }
@@ -613,7 +621,7 @@ inline Interval<T> ExampleGPE04<T>::DA2DY(const Interval<T>& ix,
 	Interval<T> r = { 0, 0 };
 	st = 0;
 
-	r = i2 * iy * ISin(PI*ix);
+	r = i2 * iy * ISin(PI * ix);
 	return r;
 }
 template<typename T>

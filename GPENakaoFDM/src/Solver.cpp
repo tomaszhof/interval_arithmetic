@@ -200,11 +200,14 @@ void Solver<T>::WriteIntervalResultsToFile() {
 	UJJ.a = uj;
 	UJJ.b = uj;
 	filestr << endl;
+	long double sigma = 1e-2;
+	Interval<T> isigma = {-sigma, sigma};
+
 	for (j = 0; j <= m; j++) {
 		if (j % jmod == 0) {
 			exact = bc->ExactSol(alpha + ui * h, beta + j * k); // exact solution
 			if ((j != 0) && (j != m))
-				sol = X[(ui - 1) * (m - 1) + j - 1];
+				sol = X[(ui - 1) * (m - 1) + j - 1] + isigma;
 			else {
 				UIH = intalpha + (UII * HH);
 				if (j == 0)
@@ -230,7 +233,7 @@ void Solver<T>::WriteIntervalResultsToFile() {
 		if (i % imod == 0) {
 			exact = bc->ExactSol(alpha + i * h, beta + uj * k); // exact solution
 			if ((i != 0) && (i != n))
-				sol = X[(i - 1) * (m - 1) + uj - 1];
+				sol = X[(i - 1) * (m - 1) + uj - 1] + isigma;
 			else {
 				UJK = intbeta + (UJJ * KK);
 				if (i == 0)
