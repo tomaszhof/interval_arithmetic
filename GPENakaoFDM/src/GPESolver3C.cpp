@@ -155,6 +155,43 @@ Interval<T> GPESolver3C<T>::IAlphaY(Interval<T> xi, Interval<T> yj) {
 	Interval<T> tmp2A1M1 = i2 / bc->A1(xi, yj, st);
 	Interval<T> tmp2A2M1 = i2 / bc->A2(xi, yj, st);
 
+//	W2_ij:=DYBXY(i_ih,j_ih);
+//	W2_ij:=W2_ij*W2_ij;
+//
+//    W2_ij:=D2YBXY(i_ih,j_ih)-2*W2_ij/BXY(i_ih,j_ih)+CXY(i_ih,j_ih);
+//
+//    W2_ij:=W2_ij+D2XBXY(i_ih,j_ih)
+//	           -2*DXAXY(i_ih,j_ih)*DXBXY(i_ih,j_ih)/AXY(i_ih,j_ih);
+//
+//	    W2_ij:=BXY(i_ih,j_ih)+ia*W2_ij;
+
+	Interval<T> DY2COMP = tmp2A2M1 * bc->DA2DY(xi, yj, st) * bc->DA2DY(xi, yj, st)
+								- bc->D2A2DY2(xi, yj, st) - bc->C(xi, yj, st);
+//	cout << "====>>>>  ALPHAY -> DY2 = [" << DY2COMP.a << " ; " << DY2COMP.b << "]"
+//						<< endl;
+
+//	D2XBXY(i_ih, j_ih) - 2 * DXAXY(i_ih, j_ih) *
+//	      DXBXY(i_ih, j_ih) / AXY(i_ih, j_ih);
+	Interval<T> DA1A2DX = tmp2A1M1 * bc->DA1DX(xi, yj, st) * bc->DA2DX(xi, yj, st)
+									- bc->D2A2DX2(xi, yj, st);
+	Interval<T> T_DA1DX = bc->DA1DX(xi, yj, st);
+	Interval<T> T_DA2DX = bc->DA2DX(xi, yj, st);
+	Interval<T> T_D2A2DX2 = bc->D2A2DX2(xi, yj, st);
+
+//	cout << "ALPHAY -> tmp2A1M1 = [" << tmp2A1M1.a << " ; " << tmp2A1M1.b << "]"
+//								<< endl;
+//
+//	cout << "ALPHAY -> T_DA1DX = [" << T_DA1DX.a << " ; " << T_DA1DX.b << "]"
+//								<< endl;
+//
+//	cout << "ALPHAY -> T_DA2DX = [" << T_DA2DX.a << " ; " << T_DA2DX.b << "]"
+//								<< endl;
+//
+//	cout << "ALPHAY -> T_D2A2DX2 = [" << T_D2A2DX2.a << " ; " << T_D2A2DX2.b << "]"
+//								<< endl;
+//	cout << "====>>>> ALPHAY -> DA1A2DX = [" << DA1A2DX.a << " ; " << DA1A2DX.b << "]"
+//							<< endl;
+
 	result = bc->A2(xi, yj, st)
 			- h2d12
 					* (tmp2A1M1 * bc->DA1DX(xi, yj, st) * bc->DA2DX(xi, yj, st)
@@ -163,18 +200,21 @@ Interval<T> GPESolver3C<T>::IAlphaY(Interval<T> xi, Interval<T> yj) {
 			- k2d12
 					* (tmp2A2M1 * bc->DA2DY(xi, yj, st) * bc->DA2DY(xi, yj, st)
 							- bc->D2A2DY2(xi, yj, st) - bc->C(xi, yj, st));
+	cout << "ALPHAY -> RESULT = [" << result.a << " ; " << result.b << "]"
+							<< endl;
 	return result;
 }
 
 template<typename T>
 Interval<T> GPESolver3C<T>::IBetaX(Interval<T> xi, Interval<T> yj) {
+
 	Interval<T> result = { 0.0L, 0.0L };
 	int st = 0;
-	Interval<T> h2d6 = im1 * this->ih * this->ih / i6;
+	Interval<T> h2d6 = this->ih * this->ih / i6;
 	Interval<T> tmpA1M1 = i1 / bc->A1(xi, yj, st);
 	result = h2d6
-			* (tmpA1M1 * bc->DA1DX(xi, yj, st) * bc->C(xi, yj, st)
-					- bc->DCDX(xi, yj, st));
+			* (bc->DCDX(xi, yj, st)
+					- bc->DA1DX(xi, yj, st) * bc->C(xi, yj, st) * tmpA1M1);
 	return result;
 }
 
@@ -182,11 +222,11 @@ template<typename T>
 Interval<T> GPESolver3C<T>::IBetaY(Interval<T> xi, Interval<T> yj) {
 	Interval<T> result = { 0.0L, 0.0L };
 	int st;
-	Interval<T> k2d6 = im1 * this->ik * this->ik / this->i6;
+	Interval<T> k2d6 = this->ik * this->ik / this->i6;
 	Interval<T> tmpA2M1 = i1 / bc->A2(xi, yj, st);
 	result = k2d6
-			* (tmpA2M1 * bc->DA2DY(xi, yj, st) * bc->C(xi, yj, st)
-					- bc->DCDY(xi, yj, st));
+			* (bc->DCDY(xi, yj, st)
+					- bc->DA2DY(xi, yj, st) * bc->C(xi, yj, st) * tmpA2M1);
 
 	return result;
 }
@@ -214,8 +254,7 @@ Interval<T> GPESolver3C<T>::IGammaXY(Interval<T> xi, Interval<T> yj) {
 template<typename T>
 int GPESolver3C<T>::SolveFP() {
 	int i, j, jh, j1, k, kh, l, lh, l1, l2, n1, n2, p, q, rh, st;
-	long double a1f, a2f, h1, k1, h2, k2, hh1, kk1, max, s, tmpP, tmpQ, tmpR,
-			tmpS;
+	long double h1, k1, h2, k2, hh1, kk1, max, s, tmpP, tmpQ, tmpR, tmpS;
 
 	if (!Solver<T>::_initparams)
 		throw runtime_error("Parameters not initialized!");
@@ -279,9 +318,6 @@ int GPESolver3C<T>::SolveFP() {
 			kk1 = beta + j * k1;
 
 			//parameters functions in order to generalize to elliptic PDE
-			a1f = bc->a1(hh1, kk1) / h1;
-			a2f = bc->a2(hh1, kk1) / k1;
-
 			if (i > 1) {
 				//u_i-1_j
 				a1[l1 - 1] = alphax(hh1, kk1) / h2
@@ -560,11 +596,9 @@ int GPESolver3C<T>::SolvePIA() {
 
 	Interval<T> tmpi = { 0, 0 };
 	int i, j, jh, j1, k, kh, l, lh, l1, l2, n1, n2, n3, p, q, rh;
-	int num;
 	Interval<T> AF, BB0, BB1, CF, H1, HH, HH1, MHH, II, JJ, K1, KK, KK1, MKK,
 			MAX, MM, AA, CC, Pconst, Qconst, Rconst, Sconst, NN, S, S1, S2, S3,
 			S4, S5, ERR, H1POW2, K1POW2, H1POW2K1POW2, A1F, A2F, H2D12, K2D12;
-	bool list_exists;
 	Interval<T> aij;
 	int* r;
 	T z;
@@ -672,7 +706,6 @@ int GPESolver3C<T>::SolvePIA() {
 		this->X = new Interval<T> [n3];
 		for (i = 1; i <= n3; i++)
 			this->X[i - 1] = izero;
-		num = 1;
 
 		do {
 			k = k + 1;
@@ -730,20 +763,17 @@ int GPESolver3C<T>::SolvePIA() {
 			}
 
 			S = bc->F(HH1, KK1, st);
+			cout << k << ">> F=S= [" << S.a << " ; " << S.b << "]" << endl;
 			ERR = (this->ih2 / i12)
 					* (bc->D2FDX2(HH1 + HH, KK1, st)
 							+ im2 / bc->A1(HH1, KK1, st)
 									* bc->DA1DX(HH1, KK1, st)
 									* bc->DFDX(HH1 + HH, KK1, st)
-							+ (i2 * bc->A2(HH1, KK1, st)
-									/ bc->A1(HH1, KK1, st)
+							+ (i2 * bc->A2(HH1, KK1, st) / bc->A1(HH1, KK1, st)
 									* bc->DA1DX(HH1, KK1, st)
-									- i2 * bc->DA2DX(HH1, KK1, st))
-									* Qconst
+									- i2 * bc->DA2DX(HH1, KK1, st)) * Qconst
 							- bc->A2(HH1, KK1, st) * Sconst);
 
-			cout << k << "ADD DX2 B: S= [" << S.a << " ; " << S.b << "]"
-					<< endl;
 			cout << k << "ADD1 DX2: ERR= [" << ERR.a << " ; " << ERR.b << "]"
 					<< endl;
 
@@ -754,16 +784,14 @@ int GPESolver3C<T>::SolvePIA() {
 							+ im2 / bc->A2(HH1, KK1, st)
 									* bc->DA2DY(HH1, KK1, st)
 									* bc->DFDY(HH1, KK1 + KK, st)
-							+ (i2 * bc->A1(HH1, KK1, st)
-									/ bc->A2(HH1, KK1, st)
+							+ (i2 * bc->A1(HH1, KK1, st) / bc->A2(HH1, KK1, st)
 									* bc->DA2DY(HH1, KK1, st)
-									- i2*bc->DA1DY(HH1, KK1, st)) * Pconst
+									- i2 * bc->DA1DY(HH1, KK1, st)) * Pconst
 							+ bc->A1(HH1, KK1, st) * Sconst);
-			cout << k << "ADD2 DY2: S= [" << S.a << " ; " << S.b << "]" << endl;
 			cout << k << "ADD2 DY2: ERR= [" << ERR.a << " ; " << ERR.b << "]"
 					<< endl;
-			S = S + ERR;
-
+			S = S + ERR + isigma;
+			cout << k << "S(not BC)= [" << S.a << " ; " << S.b << "]" << endl;
 //			S = S
 //					+ (this->ih2 / i12)
 //							* (bc->D2FDX2(HH1, KK1, st)
@@ -782,47 +810,53 @@ int GPESolver3C<T>::SolvePIA() {
 						- (IAlphaX(HH1, KK1) / this->ih2
 								- IBetaX(HH1, KK1) / (i2 * H1))
 								* bc->PHI1(KK1, st);
-				if (j == 1)
-					S = S
-							- (IAlphaY(HH1, KK1) / this->ik2
-									- IBetaY(HH1, KK1) / (i2 * K1))
-									* bc->PHI2(HH1, st);
-				if (j == m - 1)
-					S = S
-							- (IAlphaY(HH1, KK1) / this->ik2
-									+ IBetaY(HH1, KK1) / (i2 * K1))
-									* bc->PHI4(HH1, st);
+
 			} else if (i == n - 1) {
 				S = S
 						- (IAlphaX(HH1, KK1) / this->ih2
 								+ IBetaX(HH1, KK1) / (i2 * H1))
 								* bc->PHI3(KK1, st);
-				if (j == 1)
-					S = S
-							- (IAlphaY(HH1, KK1) / this->ik2
-									- IBetaY(HH1, KK1) / (i2 * K1))
-									* bc->PHI2(HH1, st);
-				if (j == m - 1)
-					S = S
-							- (IAlphaY(HH1, KK1) / this->ik2
-									+ IBetaY(HH1, KK1) / (i2 * K1))
-									* bc->PHI4(HH1, st);
-			} else {
-				if (j == 1)
-					S = S
-							- (IAlphaY(HH1, KK1) / this->ik2
-									- IBetaY(HH1, KK1) / (i2 * K1))
-									* bc->PHI2(HH1, st);
-				if (j == m - 1)
-					S = S
-							- (IAlphaY(HH1, KK1) / this->ik2
-									+ IBetaY(HH1, KK1) / (i2 * K1))
-									* bc->PHI4(HH1, st);
+			cout << k << ">> S(BC=X)= [" << S.a << " ; " << S.b << "]" << endl;
+//				if (j == 1)
+//					S = S
+//							- (IAlphaY(HH1, KK1) / this->ik2
+//									- IBetaY(HH1, KK1) / (i2 * K1))
+//									* bc->PHI2(HH1, st);
+//				if (j == m - 1)
+//					S = S
+//							- (IAlphaY(HH1, KK1) / this->ik2
+//									+ IBetaY(HH1, KK1) / (i2 * K1))
+//									* bc->PHI4(HH1, st);
 			}
+//			else {
+//				if (j == 1)
+//					S = S
+//							- (IAlphaY(HH1, KK1) / this->ik2
+//									- IBetaY(HH1, KK1) / (i2 * K1))
+//									* bc->PHI2(HH1, st);
+//				if (j == m - 1)
+//					S = S
+//							- (IAlphaY(HH1, KK1) / this->ik2
+//									+ IBetaY(HH1, KK1) / (i2 * K1))
+//									* bc->PHI4(HH1, st);
+//			}
+			if (j == 1)
+				S = S
+						- (IAlphaY(HH1, KK1) / this->ik2
+								- IBetaY(HH1, KK1) / (i2 * K1))
+								* bc->PHI2(HH1, st);
+			if (j == m - 1)
+				S = S
+						- (IAlphaY(HH1, KK1) / this->ik2
+								+ IBetaY(HH1, KK1) / (i2 * K1))
+								* bc->PHI4(HH1, st);
 
 			//filestr
-			cout << k << " B: S= [" << S.a << " ; " << S.b << "]" << endl;
-			cout << k << " B: ERR= [" << ERR.a << " ; " << ERR.b << "]" << endl;
+			Interval<T> tmpIAY = IAlphaY(HH1, KK1);
+			Interval<T> tmpIBY = IBetaY(HH1, KK1);
+			cout << k << ">> tmpIAY= [" << tmpIAY.a << " ; " << tmpIAY.b << "]" << endl;
+			cout << k << ">> tmpIBY= [" << tmpIBY.a << " ; " << tmpIBY.b << "]" << endl;
+			cout << k << ">> S(BC=XY)= [" << S.a << " ; " << S.b << "]" << endl;
 
 //			filestr << k << " E: S= [" << S.a << " ; " << S.b << "]" << endl;
 			if (st == 0) {

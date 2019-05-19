@@ -41,7 +41,6 @@ void Solver<T>::WriteFPResultsToFile() {
 	fstream filestr;
 	clock_t time1, time2;
 	double time_diff;
-	T Mconst = 0;
 
 	if (!_initparams)
 		throw runtime_error("Parameters not initialized!");
@@ -53,7 +52,6 @@ void Solver<T>::WriteFPResultsToFile() {
 	long double beta = params.beta;
 	long double delta = params.delta;
 	long double gamma = params.gamma;
-	long double eps = params.eps;
 
 	int dprec = Interval<T>::GetOutDigits();
 
@@ -127,7 +125,6 @@ void Solver<T>::WriteFPResultsToFile() {
 		}
 	}
 	stringstream ss;
-	int prec = Interval<T>::GetOutDigits();
 	ss << file_name << "_m_" << m;
 }
 
@@ -136,7 +133,7 @@ void Solver<T>::WriteIntervalResultsToFile() {
 	int i, imod, j, jmod, l, ui, uj;
 	long double exact, h, k;
 	T w;
-	bool OK, OK1, dint_mode;
+	bool OK1, dint_mode;
 	Interval<T> HH, KK, NN, MM, sol, UIH, UII, UJJ, UJK;
 	char z, z1;
 	string left, right, time;
@@ -160,7 +157,6 @@ void Solver<T>::WriteIntervalResultsToFile() {
 	Interval<T> intbeta = { params.beta, params.beta };
 	Interval<T> GAMMA = { params.gamma, params.gamma };
 	Interval<T> DELTA = { params.delta, params.delta };
-	T eps = params.eps;
 	dint_mode = (params.ia_mode == IAMode::DINT_MODE);
 	NN.a = n;
 	NN.b = n;
@@ -168,15 +164,12 @@ void Solver<T>::WriteIntervalResultsToFile() {
 	MM.b = m;
 
 	filestr.open(params.file_name.c_str(), fstream::out);
-	OK = true;
 	filestr
 			<< "SOLVING THE GENERALIZED POISSON EQUATION WITH GIVEN BOUNDARY CONDITIONS"
 			<< endl;
 	filestr << "BY AN INTERVAL DIFFERENCE METHOD WITH "
 			<< (dint_mode ? "DIRECTED" : "PROPER") << " INTERVAL ARITHMETIC"
 			<< endl;
-
-	cout << "status = " << st << ", time = " << time_diff;
 	filestr << " " << endl;
 	filestr << "status = " << st << ", time = " << time << " [s]" << endl;
 	filestr << " u - a solution obtained by interval method" << endl;
@@ -200,14 +193,13 @@ void Solver<T>::WriteIntervalResultsToFile() {
 	UJJ.a = uj;
 	UJJ.b = uj;
 	filestr << endl;
-	long double sigma = 1e-2;
-	Interval<T> isigma = {-sigma, sigma};
+
 
 	for (j = 0; j <= m; j++) {
 		if (j % jmod == 0) {
 			exact = bc->ExactSol(alpha + ui * h, beta + j * k); // exact solution
 			if ((j != 0) && (j != m))
-				sol = X[(ui - 1) * (m - 1) + j - 1] + isigma;
+				sol = X[(ui - 1) * (m - 1) + j - 1];
 			else {
 				UIH = intalpha + (UII * HH);
 				if (j == 0)
@@ -229,11 +221,11 @@ void Solver<T>::WriteIntervalResultsToFile() {
 					<< exact << endl;
 		}
 	}
-	for (int i = 0; i <= n; i++) {
+	for (i = 0; i <= n; i++) {
 		if (i % imod == 0) {
 			exact = bc->ExactSol(alpha + i * h, beta + uj * k); // exact solution
 			if ((i != 0) && (i != n))
-				sol = X[(i - 1) * (m - 1) + uj - 1] + isigma;
+				sol = X[(i - 1) * (m - 1) + uj - 1];
 			else {
 				UJK = intbeta + (UJJ * KK);
 				if (i == 0)

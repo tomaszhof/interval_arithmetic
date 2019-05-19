@@ -375,28 +375,28 @@ long double ExampleGPE04<T>::GetConstN() {
 
 template<typename T>
 long double ExampleGPE04<T>::GetConstP() {
-	long double constP = 8.0L;
+	long double constP = 8.16L;
 
 	return constP;
 }
 
 template<typename T>
 long double ExampleGPE04<T>::GetConstQ() {
-	long double constQ = 8.0L;
+	long double constQ = 8.16L;
 
 	return constQ;
 }
 
 template<typename T>
 long double ExampleGPE04<T>::GetConstR() {
-	long double constR = 4.0L;
+	long double constR = 8.16L;
 
 	return constR;
 }
 
 template<typename T>
 long double ExampleGPE04<T>::GetConstS() {
-	long double constS = 20L;
+	long double constS = 19.03L;
 
 	return constS;
 }
@@ -600,7 +600,7 @@ inline Interval<T> ExampleGPE04<T>::DA1DY(const Interval<T>& ix,
 	Interval<T> r = { 0, 0 };
 	st = 0;
 
-	r = ipi * ix * ix * ICos(ipi * ix);
+	r = ipi * ix * ix * ICos(ipi * iy);
 	return r;
 }
 
