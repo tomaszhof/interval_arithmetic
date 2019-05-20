@@ -54,6 +54,12 @@ class GPESolver3C: public Solver<T> {
 	Interval<T> IBetaY(Interval<T> xi, Interval<T> yj);
 	Interval<T> IGammaXY(Interval<T> xi, Interval<T> yj);
 
+	Interval<T> DIAlphaX(Interval<T> xi, Interval<T> yj);
+	Interval<T> DIAlphaY(Interval<T> xi, Interval<T> yj);
+	Interval<T> DIBetaX(Interval<T> xi, Interval<T> yj);
+	Interval<T> DIBetaY(Interval<T> xi, Interval<T> yj);
+	Interval<T> DIGammaXY(Interval<T> xi, Interval<T> yj);
+
 public:
 	GPESolver3C();
 	virtual ~GPESolver3C();
