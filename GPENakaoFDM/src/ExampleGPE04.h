@@ -512,16 +512,26 @@ inline Interval<T> ExampleGPE04<T>::DFDX(const Interval<T>& ix,
 		const Interval<T>& iy, int& st) {
 	Interval<T> r = { 0, 0 };
 	st = 0;
-	Interval<T> iexpXY = IExp(ix * iy);
-	Interval<T> isinPIX = ISin(ipi * ix);
-	Interval<T> isinPIY = IExp(ipi * iy);
-	Interval<T> icosPIX = IExp(ipi * ix);
+//	Interval<T> iexpXY = IExp(ix * iy);
+//	Interval<T> isinPIX = ISin(ipi * ix);
+//	Interval<T> isinPIY = IExp(ipi * iy);
+//	Interval<T> icosPIX = IExp(ipi * ix);
+//
+//	r = iy * iexpXY
+//			* (ix * ix * iy * iy * isinPIX + ix * ix * iy * iy * isinPIX
+//					+ ix * ix * iy * iy * isinPIY + ipi * ix * ix * iy * icosPIX
+//					- ix * iy + i2 * ix * iy * isinPIX + i2 * ix * iy * isinPIY
+//					- i1);
 
-	r = iy * iexpXY
-			* (ix * ix * iy * iy * isinPIX + ix * ix * iy * iy * isinPIX
-					+ ix * ix * iy * iy * isinPIY + ipi * ix * ix * iy * icosPIX
-					- ix * iy + i2 * ix * iy * isinPIX + i2 * ix * iy * isinPIY
-					- i1);
+	Interval<T> s = ISin(ipi*(ix+iy)/i2);
+	Interval<T> c = ICos(ipi*(ix+iy)/i2);
+	Interval<T> xy = ix*iy;
+
+	r = i2 * xy * (xy + i2) * s * c;
+
+	c = ICos(ipi*ix);
+	r = r + xy * (ipi * ix * c - i1) - i1;
+	r = iy * IExp(xy)*r;
 	return r;
 }
 
@@ -529,17 +539,29 @@ template<typename T>
 inline Interval<T> ExampleGPE04<T>::DFDY(const Interval<T>& ix,
 		const Interval<T>& iy, int& st) {
 	Interval<T> r = { 0, 0 };
-	Interval<T> iexpXY = IExp(ix * iy);
-	Interval<T> isinPIX = ISin(ipi * ix);
-	Interval<T> isinPIY = IExp(ipi * iy);
-	Interval<T> icosPIY = IExp(ipi * iy);
-
 	st = 0;
+//	Interval<T> iexpXY = IExp(ix * iy);
+//	Interval<T> isinPIX = ISin(ipi * ix);
+//	Interval<T> isinPIY = IExp(ipi * iy);
+//	Interval<T> icosPIY = IExp(ipi * iy);
+//
+//	st = 0;
+//
+//	r = ix * iexpXY
+//			* (ix * ix * iy * iy * isinPIX + ix * ix * iy * iy * isinPIY
+//					+ ipi * ix * iy * iy * icosPIY - ix * iy
+//					+ i2 * ix * iy * isinPIX + i2 * ix * iy * isinPIY - i1);
 
-	r = ix * iexpXY
-			* (ix * ix * iy * iy * isinPIX + ix * ix * iy * iy * isinPIY
-					+ ipi * ix * iy * iy * icosPIY - ix * iy
-					+ i2 * ix * iy * isinPIX + i2 * ix * iy * isinPIY - i1);
+	Interval<T> s = ISin(ipi*(ix+iy)/i2);
+	Interval<T> c = ICos(ipi*(ix+iy)/i2);
+	Interval<T> xy = ix*iy;
+
+	r = i2 * xy * (xy + i2) * s * c;
+
+	c = ICos(ipi*iy);
+	r = r + xy * (ipi * iy * c - i1) - i1;
+	r = ix * IExp(xy)*r;
+
 	return r;
 }
 
@@ -547,20 +569,34 @@ template<typename T>
 inline Interval<T> ExampleGPE04<T>::D2FDX2(const Interval<T>& ix,
 		const Interval<T>& iy, int& st) {
 	Interval<T> r = { 0, 0 };
-	Interval<T> iexpXY = IExp(ix * iy);
-	Interval<T> isinPIX = ISin(ipi * ix);
-	Interval<T> isinPIY = IExp(ipi * iy);
-	Interval<T> icosPIX = IExp(ipi * ix);
+//	Interval<T> iexpXY = IExp(ix * iy);
+//	Interval<T> isinPIX = ISin(ipi * ix);
+//	Interval<T> isinPIY = IExp(ipi * iy);
+//	Interval<T> icosPIX = IExp(ipi * ix);
+//
+//	r = iy * (ix * iy * iy * iexpXY)
+//			* (ix * iy * isinPIX + ix * iy * isinPIY - i1);
+//	r = r
+//			+ ix * iy * iexpXY
+//					* (i2 * ipi * iy * icosPIX - ipi * ipi * ix * iy * isinPIX);
+//	r = r
+//			+ i2 * iy * (ix * iy * iexpXY + iexpXY)
+//					* (iy * isinPIX + ipi * ix * iy * icosPIX + iy * isinPIY);
 
-	r = iy * (ix * iy * iy * iexpXY)
-			* (ix * iy * isinPIX + ix * iy * isinPIY - i1);
-	r = r
-			+ ix * iy * iexpXY
-					* (i2 * ipi * iy * icosPIX - ipi * ipi * ix * iy * isinPIX);
-	r = r
-			+ i2 * iy * (ix * iy * iexpXY + iexpXY)
-					* (iy * isinPIX + ipi * ix * iy * icosPIX + iy * isinPIY);
+
+	Interval<T> s = ISin(ipi*(ix + iy)/i2);
+	Interval<T> c = ICos(ipi*(ix - iy)/i2);
+	Interval<T> xy = ix * iy;
+	r = i2 * (xy * (xy + i4) + i2) * s * c;
+
+	c = ICos(ipi*ix);
+	s = ISin(ipi*ix);
+
+	r = r + ipi*ix*(i2*(xy + i2)*c - ipi*ix*s) - xy - i2;
+	r = iy *iy * IExp(xy)*r;
+
 	st = 0;
+
 
 	return r;
 }
@@ -570,18 +606,32 @@ inline Interval<T> ExampleGPE04<T>::D2FDY2(const Interval<T>& ix,
 		const Interval<T>& iy, int& st) {
 	Interval<T> r = { 0, 0 };
 	st = 0;
-	Interval<T> iexpXY = IExp(ix * iy);
-	Interval<T> isinPIX = ISin(ipi * ix);
-	Interval<T> isinPIY = IExp(ipi * iy);
-	Interval<T> icosPIX = IExp(ipi * ix);
-	Interval<T> icosPIY = IExp(ipi * iy);
+//	Interval<T> iexpXY = IExp(ix * iy);
+//	Interval<T> isinPIX = ISin(ipi * ix);
+//	Interval<T> isinPIY = IExp(ipi * iy);
+//	Interval<T> icosPIX = IExp(ipi * ix);
+//	Interval<T> icosPIY = IExp(ipi * iy);
+//
+//	r = ix * ix * iexpXY
+//			* (ix * ix * isinPIX + ix * ix * iy * iy * isinPIY
+//					+ i2 * ipi * ix * iy * iy * icosPIY - ix * iy
+//					+ i4 * ix * iy * isinPIX + i4 * ix * iy * isinPIY
+//					+ i2 * isinPIX - ipi * ipi * iy * iy * isinPIY
+//					+ i2 * isinPIY + i4 * ipi * iy * icosPIY - i2);
 
-	r = ix * ix * iexpXY
-			* (ix * ix * isinPIX + ix * ix * iy * iy * isinPIY
-					+ i2 * ipi * ix * iy * iy * icosPIY - ix * iy
-					+ i4 * ix * iy * isinPIX + i4 * ix * iy * isinPIY
-					+ i2 * isinPIX - ipi * ipi * iy * iy * isinPIY
-					+ i2 * isinPIY + i4 * ipi * iy * icosPIY - i2);
+	Interval<T> s = ISin(ipi*(ix + iy)/i2);
+	Interval<T> c = ICos(ipi*(ix - iy)/i2);
+	Interval<T> xy = ix * iy;
+	r = i2 * (xy * (xy + i4) + i2) * s * c;
+
+	c = ICos(ipi*iy);
+	s = ISin(ipi*iy);
+
+	r = r + ipi*iy*(i2*(xy + i2)*c - ipi*iy*s) - xy - i2;
+	r = ix *ix * IExp(xy)*r;
+
+	st = 0;
+
 	return r;
 }
 

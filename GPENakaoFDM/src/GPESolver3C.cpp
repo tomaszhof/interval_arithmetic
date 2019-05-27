@@ -230,7 +230,6 @@ Interval<T> GPESolver3C<T>::IGammaXY(Interval<T> xi, Interval<T> yj) {
 	return result;
 }
 
-
 template<typename T>
 Interval<T> GPESolver3C<T>::DIAlphaX(Interval<T> xi, Interval<T> yj) {
 	Interval<T> result = { 0.0L, 0.0L };
@@ -274,10 +273,13 @@ Interval<T> GPESolver3C<T>::DIAlphaY(Interval<T> xi, Interval<T> yj) {
 			+ (h2d12
 					* (tmp2A1M1 * bc->DA1DX(xi, yj, st) * bc->DA2DX(xi, yj, st)
 							- bc->D2A2DX2(xi, yj, st))).Opposite();
-	result = result
-			+ (k2d12
-					* (tmp2A2M1 * bc->DA2DY(xi, yj, st) * bc->DA2DY(xi, yj, st)
-							- bc->D2A2DY2(xi, yj, st) - bc->C(xi, yj, st))).Opposite();
+	result =
+			result
+					+ (k2d12
+							* (tmp2A2M1 * bc->DA2DY(xi, yj, st)
+									* bc->DA2DY(xi, yj, st)
+									- bc->D2A2DY2(xi, yj, st)
+									- bc->C(xi, yj, st))).Opposite();
 	return result;
 }
 
@@ -335,7 +337,6 @@ Interval<T> GPESolver3C<T>::DIGammaXY(Interval<T> xi, Interval<T> yj) {
 							- bc->D2CDY2(xi, yj, st))).Opposite();
 	return result;
 }
-
 
 template<typename T>
 int GPESolver3C<T>::SolveFP() {
@@ -667,7 +668,7 @@ int GPESolver3C<T>::SolvePIA() {
 	Interval<T> GAMMA = { params.gamma, params.gamma };
 	Interval<T> DELTA = { params.delta, params.delta };
 	long double eps = params.eps;
-	long double sigma = 1e-3;
+	long double sigma = 0.0; //1e-3;
 
 	const Interval<T> izero = { 0, 0 };
 	const Interval<T> ione = { 1, 1 };
@@ -854,27 +855,32 @@ int GPESolver3C<T>::SolvePIA() {
 			}
 
 			S = bc->F(HH1, KK1, st);
+			cout << k << "S = F = [" << S.a << " ; " << S.b << "]" << endl;
 			ERR = (this->ih2 / i12)
 					* (bc->D2FDX2(HH1 + HH, KK1, st)
-							+ im2 / bc->A1(HH1, KK1, st)
-									* bc->DA1DX(HH1, KK1, st)
+							+ im2 * bc->DA1DX(HH1, KK1, st)
 									* bc->DFDX(HH1 + HH, KK1, st)
-							+ (i2 * bc->A2(HH1, KK1, st) / bc->A1(HH1, KK1, st)
-									* bc->DA1DX(HH1, KK1, st)
-									- i2 * bc->DA2DX(HH1, KK1, st)) * Qconst
-							- bc->A2(HH1, KK1, st) * Sconst);
+									/ bc->A1(HH1, KK1, st)
+							+ im2
+									* (bc->DA2DX(HH1, KK1, st)
+											- bc->A2(HH1, KK1, st)
+													* bc->DA1DX(HH1, KK1, st)
+													/ bc->A1(HH1, KK1, st))
+									* Pconst - bc->A2(HH1, KK1, st) * Sconst);
 
 			S = S + ERR;
 
 			ERR = (this->ik2 / i12)
 					* (bc->D2FDY2(HH1, KK1 + KK, st)
-							+ im2 / bc->A2(HH1, KK1, st)
-									* bc->DA2DY(HH1, KK1, st)
+							+ im2 * bc->DA2DY(HH1, KK1, st)
 									* bc->DFDY(HH1, KK1 + KK, st)
-							+ (i2 * bc->A1(HH1, KK1, st) / bc->A2(HH1, KK1, st)
-									* bc->DA2DY(HH1, KK1, st)
-									- i2 * bc->DA1DY(HH1, KK1, st)) * Pconst
-							+ bc->A1(HH1, KK1, st) * Sconst);
+									/ bc->A2(HH1, KK1, st)
+							+ im2
+									* (bc->DA1DY(HH1, KK1, st)
+											- bc->A1(HH1, KK1, st)
+													* bc->DA2DY(HH1, KK1, st)
+													/ bc->A2(HH1, KK1, st))
+									* Qconst - bc->A1(HH1, KK1, st) * Sconst);
 			S = S + ERR + isigma;
 			cout << k << "S(not BC)= [" << S.a << " ; " << S.b << "]" << endl;
 
@@ -1038,14 +1044,14 @@ int GPESolver3C<T>::SolveDIA() {
 	Interval<T> GAMMA = { params.gamma, params.gamma };
 	Interval<T> DELTA = { params.delta, params.delta };
 	long double eps = params.eps;
-	long double sigma = 1e-1;
+	long double sigma = 1e-2;
 
 	const Interval<T> izero = { 0, 0 };
 	const Interval<T> ione = { 1, 1 };
 	const Interval<T> itwo = { 2, 2 };
 	const Interval<T> ithree = { 3, 3 };
 	const Interval<T> itwelve = { 12, 12 };
-	Interval<T> isigma = { -sigma, sigma };
+	Interval<T> isigma = { sigma, -sigma };
 
 	Interval<T> tmpi = { 0, 0 };
 	int i, j, jh, j1, k, kh, l, lh, l1, l2, n1, n2, n3, p, q, rh;
@@ -1235,7 +1241,7 @@ int GPESolver3C<T>::SolveDIA() {
 									- i2 * bc->DA2DX(HH1, KK1, st)) * Qconst
 							- bc->A2(HH1, KK1, st) * Sconst);
 
-			S = S - ERR.Opposite();
+			S = S + ERR.Opposite();
 
 			ERR = (this->ik2 / i12)
 					* (bc->D2FDY2(HH1, KK1 + KK, st)
@@ -1246,7 +1252,7 @@ int GPESolver3C<T>::SolveDIA() {
 									* bc->DA2DY(HH1, KK1, st)
 									- i2 * bc->DA1DY(HH1, KK1, st)) * Pconst
 							+ bc->A1(HH1, KK1, st) * Sconst);
-			S = S - (ERR).Opposite() - isigma.Opposite();
+			S = S + ERR.Opposite() + isigma;
 			cout << k << "S(not BC)= [" << S.a << " ; " << S.b << "]" << endl;
 
 			if (i == 1) {
@@ -1313,13 +1319,13 @@ int GPESolver3C<T>::SolveDIA() {
 							S.a = abs(S.a);
 						if (S.b < 0)
 							S.b = abs(S.b);
-//
-//						if (S.b < S.a) {
-//							z = S.a;
-//							S.a = S.b;
-//							S.b = z;
-//						}
-						if ((j1 < n2) && (max(S.a,S.b) > max(MAX.a, MAX.b))) {
+
+						if (S.b < S.a) {
+							z = S.a;
+							S.a = S.b;
+							S.b = z;
+						}
+						if ((j1 < n2) && (S.b > MAX.a)) {
 							MAX = S;
 							jh = j1;
 							lh = l;
@@ -1331,7 +1337,7 @@ int GPESolver3C<T>::SolveDIA() {
 					st = 5;
 				else {
 					tmpi = bm.FromMap(lh - 1);
-					MAX = (ione * tmpi.Inverse());
+					MAX = (ione / tmpi);
 					r[jh - 1] = k;
 					for (int i = 1; i <= p; i++) {
 						tmpi = bm.FromMap(i - 1);
