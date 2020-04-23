@@ -456,22 +456,24 @@ template<typename T>
 Interval<T> ISin(const Interval<T>& x) {
 	bool is_even, finished;
 	int k;
-	int st = 0;
+//	int st = 0;
 	Interval<T> d, s, w, w1, x2, tmp;
 	Interval<T> izero(0, 0);
 	string left, right;
 	T eps = 1E-18; //Interval<T>::GetEpsilon();
-	T diff = std::numeric_limits<T>::max();
-	if (x.a > x.b)
-		st = 1;
-	else {
+//	T diff = std::numeric_limits<T>::max();
+//	if (x.a > x.b)
+//		st = 1;
+//	else
+	if (x.a <= x.b)
+	{
 		s = x;
 		w = x;
 		x2 = IMul(x, x);
 		k = 1;
 		is_even = true;
 		finished = false;
-		st = 0;
+//		st = 0;
 
 		do {
 			d.a = (k + 1) * (k + 2);
@@ -547,8 +549,8 @@ Interval<T> ISin(const Interval<T>& x) {
 			}
 		} while (!(finished || (k > INT_MAX / 2)));
 	}
-	if (!finished)
-		st = 2;
+//	if (!finished)
+//		st = 2;
 
 	Interval<T> r;
 	r.a = 0;
@@ -560,16 +562,17 @@ template<typename T>
 Interval<T> ICos(const Interval<T>& x) {
 	bool is_even, finished;
 	int k;
-	int st = 0;
 	string left, right;
 	T eps = 1E-18; //Interval<T>::GetEpsilon();
 	T diff = std::numeric_limits<T>::max();
 
 	Interval<T> d, c, w, w1, x2, tmp;
 	tmp = x;
-	if (x.a > x.b)
-		st = 1;
-	else {
+//	if (x.a > x.b)
+//		st = 1;
+//	else
+	if (x.a < x.b)
+	{
 		c.a = 1;
 		c.b = 1;
 		w = c;
@@ -577,7 +580,7 @@ Interval<T> ICos(const Interval<T>& x) {
 		k = 1;
 		is_even = true;
 		finished = false;
-		st = 0;
+//		st = 0;
 
 		do {
 			d.a = k * (k + 1);
@@ -649,8 +652,8 @@ Interval<T> ICos(const Interval<T>& x) {
 			}
 		} while (!(finished || (k > INT_MAX / 2)));
 	}
-	if (!finished)
-		st = 2;
+//	if (!finished)
+//		st = 2;
 
 	Interval<T> r;
 	r.a = 0;
@@ -662,7 +665,7 @@ template<typename T>
 Interval<T> IExp(const Interval<T>& x) {
 	bool finished;
 	int k;
-	int st = 0;
+//	int st = 0;
 	Interval<T> d, e, w, w1;
 	string left, right;
 	Interval<T> tmp = x;
@@ -670,15 +673,17 @@ Interval<T> IExp(const Interval<T>& x) {
 	T diff = std::numeric_limits<T>::max();
 	if ((x.a < 0) && (x.b > 0))
 		return {1,1};
-	if (x.a > x.b)
-		st = 1;
-	else {
+//	if (x.a > x.b)
+//		st = 1;
+//	else
+	if (x.a <= x.b)
+	{
 		e.a = 1;
 		e.b = 1;
 		w = e;
 		k = 1;
 		finished = false;
-		st = 0;
+//		st = 0;
 		do {
 			d.a = k;
 			d.b = k;
@@ -711,8 +716,8 @@ Interval<T> IExp(const Interval<T>& x) {
 				}
 			}
 		} while (!(finished || (k > INT_MAX / 2)));
-		if (!finished)
-			st = 2;
+//		if (!finished)
+//			st = 2;
 	}
 	Interval<T> r;
 	r.a = 0;
@@ -1295,17 +1300,18 @@ template<typename T>
 Interval<T> DIExp(const Interval<T>& x) {
 	bool finished;
 	int k;
-	int st = 0;
 	Interval<T> d, e, w, w1;
-	if (x.a > x.b)
-		st = 1;
-	else {
+//	if (x.a > x.b)
+//		st = 1;
+//	else
+	if (x.a <= x.b)
+	{
 		e.a = 1;
 		e.b = 1;
 		w = e;
 		k = 1;
 		finished = false;
-		st = 0;
+//		st = 0;
 		do {
 			d.a = k;
 			d.b = k;
@@ -1320,8 +1326,8 @@ Interval<T> DIExp(const Interval<T>& x) {
 				k = k + 1;
 			}
 		} while (!(finished || (k > INT_MAX / 2)));
-		if (!finished)
-			st = 2;
+//		if (!finished)
+//			st = 2;
 	}
 	Interval<T> r;
 	r.a = 0;

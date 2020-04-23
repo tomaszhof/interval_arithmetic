@@ -38,6 +38,8 @@ protected:
 	long double** u;
 	long double maxP;
 	long double maxQ;
+	long double maxM;
+	long double maxN;
 	vector<long double> vecConstP;
 	vector<long double> vecConstQ;
 public:

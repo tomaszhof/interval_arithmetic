@@ -18,6 +18,8 @@ Solver<T>::Solver() {
 	this->_estimateMN = false;
 	this->maxP = 0;
 	this->maxQ = 0;
+	this->maxM = 0;
+	this->maxN = 0;
 	this->X = NULL;
 	this->bc = NULL;
 	this->u = NULL;
@@ -30,16 +32,16 @@ Solver<T>::~Solver() {
 
 template<typename T>
 void Solver<T>::WriteFPResultsToFile() {
-	int i, imod, j, jmod, l, ui, uj, nmin, nmax, mmax, step;
+	int imod, j, jmod, ui, uj; // i,l, nmin, nmax; // mmax;
 	long double exact, h, k, w;
-	bool OK, OK1;
+//	bool OK;
 	long double sol;
-	char z, z1;
+//	char z;
 	string file_name, left, right, time;
 	fstream filestr;
-	clock_t time1, time2;
-	double time_diff;
-	T Mconst = 0;
+//	clock_t time1;
+//	double time_diff;
+//	T Mconst = 0;
 
 	if (!_initparams)
 		throw runtime_error("Parameters not initialized!");
@@ -51,7 +53,7 @@ void Solver<T>::WriteFPResultsToFile() {
 	long double beta = params.beta;
 	long double delta = params.delta;
 	long double gamma = params.gamma;
-	long double eps = params.eps;
+//	long double eps = params.eps;
 
 	int dprec = Interval<T>::GetOutDigits();
 
@@ -72,7 +74,7 @@ void Solver<T>::WriteFPResultsToFile() {
 
 	h = (delta - alpha) / n;
 	k = (gamma - beta) / m;
-	l = 0;
+//	l = 0;
 	imod = n / 10;
 	jmod = m / 10;
 	ui = n / 2;
@@ -125,22 +127,22 @@ void Solver<T>::WriteFPResultsToFile() {
 		}
 	}
 	stringstream ss;
-	int prec = Interval<T>::GetOutDigits();
+//	int prec = Interval<T>::GetOutDigits();
 	ss << file_name << "_m_" << m;
 }
 
 template<typename T>
 void Solver<T>::WriteIntervalResultsToFile() {
-	int i, imod, j, jmod, l, ui, uj;
+	int imod, j, jmod, ui, uj; //i,l;
 	long double exact, h, k;
 	T w;
-	bool OK, OK1, dint_mode;
+	bool dint_mode;
 	Interval<T> HH, KK, NN, MM, sol, UIH, UII, UJJ, UJK;
-	char z, z1;
-	string left, right, time;
+//	char z;// z1;
+	string left, right;// time;
 	fstream filestr;
-	clock_t time1, time2;
-	double time_diff;
+//	clock_t time1, time2;
+//	double time_diff;
 	int dprec = Interval<T>::GetOutDigits();
 	std::setprecision(dprec);
 
@@ -158,7 +160,7 @@ void Solver<T>::WriteIntervalResultsToFile() {
 	Interval<T> intbeta = { params.beta, params.beta };
 	Interval<T> GAMMA = { params.gamma, params.gamma };
 	Interval<T> DELTA = { params.delta, params.delta };
-	T eps = params.eps;
+//	T eps = params.eps;
 	dint_mode = (params.ia_mode == IAMode::DINT_MODE);
 	NN.a = n;
 	NN.b = n;
@@ -166,7 +168,7 @@ void Solver<T>::WriteIntervalResultsToFile() {
 	MM.b = m;
 
 	filestr.open(params.file_name.c_str(), fstream::out);
-	OK = true;
+//	OK = true;
 	filestr
 			<< "SOLVING THE GENERALIZED POISSON EQUATION WITH GIVEN BOUNDARY CONDITIONS"
 			<< endl;
@@ -174,9 +176,10 @@ void Solver<T>::WriteIntervalResultsToFile() {
 			<< (dint_mode ? "DIRECTED" : "PROPER") << " INTERVAL ARITHMETIC"
 			<< endl;
 
-	cout << "status = " << st << ", time = " << time_diff;
+//	time_diff = time2 - time1;
+//	cout << "status = " << st << ", time = " << time_diff;
 	filestr << " " << endl;
-	filestr << "status = " << st << ", time = " << time << " [s]" << endl;
+//	filestr << "status = " << st << ", time = " << time << " [s]" << endl;
 	filestr << " u - a solution obtained by interval method" << endl;
 	filestr << " eu - the exact (approximate) solution" << endl;
 
@@ -188,7 +191,7 @@ void Solver<T>::WriteIntervalResultsToFile() {
 	k = (gamma - beta) / m;
 	HH = (DELTA - intalpha) / NN;
 	KK = (GAMMA - intbeta) / MM;
-	l = 0;
+//	l = 0;
 	imod = n / 10;
 	jmod = m / 10;
 	ui = n / 2;
@@ -311,7 +314,7 @@ void Solver<T>::WriteConstMResults() {
 
 	long double constM = 0;
 	long double constN = 0;
-	for (int i = 0; i < vecConstP.size(); ++i) {
+	for (size_t i = 0; i < vecConstP.size(); ++i) {
 		constM = this->vecConstP.at(i);
 		constN = this->vecConstQ.at(i);
 		filestr << constM << ";" << constN << endl;
@@ -401,7 +404,7 @@ long double Solver<T>::GetMaxQ() {
 
 template<typename T>
 inline void Solver<T>::WriteFPResultsToCsv() {
-	int imod, j, jmod;
+	int j;
 	long double exact, h, k;
 	T sol;
 	string file_name, left, right, time;
@@ -434,8 +437,8 @@ inline void Solver<T>::WriteFPResultsToCsv() {
 	h = (delta - alpha) / n;
 	k = (gamma - beta) / m;
 
-	imod = n / 10;
-	jmod = m / 10;
+//	imod = n / 10;
+//	jmod = m / 10;
 
 	for (int i = 0; i <= n; i++) {
 		for (j = 0; j <= m; j++) {
@@ -517,22 +520,22 @@ inline void Solver<T>::WriteIntervalResultsToCsv() {
 			else {
 				if (j == 0)
 				{
-					Interval<T> II = {i, i};
+					Interval<T> II = {(long double)i, (long double)i};
 					sol = bc->PHI2(intalpha + II * HH, st);
 				}
 				else if (j == m)
 				{
-					Interval<T> II = {i, i};
+					Interval<T> II = {(long double) i, (long double)i};
 					sol = bc->PHI4(intalpha + II * HH, st);
 				}
 				else if (i == 0)
 				{
-					Interval<T> JJ = {j, j};
+					Interval<T> JJ = {(long double)j, (long double)j};
 					sol = bc->PHI1(intbeta + JJ * KK, st);
 				}
 				else
 				{
-					Interval<T> JJ = {j, j};
+					Interval<T> JJ = {(long double)j, (long double)j};
 					sol = bc->PHI3(intbeta + JJ * KK, st);
 				}
 			}

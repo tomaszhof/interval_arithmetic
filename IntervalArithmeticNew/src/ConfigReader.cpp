@@ -12,6 +12,7 @@
 #include <iostream>
 #include <fstream>
 
+
 namespace po = boost::program_options;
 using namespace std;
 
@@ -440,7 +441,7 @@ void ConfigReader<T>::parseCommandArgs(int ac, char* av[])
 template<typename T>
 void ConfigReader<T>::readParametersFromConsole()
 {
-	bool OK, OK1, dint_mode;
+	bool OK, OK1;
 	char z, z1;
 
 	cout
@@ -454,7 +455,7 @@ void ConfigReader<T>::readParametersFromConsole()
 		cout << "Interval arithmetic mode (d - directed, p - proper): ";
 		cin >> z;
 	} while ((z != 'd') && (z != 'D') && (z != 'p') && (z != 'P'));
-	dint_mode = ((z == 'd') || (z == 'D'));
+//	dint_mode = ((z == 'd') || (z == 'D'));
 	if (z == 'd')
 		this->SetArithmeticMode(DINT_MODE);
 	else
