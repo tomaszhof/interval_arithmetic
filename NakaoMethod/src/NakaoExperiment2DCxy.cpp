@@ -82,17 +82,16 @@ void NakaoExperiment2DCxy::execute() {
 	a1 = new long double[n1 + 1];
 	b1 = new long double[n1 + 1];
 	x = new long double[(n1 + 2) * (n1 + 2) / 4];
-	a = 4.0 / pow(h, 2.0);
-	b = -1.0 / pow(h, 2.0);
-	b_dash = (-1.0 * PI) / 12.0;
-	d = (1.0 - 2.0 * PI) * (1.0 - cos(PI * h)) / pow(PI * h, 2.0);
+	a = 4.0L / (h * h);
+	b = -1.0L / (h * h);
+	d = (1.0L - 2.0L * PI) * (1.0L - cos(PI * h)) / pow(PI * h, 2.0);
 	sph = sin(PI * h) / (PI * h);
-	twenty_h2 = 20.0L * pow(h, 2.0);
+	twenty_h2 = 20.0L * h * h;
 	finish = false;
 	while (k != n1) {
 		k = k + 1;
 		for (i = 1; i <= n1; ++i) {
-			a1[i - 1] = 0;
+			a1[i - 1] = 0.0;
 		}
 		j = j + 1;
 		i = (k - 1) / (n - 1) + 1;
@@ -419,7 +418,7 @@ void NakaoExperiment2DCxy::execute() {
 						iz = i20h4 * (iz - i1 / i45);
 						id1 = id1 + iz * iu_km1[n - 2][j + 1];
 
-						iz = interval_ij_over_12 + interval_i_over_24;
+						iz = interval_ij_over_12 - interval_i_over_24;
 						iz = i20h4 * (iz - (i1 / i360));
 						id1 = id1 + iz * iu_km1[n - 1][j - 1];
 
@@ -485,7 +484,7 @@ void NakaoExperiment2DCxy::execute() {
 						id1 = id1 + iz * iu_km1[i][j + 1];
 
 						iz = interval_ij_over_12 - interval_i_over_24;
-						iz = iz - interval_j_over_24;
+						iz = iz + interval_j_over_24;
 						iz = i20h4 * (iz - i1 / i45);
 						id1 = id1 + iz * iu_km1[i + 1][j - 1];
 
@@ -500,14 +499,15 @@ void NakaoExperiment2DCxy::execute() {
 			i_plus_j_ih = (interval_i + interval_j) * ih;
 			i_minus_j_ih = (interval_i - interval_j) * ih;
 			iz = isph * ICos(ipi * i_minus_j_ih);
-			iz = ICos(ipi * i_plus_j_ih) - iz;
-			id1 = id1/ih2 + (id * iz);
+			iz =  ICos(ipi * i_plus_j_ih) - iz;
+			id1 = (id1/ih2) + (id * iz);
 
 			tmpstr = boost::lexical_cast<string>(alpha_km1[i][j]);
 			iz.a = LeftRead<long double>(tmpstr);
 			iz.b = RightRead<long double>(tmpstr);
 
 			interval_a1[n2 - 1] = id1 + (ic * iz);
+
 			for (int i = 1; i <= n1; ++i) {
 				rh = r[i - 1];
 				if (rh != 0) {
@@ -623,25 +623,25 @@ void NakaoExperiment2DCxy::execute() {
 				interval_j.a = j;
 				interval_j.b = j;
 				interval_ij = interval_i * interval_j;
-				iz = ISqr(interval_ij, error);
+				iz = interval_ij * interval_ij;
 				iz = (iz * (interval_i + interval_j)) / i2;
 				ibeta1 = im1 * iz;
 				iz = (interval_i * interval_i) + (interval_ij / i2);
 				iz = iz + (interval_j * interval_j);
 				iz = (interval_ij * iz) / i3;
 				ibeta1 = ibeta1 - iz;
-				iz = ISqr(interval_i, error) * interval_i;
+				iz = interval_i*interval_i*interval_i;
 				iz = (iz / i3) + (interval_ij * (interval_i + interval_j));
 				iz = iz + (ISqr(interval_j, error) * interval_j / i3);
 				ibeta1 = ibeta1 - (iz / i4);
-				iz = iz + (ISqr(interval_i, error) / i3) + interval_ij;
+				iz = (ISqr(interval_i, error) / i3) + interval_ij;
 				iz = iz + (ISqr(interval_j, error) / i3);
 				ibeta1 = ibeta1 - (iz / i15);
 
 				iz = ((interval_i + interval_j) / i180);
 				ibeta1 = (ibeta1 - iz) + (i1 / i120);
 
-				iz = ISqr(ih2, error) * ih2;
+				iz = ih2 * ih2 * ih2;
 				ibeta1 = iz * ibeta1;
 				ibeta1 = ISqr((i20 * iu_km1[i][j]), error) * ibeta1;
 				i_plus_j_ih = (interval_i + interval_j) * ih;
@@ -652,7 +652,7 @@ void NakaoExperiment2DCxy::execute() {
 				iz1 = iz1 - (i3 * ISin(i2pih)) / (i2 * ipi);
 				iz = (interval_i - interval_j) * iz1;
 				iz1 = (i3 * interval_i) - (i7 * interval_j) + i4;
-				iz1 = (iz1 * ISin(ipih) / ipi); //sin(pi) = 0! zweryfikować tę linię!
+				iz1 = (iz1 * ISin(ipih) / ipi);
 				iz = iz + iz1;
 				iz1 = ipi * i_minus_j_ih;
 				ibeta2 = (iz * ISin(iz1)) / (i2 * ipi);
@@ -672,7 +672,7 @@ void NakaoExperiment2DCxy::execute() {
 				iz1 = ipi * i_plus_j_ih;
 				ibeta2 = ibeta2 + ih * iz * ISin(iz1);
 				iz1 = (i1 / ipi) - ih * ISin(ipih);
-				iz = iz1 * ipi;
+				iz = iz1 / ipi;
 				iz1 = (interval_ij + (i1 / i6)) * ICos(ipih);
 				iz1 = iz1 + (i1 / i3) - interval_ij;
 				iz1 = iz + (ISqr(ih, error) * iz1);

@@ -88,7 +88,7 @@ public:
 	Interval();
 	Interval(Interval const& copy);
 	Interval(T a, T b);
-	virtual ~Interval();
+	~Interval();
 	Interval& operator=(const Interval<T> i);
 	Interval operator+(const Interval<T>& i);
 	Interval operator-(const Interval<T>& i);

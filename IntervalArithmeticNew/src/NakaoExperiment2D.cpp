@@ -630,16 +630,13 @@ void NakaoExperiment2D::execute() {
 		}
 	} //end of while(!finish) loop
 
-	for (int i = 0; i < n; ++i) {
+	for (int i = 0; i < n; i++) {
 			delete[] alpha_k[i];
 			delete[] alpha_km1[i];
 			delete[] iu_k[i];
 			delete[] iu_km1[i];
 		}
 
-	delete[] interval_a1;
-	delete[] interval_b1;
-	delete[] interval_x;
 	delete[] r;
 	delete[] iu_km1;
 	delete[] iu_k;

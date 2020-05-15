@@ -22,4 +22,6 @@
 
 */.settings/
 .idea/
+.settings/
+.settings/*.*
 */*/.idea

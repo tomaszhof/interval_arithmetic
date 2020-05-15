@@ -27,7 +27,7 @@ class NakaoExperiment2DCxy {
 private:
 	int error, i, it, j, j1, jh, k, kh, l, l1, l2,
 	lh, n, n1, n2, p, q, rh;
-	long double a, abs_alpha, abs_alphaij, b, b_dash,
+	long double a, abs_alpha, abs_alphaij, b,
 	beta, c, d, delta, epsilon, exact, h,
 	max, norm_u, norm_uij, s, sph, ij_over_12, i_over_24, j_over_24, twenty_h2;
 	Interval<long double> ia, ia1, ialpha, ib, ib1, ibeta, ibeta1, ibeta2, ic, ic1,
