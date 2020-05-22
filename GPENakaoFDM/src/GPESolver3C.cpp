@@ -37,6 +37,9 @@ int GPESolver3C<T>::SetExample(int eid) {
 	case 5:
 		bc = new ExampleGPE05<T>();
 		break;
+	case 6:
+		bc = new ExampleGPE06<T>();
+		break;
 	default:
 		bc = NULL;
 		break;
@@ -435,6 +438,7 @@ int GPESolver3C<T>::SolveFP() {
 			}
 
 			s = bc->f(hh1, kk1);
+			cout << k << "S = F = [" << s << "]" << endl;
 
 			if (i == 1) {
 				s = s
@@ -476,8 +480,11 @@ int GPESolver3C<T>::SolveFP() {
 									+ betay(hh1, kk1) / (2.0 * k1))
 									* bc->phi4(hh1);
 			}
+			cout << k << ">> S(BC=XY)= [" << s << "]" << endl;
+			cout << "--------------------------------------------" << endl
+					<< endl;
 
-			cout << k << " S= [" << s << "]" << endl;
+//			cout << k << " S= [" << s << "]" << endl;
 //			if (k == 81){
 //				cout << k << " S= [" << s << "]" << endl;
 //			}
@@ -633,11 +640,11 @@ int GPESolver3C<T>::SolveFP() {
 								+ 4 * u[i][j] - 2 * u[i - 1][j]
 								+ u[i + 1][j - 1] - 2 * u[i][j - 1]
 								+ u[i - 1][j - 1];
-						cout << "tmpS = " << tmpS << endl;
+//						cout << "tmpS = " << tmpS << endl;
 						tmpR = (1.0 / (h1 * h1 * k1 * k1));
-						cout << "1/(h^2*k^2) = " << tmpR << endl;
+//						cout << "1/(h^2*k^2) = " << tmpR << endl;
 						tmpS = tmpR * tmpS;
-						cout << "[1/(h^2*k^2)] * tmpS = " << tmpS << endl;
+//						cout << "[1/(h^2*k^2)] * tmpS = " << tmpS << endl;
 						if (abs(tmpS) > maxS)
 							maxS = abs(tmpS);
 					}
@@ -668,7 +675,7 @@ int GPESolver3C<T>::SolvePIA() {
 	Interval<T> GAMMA = { params.gamma, params.gamma };
 	Interval<T> DELTA = { params.delta, params.delta };
 	long double eps = params.eps;
-	long double sigma = 0.0; //1e-3;
+	long double sigma = 1e-3;
 
 	const Interval<T> izero = { 0, 0 };
 	const Interval<T> ione = { 1, 1 };
@@ -869,6 +876,8 @@ int GPESolver3C<T>::SolvePIA() {
 									* Pconst - bc->A2(HH1, KK1, st) * Sconst);
 
 			S = S + ERR;
+			cout << k << "S [+ERR1] = [" << S.a << " ; " << S.b << "]" << endl;
+			cout << k << "[ERR1] = [" << ERR.a << " ; " << ERR.b << "]" << endl;
 
 			ERR = (this->ik2 / i12)
 					* (bc->D2FDY2(HH1, KK1 + KK, st)
@@ -881,7 +890,10 @@ int GPESolver3C<T>::SolvePIA() {
 													* bc->DA2DY(HH1, KK1, st)
 													/ bc->A2(HH1, KK1, st))
 									* Qconst - bc->A1(HH1, KK1, st) * Sconst);
-			S = S + ERR + isigma;
+			cout << k << "[ERR2] = [" << ERR.a << " ; " << ERR.b << "]" << endl;
+			S = S + ERR;
+			cout << k << "S [+ERR2] = [" << S.a << " ; " << S.b << "]" << endl;
+			S = S + isigma;
 			cout << k << "S(not BC)= [" << S.a << " ; " << S.b << "]" << endl;
 
 			if (i == 1) {
@@ -1237,51 +1249,51 @@ int GPESolver3C<T>::SolveDIA() {
 								+ im2 * bc->DA1DX(HH1, KK1, st)
 										* bc->DFDX(HH1 + HH, KK1, st)
 										/ bc->A1(HH1, KK1, st)
-								+ im2
+								+ i2
 										* (bc->DA2DX(HH1, KK1, st)
 												- bc->A2(HH1, KK1, st)
 														* bc->DA1DX(HH1, KK1, st)
 														/ bc->A1(HH1, KK1, st))
 										* Pconst - bc->A2(HH1, KK1, st) * Sconst);
 
-				S = S - ERR.Opposite();
+				S = S + ERR;
 
 				ERR = (this->ik2 / i12)
 						* (bc->D2FDY2(HH1, KK1 + KK, st)
 								+ im2 * bc->DA2DY(HH1, KK1, st)
 										* bc->DFDY(HH1, KK1 + KK, st)
 										/ bc->A2(HH1, KK1, st)
-								+ im2
+								+ i2
 										* (bc->DA1DY(HH1, KK1, st)
 												- bc->A1(HH1, KK1, st)
 														* bc->DA2DY(HH1, KK1, st)
 														/ bc->A2(HH1, KK1, st))
 										* Qconst - bc->A1(HH1, KK1, st) * Sconst);
-				S = S - ERR.Opposite() + isigma;
+				S = S + ERR;
 				cout << k << "S(not BC)= [" << S.a << " ; " << S.b << "]" << endl;
 
 				if (i == 1) {
 					S = S
-							+ ((IAlphaX(HH1, KK1) / this->ih2
+							- (IAlphaX(HH1, KK1) / this->ih2
 									- IBetaX(HH1, KK1) / (i2 * H1))
-									* bc->PHI1(KK1, st)).Opposite();
+									* bc->PHI1(KK1, st);
 
 				} else if (i == n - 1) {
 					S = S
-							+ ((IAlphaX(HH1, KK1) / this->ih2
+							- (IAlphaX(HH1, KK1) / this->ih2
 									+ IBetaX(HH1, KK1) / (i2 * H1))
-									* bc->PHI3(KK1, st)).Opposite();
+									* bc->PHI3(KK1, st);
 				}
 				if (j == 1)
 					S = S
-							+ ((IAlphaY(HH1, KK1) / this->ik2
+							- (IAlphaY(HH1, KK1) / this->ik2
 									- IBetaY(HH1, KK1) / (i2 * K1))
-									* bc->PHI2(HH1, st)).Opposite();
+									* bc->PHI2(HH1, st);
 				if (j == m - 1)
 					S = S
-							+ ((IAlphaY(HH1, KK1) / this->ik2
+							- (IAlphaY(HH1, KK1) / this->ik2
 									+ IBetaY(HH1, KK1) / (i2 * K1))
-									* bc->PHI4(HH1, st)).Opposite();
+									* bc->PHI4(HH1, st);
 
 				cout << k << ">> S(BC=XY)= [" << S.a << " ; " << S.b << "]" << endl;
 				cout << "--------------------------------------------" << endl
@@ -1310,7 +1322,7 @@ int GPESolver3C<T>::SolveDIA() {
 							q = l;
 							for (int i = 1; i <= kh; i++) {
 								if ((k > 1) && (i == k - 1))
-									S = S - (BB1 * this->X[q - 1]);
+									S = S  - (BB1 * this->X[q - 1]);
 								if ((k > m - 1) && (i - 1 == k - m))
 									S = S - (BB0 * this->X[q - 1]);
 								q = q + p;
@@ -1335,6 +1347,7 @@ int GPESolver3C<T>::SolveDIA() {
 								jh = j1;
 								lh = l;
 							}
+
 						}
 					}
 					//cout << "MAX= [" << MAX.a << " ; " << MAX.b << "]" << endl;
@@ -1359,8 +1372,8 @@ int GPESolver3C<T>::SolveDIA() {
 							for (int i = 1; i <= p; i++)
 								if (i != lh) {
 									jh = jh + 1;
-									S1 = bm.FromMap(i - 1);
-									this->X[jh - 1] = this->X[q + i - 1] + (S * S1).Opposite();
+									S1 = bm.FromMap(i - 1).Opposite();
+									this->X[jh - 1] = this->X[q + i - 1] + (S * S1);
 								}
 							q = q + p;
 						}

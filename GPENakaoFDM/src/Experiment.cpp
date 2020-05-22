@@ -39,6 +39,9 @@ void Experiment<T>::SetExample(int eid, int arth_mode) {
 	case 5:
 		_example = new ExampleGPE05<T>();
 		break;
+	case 6:
+		_example = new ExampleGPE06<T>();
+		break;
 	case 9:
 		//_example = new Example09<T>();
 		//break;
