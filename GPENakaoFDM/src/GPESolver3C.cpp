@@ -40,6 +40,12 @@ int GPESolver3C<T>::SetExample(int eid) {
 	case 6:
 		bc = new ExampleGPE06<T>();
 		break;
+	case 7:
+		bc = new ExampleGPE07<T>();
+		break;
+	case 8:
+			bc = new ExampleGPE08<T>();
+			break;
 	default:
 		bc = NULL;
 		break;
@@ -438,7 +444,7 @@ int GPESolver3C<T>::SolveFP() {
 			}
 
 			s = bc->f(hh1, kk1);
-			cout << k << "S = F = [" << s << "]" << endl;
+			//cout << k << "S = F = [" << s << "]" << endl;
 
 			if (i == 1) {
 				s = s
@@ -480,9 +486,9 @@ int GPESolver3C<T>::SolveFP() {
 									+ betay(hh1, kk1) / (2.0 * k1))
 									* bc->phi4(hh1);
 			}
-			cout << k << ">> S(BC=XY)= [" << s << "]" << endl;
-			cout << "--------------------------------------------" << endl
-					<< endl;
+			//cout << k << ">> S(BC=XY)= [" << s << "]" << endl;
+			//cout << "--------------------------------------------" << endl
+			//		<< endl;
 
 //			cout << k << " S= [" << s << "]" << endl;
 //			if (k == 81){
@@ -1372,8 +1378,8 @@ int GPESolver3C<T>::SolveDIA() {
 							for (int i = 1; i <= p; i++)
 								if (i != lh) {
 									jh = jh + 1;
-									S1 = bm.FromMap(i - 1).Opposite();
-									this->X[jh - 1] = this->X[q + i - 1] + (S * S1);
+									S1 = bm.FromMap(i - 1);
+									this->X[jh - 1] = this->X[q + i - 1] - (S * S1);
 								}
 							q = q + p;
 						}
