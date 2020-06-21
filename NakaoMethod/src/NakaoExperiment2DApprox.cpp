@@ -21,73 +21,21 @@ NakaoExperiment2DApprox::~NakaoExperiment2DApprox() {
 }
 
 
-double NakaoExperiment2DApprox::g_int_c_ij1(double *k, size_t dim, void *params){
-	double x = k[0];
-	double y = k[1];
-	double c = M_PI;
-
-	return c*phi(i, j, x, y)*phi(i, j, x, y);
-
-}
-
-double NakaoExperiment2DApprox::g_int_c_ij2(double *k, size_t dim, void *params){
-	double x = k[0];
-	double y = k[1];
-	double c = M_PI;
-
-	return c*phi(i, j, x, y)*phi(i, j-1, x, y);
-
-}
-
-double NakaoExperiment2DApprox::g_int_c_ij3(double *k, size_t dim, void *params){
-	double x = k[0];
-	double y = k[1];
-	double c = M_PI;
-
-	return c*phi(i, j, x, y)*phi(i, j+1, x, y);
-
-}
-
-double NakaoExperiment2DApprox::g_int_c_ij4(double *k, size_t dim, void *params){
-	double x = k[0];
-	double y = k[1];
-	double c = M_PI;
-
-	return c*phi(i, j, x, y)*phi(i-1, j, x, y);
-
-}
-
-double NakaoExperiment2DApprox::g_int_c_ij5(double *k, size_t dim, void *params){
-	double x = k[0];
-	double y = k[1];
-	double c = M_PI;
-
-	return c*phi(i, j, x, y)*phi(i+1, j, x, y);
-
-}
-
-double NakaoExperiment2DApprox::g_int_c_ij6(double *k, size_t dim, void *params){
-	double x = k[0];
-	double y = k[1];
-	double c = M_PI;
-
-	return c*phi(i, j, x, y)*phi(i-1, j+1, x, y);
-
-}
-
-
-double NakaoExperiment2DApprox::g_int_c_ij7(double *k, size_t dim, void *params){
-	double x = k[0];
-	double y = k[1];
-	double c = M_PI;
-
-	return c*phi(i, j, x, y)*phi(i+1, j-1, x, y);
-
-}
-
 void NakaoExperiment2DApprox::execute() {
 
 	double integral_err = 0.0;
+	Interval<long double> intErr = {0.0, 0.0};
+	long double tmp_int_res = 0.0;
+
+	Interval<long double> iIntCij1 = {0.0, 0.0};
+	Interval<long double> iIntCij2 = {0.0, 0.0};
+	Interval<long double> iIntCij3 = {0.0, 0.0};
+	Interval<long double> iIntCij4 = {0.0, 0.0};
+	Interval<long double> iIntCij5 = {0.0, 0.0};
+	Interval<long double> iIntCij6 = {0.0, 0.0};
+	Interval<long double> iIntCij7 = {0.0, 0.0};
+
+
 	//global setting
 	cout.setf(std::ios_base::scientific);
 
@@ -417,6 +365,61 @@ void NakaoExperiment2DApprox::execute() {
 	interval_b1 = new Interval<long double> [n1 + 1];
 	interval_x = new Interval<long double> [(n1 + 2) * (n1 + 2) / 4];
 
+
+	i = 2;
+	j = 2;
+
+	tmp_int_res = integrator->integrate(&g_int_c_ij1, 0, 1, 0, 1,&integral_err)*(1.0 / (h*h));
+	tmpstr = boost::lexical_cast<string>(tmp_int_res);
+	iIntCij1 = IntRead<long double>(tmpstr);
+	tmpstr = boost::lexical_cast<string>(integral_err);
+	intErr = IntRead<long double>(tmpstr);
+	iIntCij1 = iIntCij1 + im11 * intErr;
+
+	tmp_int_res = integrator->integrate(&g_int_c_ij2, 0, 1, 0, 1,&integral_err)*(1.0 / (h*h));
+	tmpstr = boost::lexical_cast<string>(tmp_int_res);
+	iIntCij2 = IntRead<long double>(tmpstr);
+	tmpstr = boost::lexical_cast<string>(integral_err);
+	intErr = IntRead<long double>(tmpstr);
+	iIntCij2 = iIntCij2 + im11 * intErr;
+
+	tmp_int_res = integrator->integrate(&g_int_c_ij3, 0, 1, 0, 1,&integral_err)*(1.0 / (h*h));
+	tmpstr = boost::lexical_cast<string>(tmp_int_res);
+	iIntCij3 = IntRead<long double>(tmpstr);
+	tmpstr = boost::lexical_cast<string>(integral_err);
+	intErr = IntRead<long double>(tmpstr);
+	iIntCij3 = iIntCij3 + im11 * intErr;
+
+	tmp_int_res = integrator->integrate(&g_int_c_ij4, 0, 1, 0, 1,&integral_err)*(1.0 / (h*h));
+	tmpstr = boost::lexical_cast<string>(tmp_int_res);
+	iIntCij4 = IntRead<long double>(tmpstr);
+	tmpstr = boost::lexical_cast<string>(integral_err);
+	intErr = IntRead<long double>(tmpstr);
+	iIntCij4 = iIntCij4 + im11 * intErr;
+
+	tmp_int_res = integrator->integrate(&g_int_c_ij5, 0, 1, 0, 1,&integral_err)*(1.0 / (h*h));
+	tmpstr = boost::lexical_cast<string>(tmp_int_res);
+	iIntCij5 = IntRead<long double>(tmpstr);
+	tmpstr = boost::lexical_cast<string>(integral_err);
+	intErr = IntRead<long double>(tmpstr);
+	iIntCij5 = iIntCij5 + im11 * intErr;
+
+
+	tmp_int_res = integrator->integrate(&g_int_c_ij6, 0, 1, 0, 1,&integral_err)*(1.0 / (h*h));
+	tmpstr = boost::lexical_cast<string>(tmp_int_res);
+	iIntCij6 = IntRead<long double>(tmpstr);
+	tmpstr = boost::lexical_cast<string>(integral_err);
+	intErr = IntRead<long double>(tmpstr);
+	iIntCij6 = iIntCij6 + im11 * intErr;
+
+
+	tmp_int_res = integrator->integrate(&g_int_c_ij7, 0, 1, 0, 1,&integral_err)*(1.0 / (h*h));
+	tmpstr = boost::lexical_cast<string>(tmp_int_res);
+	iIntCij7 = IntRead<long double>(tmpstr);
+	tmpstr = boost::lexical_cast<string>(integral_err);
+	intErr = IntRead<long double>(tmpstr);
+	iIntCij7 = iIntCij7 + im11 * intErr;
+
 	while (!finish) {
 		it = it + 1;
 		cout << "it = " << it << endl;
@@ -455,49 +458,51 @@ void NakaoExperiment2DApprox::execute() {
 				interval_a1[l1 - 1] = ib;
 			}
 
-			id1 = i6 * iu_km1[i][j];
+			id1 = iIntCij1 * iu_km1[i][j]; //i6 * iu_km1[i][j];
 
 			if (i == 1) {
 				if (j == 1) {
-					id1 = id1 + (iu_km1[1][2] + iu_km1[2][1]);
+					id1 = id1 + (iIntCij3*iu_km1[1][2] + iIntCij5*iu_km1[2][1]);
 				} else {
 					if (j == n - 1) {
-						id1 = id1 + iu_km1[1][n - 2] + iu_km1[2][n - 2]
-								+ iu_km1[2][n - 1];
+						id1 = id1 + iIntCij2*iu_km1[1][n - 2] + iIntCij7*iu_km1[2][n - 2]
+								+ iIntCij5*iu_km1[2][n - 1];
 					} else {
-						id1 = id1 + iu_km1[1][j - 1] + iu_km1[1][j + 1]
-								+ iu_km1[2][j - 1] + iu_km1[2][j];
+						id1 = id1 + iIntCij2*iu_km1[1][j - 1] + iIntCij3*iu_km1[1][j + 1]
+								+ iIntCij7*iu_km1[2][j - 1] + iIntCij5*iu_km1[2][j];
 					}
 				}
 			} else if (i == n - 1) {
 				if (j == 1) {
-					id1 = id1 + iu_km1[n - 2][1] + iu_km1[n - 2][2]
-							+ iu_km1[n - 1][2];
+					id1 = id1 + iIntCij4*iu_km1[n - 2][1] + iIntCij6*iu_km1[n - 2][2]
+							+ iIntCij3*iu_km1[n - 1][2];
 				} else {
 					if (j == n - 1) {
-						id1 = id1 + iu_km1[n - 1][n - 2] + iu_km1[n - 2][n - 1];
+						id1 = id1 + iIntCij2*iu_km1[n - 1][n - 2] + iIntCij4*iu_km1[n - 2][n - 1];
 					} else {
-						id1 = id1 + iu_km1[n - 1][j + 1] + iu_km1[n - 1][j - 1]
-								+ iu_km1[n - 2][j + 1] + iu_km1[n - 2][j];
+						id1 = id1 + iIntCij3*iu_km1[n - 1][j + 1] + iIntCij2*iu_km1[n - 1][j - 1]
+								+ iIntCij6*iu_km1[n - 2][j + 1] + iIntCij4*iu_km1[n - 2][j];
 					}
 				}
 			} else {
 				if (j == 1) {
-					id1 = id1 + iu_km1[i - 1][1] + iu_km1[i - 1][2]
-							+ iu_km1[i][2] + iu_km1[i + 1][1];
+					id1 = id1 + iIntCij4*iu_km1[i - 1][1] + iIntCij6*iu_km1[i - 1][2]
+							+ iIntCij3*iu_km1[i][2] + iIntCij5*iu_km1[i + 1][1];
 				} else {
 					if (j == n - 1) {
-						id1 = id1 + iu_km1[i - 1][n - 1] + iu_km1[i][n - 2]
-								+ iu_km1[i + 1][n - 2] + iu_km1[i + 1][n - 1];
+						id1 = id1 + iIntCij4*iu_km1[i - 1][n - 1] + iIntCij2*iu_km1[i][n - 2]
+								+ iIntCij7*iu_km1[i + 1][n - 2] + iIntCij5*iu_km1[i + 1][n - 1];
 					} else {
-						id1 = id1 + iu_km1[i - 1][j] + iu_km1[i - 1][j + 1]
-								+ iu_km1[i][j - 1] + iu_km1[i][j + 1]
-								+ iu_km1[i + 1][j - 1] + iu_km1[i + 1][j];
+						id1 = id1 + iIntCij4*iu_km1[i - 1][j] + iIntCij6*iu_km1[i - 1][j + 1]
+								+ iIntCij2*iu_km1[i][j - 1] + iIntCij3*iu_km1[i][j + 1]
+								+ iIntCij7*iu_km1[i + 1][j - 1] + iIntCij5*iu_km1[i + 1][j];
 					}
 				}
 			}
 
-			id1 = ipi12 * id1;
+			//id1 = ipi12 * id1;
+
+
 			///
 			d = std::cos(M_PI * h);
 			d = (1.0- d)/(M_PI*M_PI);
@@ -506,11 +511,14 @@ void NakaoExperiment2DApprox::execute() {
 			///
 			//d = cos(PI * (i + j) * h) - sph * cos(PI * (i - j) * h);
 			d = integrator->integrate(&g_f_phi, 0, 1, 0, 1,&integral_err)*(-1.0 / (h*h)); //integrator->integrate(&g_f_phi, 0, 1, 0, 1,&integral_err)*(-1.0/(std::sqrt( 2.0)))*(1/d);
+			tmpstr = boost::lexical_cast<string>(integral_err);
+			intErr = IntRead<long double>(tmpstr);
+
 			tmpstr = boost::lexical_cast<string>(d);
 			iz.a = LeftRead<long double>(tmpstr);
 			iz.b = RightRead<long double>(tmpstr);
 
-			id1 = id1 + iz;//(id * iz);
+			id1 = id1 + iz + im11*intErr;//(id * iz);
 
 //
 //			iierr.a = -integral_err;

@@ -62,13 +62,13 @@ public:
 //	static long double phi(int i, int j, long double x, long double y);
 //	static long double f(long double x, long double y);
 //	static double g_f_phi(double *k, size_t dim, void *params);
-	double g_int_c_ij1(double *k, size_t dim, void *params);
-	double g_int_c_ij2(double *k, size_t dim, void *params);
-	double g_int_c_ij3(double *k, size_t dim, void *params);
-	double g_int_c_ij4(double *k, size_t dim, void *params);
-	double g_int_c_ij5(double *k, size_t dim, void *params);
-	double g_int_c_ij6(double *k, size_t dim, void *params);
-	double g_int_c_ij7(double *k, size_t dim, void *params);
+//	double g_int_c_ij1(double *k, size_t dim, void *params);
+//	double g_int_c_ij2(double *k, size_t dim, void *params);
+//	double g_int_c_ij3(double *k, size_t dim, void *params);
+//	double g_int_c_ij4(double *k, size_t dim, void *params);
+//	double g_int_c_ij5(double *k, size_t dim, void *params);
+//	double g_int_c_ij6(double *k, size_t dim, void *params);
+//	double g_int_c_ij7(double *k, size_t dim, void *params);
 	void execute();
 
 	static long double f(long double x, long double y){
@@ -79,7 +79,11 @@ public:
 	static long double fe(long double x, long double y){
 			//
 			return (1.0-2.0*M_PI)*sin(M_PI*x)*sin(M_PI*y);
-		}
+	}
+
+	static long double ce(long double x, long double y){
+			return M_PI;
+	}
 
 	static long double phi(int i, int j, long double x, long double y){
 			if ((i*h <= x) && (x <= (i+1.0)*h) && (j*h <= y) && (y <= (i+j+1.0)*h-x)){
@@ -115,6 +119,64 @@ public:
 		return fe(x,y) * phi(i, j, x, y);
 
 	}
+
+	static double g_int_c_ij1(double *k, size_t dim, void *params){
+		double x = k[0];
+		double y = k[1];
+
+		return ce(x,y)*phi(i, j, x, y)*phi(i, j, x, y);
+
+	}
+
+	static double g_int_c_ij2(double *k, size_t dim, void *params){
+		double x = k[0];
+		double y = k[1];
+
+		return ce(x,y)*phi(i, j, x, y)*phi(i, j-1, x, y);
+
+	}
+
+	static double g_int_c_ij3(double *k, size_t dim, void *params){
+		double x = k[0];
+		double y = k[1];
+
+		return ce(x,y)*phi(i, j, x, y)*phi(i, j+1, x, y);
+
+	}
+
+	static double g_int_c_ij4(double *k, size_t dim, void *params){
+		double x = k[0];
+		double y = k[1];
+
+		return ce(x,y)*phi(i, j, x, y)*phi(i-1, j, x, y);
+
+	}
+
+	static double g_int_c_ij5(double *k, size_t dim, void *params){
+		double x = k[0];
+		double y = k[1];
+
+		return ce(x,y)*phi(i, j, x, y)*phi(i+1, j, x, y);
+
+	}
+
+	static double g_int_c_ij6(double *k, size_t dim, void *params){
+		double x = k[0];
+		double y = k[1];
+
+		return ce(x,y)*phi(i, j, x, y)*phi(i-1, j+1, x, y);
+
+	}
+
+
+	static double g_int_c_ij7(double *k, size_t dim, void *params){
+		double x = k[0];
+		double y = k[1];
+
+		return ce(x,y)*phi(i, j, x, y)*phi(i+1, j-1, x, y);
+
+	}
+
 };
 
 
