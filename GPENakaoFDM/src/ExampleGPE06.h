@@ -194,7 +194,6 @@ long double ExampleGPE06<T>::d2a2dy2(const long double& x,
 
 template<typename T>
 Interval<T> ExampleGPE06<T>::F(const Interval<T>& ix, const Interval<T>& iy,
-
 		int& st) {
 	//f(x,y)= 20*(1-x)*(1-y)*(1-e^(x*y))*sin(pi*x*y)-(1-x)*(1-y)*y^2*e^(x*y)+2*(1-y)*y*e^(x*y)-(1-x)*x^2*(1-y)*e^(x*y)+2*(1-x)*x*e^(x*y)
 	Interval<T> r = { 0.0L, 0.0L };

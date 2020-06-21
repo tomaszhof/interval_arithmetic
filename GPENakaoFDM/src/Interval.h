@@ -73,6 +73,8 @@ template<typename T> Interval<T> DIMul(const Interval<T> &x,
 template<typename T> Interval<T> DISin(const Interval<T> &x);
 template<typename T> Interval<T> DICos(const Interval<T> &x, int &st);
 template<typename T> Interval<T> DIExp(const Interval<T> &x);
+template<typename T> Interval<T> Hull(const Interval<T> &x,
+		const Interval<T> &y);
 
 template<typename T> int SetRounding(int rounding);
 template<> Interval<mpreal> IntRead(const string &sa);
@@ -139,6 +141,8 @@ public:
 	friend Interval DISin<T>(const Interval &x);
 	friend Interval DICos<T>(const Interval &x, int &st);
 	friend Interval DIExp<T>(const Interval &x);
+
+	friend Interval Hull<T>(const Interval &x, const Interval &y);
 
 	friend int SetRounding<T>(int rounding);
 };
@@ -1561,6 +1565,20 @@ inline Interval<T> operator /(Interval<T> x, const Interval<T> &y) {
 	default:
 		return IDiv<T>(x, y);
 	}
+}
+
+template<typename T>
+Interval<T> Hull(const Interval<T> &x, const Interval<T> &y) {
+	Interval<T> r = { 0, 0 };
+	r.a = min(x.a, x.b);
+	r.a = min(r.a, y.a);
+	r.a = min(r.a, y.b);
+
+	r.b = max(x.a, x.b);
+	r.b = max(r.b, y.a);
+	r.b = max(r.b, y.b);
+
+	return r;
 }
 
 template<>

@@ -225,8 +225,8 @@ Interval<T> GPESolver3C<T>::IGammaXY(Interval<T> xi, Interval<T> yj) {
 	Interval<T> tmpW6 = im1 * k2d12
 			* (tmpA2M1 * bc->DA2DY(xi, yj, st) * bc->DCDY(xi, yj, st)
 					- bc->D2CDY2(xi, yj, st));
-	cout << "W5_ij= [" << tmpW5.a << " ; " << tmpW5.b << "]" << endl;
-	cout << "W6_ij= [" << tmpW6.a << " ; " << tmpW6.b << "]" << endl;
+//	cout << "W5_ij= [" << tmpW5.a << " ; " << tmpW5.b << "]" << endl;
+//	cout << "W6_ij= [" << tmpW6.a << " ; " << tmpW6.b << "]" << endl;
 
 	result = bc->C(xi, yj, st)
 			+ h2d12
@@ -333,8 +333,8 @@ Interval<T> GPESolver3C<T>::DIGammaXY(Interval<T> xi, Interval<T> yj) {
 	Interval<T> tmpW6 = im1 * k2d12
 			* (tmpA2M1 * bc->DA2DY(xi, yj, st) * bc->DCDY(xi, yj, st)
 					- bc->D2CDY2(xi, yj, st));
-	cout << "W5_ij= [" << tmpW5.a << " ; " << tmpW5.b << "]" << endl;
-	cout << "W6_ij= [" << tmpW6.a << " ; " << tmpW6.b << "]" << endl;
+//	cout << "W5_ij= [" << tmpW5.a << " ; " << tmpW5.b << "]" << endl;
+//	cout << "W6_ij= [" << tmpW6.a << " ; " << tmpW6.b << "]" << endl;
 
 	result = bc->C(xi, yj, st)
 			+ (h2d12
@@ -825,8 +825,8 @@ int GPESolver3C<T>::SolvePIA() {
 				S1 = IAlphaX(HH1, KK1) / this->ih2
 						- IBetaX(HH1, KK1) / (i2 * H1);
 				bm.ToMap(l1 - 1, S1);
-				cout << k << "S1(l1-1)= [" << S1.a << " ; " << S1.b << "]"
-						<< endl;
+//				cout << k << "S1(l1-1)= [" << S1.a << " ; " << S1.b << "]"
+//						<< endl;
 
 			}
 
@@ -836,15 +836,15 @@ int GPESolver3C<T>::SolvePIA() {
 							* (this->IAlphaX(HH1, KK1) / this->ih2
 									+ this->IAlphaY(HH1, KK1) / this->ik2);
 			bm.ToMap(l2 - 1, S1);
-			cout << k << "S1(l2-1)= [" << S1.a << " ; " << S1.b << "]" << endl;
+//			cout << k << "S1(l2-1)= [" << S1.a << " ; " << S1.b << "]" << endl;
 
 			if (j > 1) {
 				//u_i_j-1
 				S1 = this->IAlphaY(HH1, KK1) / this->ik2
 						- this->IBetaY(HH1, KK1) / (i2 * K1);
 				bm.ToMap(l2 - 2, S1);
-				cout << k << "S1(l2-2)= [" << S1.a << " ; " << S1.b << "]"
-						<< endl;
+//				cout << k << "S1(l2-2)= [" << S1.a << " ; " << S1.b << "]"
+//						<< endl;
 			}
 
 			if (j < m - 1) {
@@ -852,8 +852,8 @@ int GPESolver3C<T>::SolvePIA() {
 				S1 = IAlphaY(HH1, KK1) / this->ik2
 						+ this->IBetaY(HH1, KK1) / (i2 * K1);
 				bm.ToMap(l2, S1);
-				cout << k << "S1(l2)= [" << S1.a << " ; " << S1.b << "]"
-						<< endl;
+//				cout << k << "S1(l2)= [" << S1.a << " ; " << S1.b << "]"
+//						<< endl;
 			}
 
 			l1 = l2 + m - 1; //update index to next row position i -> i+1
@@ -863,12 +863,12 @@ int GPESolver3C<T>::SolvePIA() {
 				S1 = IAlphaX(HH1, KK1) / this->ih2
 						+ IBetaX(HH1, KK1) / (i2 * H1);
 				bm.ToMap(l1 - 1, S1);
-				cout << k << "S1(l1-1)= [" << S1.a << " ; " << S1.b << "]"
-						<< endl;
+//				cout << k << "S1(l1-1)= [" << S1.a << " ; " << S1.b << "]"
+//						<< endl;
 			}
 
 			S = bc->F(HH1, KK1, st);
-			cout << k << "S = F = [" << S.a << " ; " << S.b << "]" << endl;
+//			cout << k << "S = F = [" << S.a << " ; " << S.b << "]" << endl;
 			ERR = (this->ih2 / i12)
 					* (bc->D2FDX2(HH1 + HH, KK1, st)
 							+ im2 * bc->DA1DX(HH1, KK1, st)
@@ -882,8 +882,8 @@ int GPESolver3C<T>::SolvePIA() {
 									* Pconst - bc->A2(HH1, KK1, st) * Sconst);
 
 			S = S + ERR;
-			cout << k << "S [+ERR1] = [" << S.a << " ; " << S.b << "]" << endl;
-			cout << k << "[ERR1] = [" << ERR.a << " ; " << ERR.b << "]" << endl;
+//			cout << k << "S [+ERR1] = [" << S.a << " ; " << S.b << "]" << endl;
+//			cout << k << "[ERR1] = [" << ERR.a << " ; " << ERR.b << "]" << endl;
 
 			ERR = (this->ik2 / i12)
 					* (bc->D2FDY2(HH1, KK1 + KK, st)
@@ -896,11 +896,11 @@ int GPESolver3C<T>::SolvePIA() {
 													* bc->DA2DY(HH1, KK1, st)
 													/ bc->A2(HH1, KK1, st))
 									* Qconst - bc->A1(HH1, KK1, st) * Sconst);
-			cout << k << "[ERR2] = [" << ERR.a << " ; " << ERR.b << "]" << endl;
+//			cout << k << "[ERR2] = [" << ERR.a << " ; " << ERR.b << "]" << endl;
 			S = S + ERR;
-			cout << k << "S [+ERR2] = [" << S.a << " ; " << S.b << "]" << endl;
+//			cout << k << "S [+ERR2] = [" << S.a << " ; " << S.b << "]" << endl;
 			S = S + isigma;
-			cout << k << "S(not BC)= [" << S.a << " ; " << S.b << "]" << endl;
+//			cout << k << "S(not BC)= [" << S.a << " ; " << S.b << "]" << endl;
 
 			if (i == 1) {
 				S = S
@@ -925,9 +925,9 @@ int GPESolver3C<T>::SolvePIA() {
 								+ IBetaY(HH1, KK1) / (i2 * K1))
 								* bc->PHI4(HH1, st);
 
-			cout << k << ">> S(BC=XY)= [" << S.a << " ; " << S.b << "]" << endl;
-			cout << "--------------------------------------------" << endl
-					<< endl;
+//			cout << k << ">> S(BC=XY)= [" << S.a << " ; " << S.b << "]" << endl;
+//			cout << "--------------------------------------------" << endl
+//					<< endl;
 //			filestr << k << " E: S= [" << S.a << " ; " << S.b << "]" << endl;
 			if (st == 0) {
 				bm.ToMap(n2 - 1, S);
@@ -1206,8 +1206,8 @@ int GPESolver3C<T>::SolveDIA() {
 					S1 = IAlphaX(HH1, KK1) / this->ih2
 							- IBetaX(HH1, KK1) / (i2 * H1);
 					bm.ToMap(l1 - 1, S1);
-					cout << k << "S1(l1-1)= [" << S1.a << " ; " << S1.b << "]"
-							<< endl;
+//					cout << k << "S1(l1-1)= [" << S1.a << " ; " << S1.b << "]"
+//							<< endl;
 
 				}
 
@@ -1217,15 +1217,15 @@ int GPESolver3C<T>::SolveDIA() {
 								* (this->IAlphaX(HH1, KK1) / this->ih2
 										+ this->IAlphaY(HH1, KK1) / this->ik2);
 				bm.ToMap(l2 - 1, S1);
-				cout << k << "S1(l2-1)= [" << S1.a << " ; " << S1.b << "]" << endl;
+//				cout << k << "S1(l2-1)= [" << S1.a << " ; " << S1.b << "]" << endl;
 
 				if (j > 1) {
 					//u_i_j-1
 					S1 = this->IAlphaY(HH1, KK1) / this->ik2
 							- this->IBetaY(HH1, KK1) / (i2 * K1);
 					bm.ToMap(l2 - 2, S1);
-					cout << k << "S1(l2-2)= [" << S1.a << " ; " << S1.b << "]"
-							<< endl;
+//					cout << k << "S1(l2-2)= [" << S1.a << " ; " << S1.b << "]"
+//							<< endl;
 				}
 
 				if (j < m - 1) {
@@ -1233,8 +1233,8 @@ int GPESolver3C<T>::SolveDIA() {
 					S1 = IAlphaY(HH1, KK1) / this->ik2
 							+ this->IBetaY(HH1, KK1) / (i2 * K1);
 					bm.ToMap(l2, S1);
-					cout << k << "S1(l2)= [" << S1.a << " ; " << S1.b << "]"
-							<< endl;
+//					cout << k << "S1(l2)= [" << S1.a << " ; " << S1.b << "]"
+//							<< endl;
 				}
 
 				l1 = l2 + m - 1; //update index to next row position i -> i+1
@@ -1244,12 +1244,12 @@ int GPESolver3C<T>::SolveDIA() {
 					S1 = IAlphaX(HH1, KK1) / this->ih2
 							+ IBetaX(HH1, KK1) / (i2 * H1);
 					bm.ToMap(l1 - 1, S1);
-					cout << k << "S1(l1-1)= [" << S1.a << " ; " << S1.b << "]"
-							<< endl;
+//					cout << k << "S1(l1-1)= [" << S1.a << " ; " << S1.b << "]"
+//							<< endl;
 				}
 
 				S = bc->F(HH1, KK1, st);
-				cout << k << "S = F = [" << S.a << " ; " << S.b << "]" << endl;
+//				cout << k << "S = F = [" << S.a << " ; " << S.b << "]" << endl;
 				ERR = (this->ih2 / i12)
 						* (bc->D2FDX2(HH1 + HH, KK1, st)
 								+ im2 * bc->DA1DX(HH1, KK1, st)
@@ -1276,7 +1276,7 @@ int GPESolver3C<T>::SolveDIA() {
 														/ bc->A2(HH1, KK1, st))
 										* Qconst - bc->A1(HH1, KK1, st) * Sconst);
 				S = S + ERR;
-				cout << k << "S(not BC)= [" << S.a << " ; " << S.b << "]" << endl;
+//				cout << k << "S(not BC)= [" << S.a << " ; " << S.b << "]" << endl;
 
 				if (i == 1) {
 					S = S
@@ -1301,9 +1301,9 @@ int GPESolver3C<T>::SolveDIA() {
 									+ IBetaY(HH1, KK1) / (i2 * K1))
 									* bc->PHI4(HH1, st);
 
-				cout << k << ">> S(BC=XY)= [" << S.a << " ; " << S.b << "]" << endl;
-				cout << "--------------------------------------------" << endl
-						<< endl;
+//				cout << k << ">> S(BC=XY)= [" << S.a << " ; " << S.b << "]" << endl;
+//				cout << "--------------------------------------------" << endl
+//						<< endl;
 	//			filestr << k << " E: S= [" << S.a << " ; " << S.b << "]" << endl;
 				if (st == 0) {
 					bm.ToMap(n2 - 1, S);
@@ -1379,6 +1379,8 @@ int GPESolver3C<T>::SolveDIA() {
 								if (i != lh) {
 									jh = jh + 1;
 									S1 = bm.FromMap(i - 1);
+//									tmpi = S1.Opposite();
+//									S1 = Hull(S1, S1.);
 									this->X[jh - 1] = this->X[q + i - 1] - (S * S1);
 								}
 							q = q + p;
