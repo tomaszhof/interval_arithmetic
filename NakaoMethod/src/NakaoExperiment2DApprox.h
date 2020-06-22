@@ -23,6 +23,8 @@ using namespace std;
 
 const long double PI = 3.141592653589793238L;
 
+
+
 class NakaoExperiment2DApprox {
 
 private:
@@ -31,9 +33,9 @@ private:
 	static long double h;
 	int error, it, j1, jh, k, kh, l, l1, l2,
 	lh, n, n1, n2, p, q, rh;
-	long double a, abs_alpha, abs_alphaij, b, b_dash,
-	beta, c, d, delta, epsilon, exact,
-	max, norm_u, norm_uij, s, sph;
+	long double abs_alpha, abs_alphaij,
+	beta, c, delta, epsilon, exact,
+	max, norm_u, norm_uij, s, d, sph;
 	Interval<long double> ia, ia1, ialpha, ib, ib1, ibeta, ic, ic1,
 	id, id1, ih,ih2, imax, interval_s, ipi, ipi12, iz, iierr;
 	int *r;
@@ -45,6 +47,8 @@ private:
 	bool alpha_OK, finish, u_OK;
 	string file_name, left, right, st, tmpstr;
 	fstream results;
+
+	long double aij, aij_l, aij_u, bij, bij_l, b_dash_ij, b_dash_ij_u, mhpm2;
 
 	const Interval<long double> im1 = {-1.0, -1.0};
 	const Interval<long double> i0 = {0.0, 0.0};
@@ -71,18 +75,37 @@ public:
 //	double g_int_c_ij7(double *k, size_t dim, void *params);
 	void execute();
 
-	static long double f(long double x, long double y){
-		//(1.0-2.0*M_PI)*
-		return sin(M_PI*x)*sin(M_PI*y);
+//	static long double u_exact(long double x, long double y){
+//		return (1.0 / M_PI) * sin(M_PI * x) * sin(M_PI * y); //x*cos(M_PI/2.0 * x)*sin(M_PI*y);
+//	}
+//
+//	static long double f(long double x, long double y){
+//		//(1.0-2.0*M_PI)*
+//		return sin(M_PI*x)*sin(M_PI*y);
+//	}
+//
+//	static long double fe(long double x, long double y){
+//			//
+//			return (1.0-2.0*M_PI)*sin(M_PI*x)*sin(M_PI*y); //(-1.0*M_PI)*sin(M_PI/2.0*x)*sin(M_PI*y);
+//	}
+//
+//	static long double ce(long double x, long double y){
+//			return  M_PI; //5.0/4.0*M_PI*M_PI;
+//	}
+
+
+	static long double u_exact(long double x, long double y){
+		return x*cos(M_PI/2.0 * x)*sin(M_PI*y);
 	}
+
 
 	static long double fe(long double x, long double y){
 			//
-			return (1.0-2.0*M_PI)*sin(M_PI*x)*sin(M_PI*y);
+			return (-1.0*M_PI)*sin(M_PI/2.0*x)*sin(M_PI*y);
 	}
 
 	static long double ce(long double x, long double y){
-			return M_PI;
+			return  5.0/4.0*M_PI*M_PI;
 	}
 
 	static long double phi(int i, int j, long double x, long double y){
