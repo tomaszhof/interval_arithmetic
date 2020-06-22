@@ -16,11 +16,21 @@
 #include <gsl/gsl_monte_vegas.h>
 
 class GSLIntegrator {
+private:
+	size_t calls = 500000;
 public:
 	GSLIntegrator();
 	virtual ~GSLIntegrator();
     double integrate(double (*f)(double * x_array, size_t dim, void * params), double a1, double b1, double a2, double b2, double* int_err);
     void display_results(char *title, double result, double error);
+
+	size_t getCalls() const {
+		return calls;
+	}
+
+	void setCalls(size_t calls = 500000) {
+		this->calls = calls;
+	}
 };
 
 #endif /* SRC_GSLINTEGRATOR_H_ */

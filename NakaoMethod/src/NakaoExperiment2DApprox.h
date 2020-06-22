@@ -1,7 +1,7 @@
 /*
  * NakaoExperiment2DApprox.h
  *
- *  Created on: Jul 21, 2018
+ *  Created on: Jun 10, 2020
  *      Author: numeric
  */
 
@@ -59,6 +59,8 @@ private:
 	const Interval<long double> i12 = {12.0, 12.0};
 	const Interval<long double> im11 = {-1.0, 1.0};
 
+	size_t integrator_calls = 500000;
+
 
 public:
 	NakaoExperiment2DApprox();
@@ -75,38 +77,56 @@ public:
 //	double g_int_c_ij7(double *k, size_t dim, void *params);
 	void execute();
 
-//	static long double u_exact(long double x, long double y){
-//		return (1.0 / M_PI) * sin(M_PI * x) * sin(M_PI * y); //x*cos(M_PI/2.0 * x)*sin(M_PI*y);
-//	}
-//
-//	static long double f(long double x, long double y){
-//		//(1.0-2.0*M_PI)*
-//		return sin(M_PI*x)*sin(M_PI*y);
-//	}
-//
-//	static long double fe(long double x, long double y){
-//			//
-//			return (1.0-2.0*M_PI)*sin(M_PI*x)*sin(M_PI*y); //(-1.0*M_PI)*sin(M_PI/2.0*x)*sin(M_PI*y);
-//	}
-//
-//	static long double ce(long double x, long double y){
-//			return  M_PI; //5.0/4.0*M_PI*M_PI;
-//	}
 
-
+//-------------------------------------------------------------
+//-------------------Nakao example 1---------------------------
+//-------------------------------------------------------------
 	static long double u_exact(long double x, long double y){
-		return x*cos(M_PI/2.0 * x)*sin(M_PI*y);
+		return (1.0 / M_PI) * sin(M_PI * x) * sin(M_PI * y);
 	}
-
 
 	static long double fe(long double x, long double y){
 			//
-			return (-1.0*M_PI)*sin(M_PI/2.0*x)*sin(M_PI*y);
+			return (1.0-2.0*M_PI)*sin(M_PI*x)*sin(M_PI*y);
 	}
 
 	static long double ce(long double x, long double y){
-			return  5.0/4.0*M_PI*M_PI;
+			return  M_PI; //5.0/4.0*M_PI*M_PI;
 	}
+
+////-------------------------------------------------------------
+////-------------------Nakao example 2---------------------------
+////-------------------------------------------------------------
+//	static long double u_exact(long double x, long double y){
+//		return 0.0;
+//	}
+//
+//	static long double fe(long double x, long double y){
+//			return (1.0-2.0*M_PI)*sin(M_PI*x)*sin(M_PI*y);
+//	}
+//
+//	static long double ce(long double x, long double y){
+//			return  20.0*x*y;
+//	}
+
+////-------------------------------------------------------------
+////--------------------TH example-------------------------------
+////-------------------------------------------------------------
+//	static long double u_exact(long double x, long double y){
+//		return x*cos(M_PI/2.0 * x)*sin(M_PI*y);
+//	}
+//
+//
+//	static long double fe(long double x, long double y){
+//			//
+//			return (-1.0*M_PI)*sin(M_PI/2.0*x)*sin(M_PI*y);
+//	}
+//
+//	static long double ce(long double x, long double y){
+//			return  5.0/4.0*M_PI*M_PI;
+//	}
+
+
 
 	static long double phi(int i, int j, long double x, long double y){
 			if ((i*h <= x) && (x <= (i+1.0)*h) && (j*h <= y) && (y <= (i+j+1.0)*h-x)){

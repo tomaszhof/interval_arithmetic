@@ -1,7 +1,7 @@
 /*
  * NakaoExperiment2DApprox.cpp
  *
- *  Created on: Jul 21, 2018
+ *  Created on: Jun 10, 2020
  *      Author: numeric
  */
 
@@ -13,12 +13,10 @@ int NakaoExperiment2DApprox::j = 0;
 long double NakaoExperiment2DApprox::h = 0.0;
 
 NakaoExperiment2DApprox::NakaoExperiment2DApprox() {
-	// TODO Auto-generated constructor stub
 	this->integrator = new GSLIntegrator();
 }
 
 NakaoExperiment2DApprox::~NakaoExperiment2DApprox() {
-	// TODO Auto-generated destructor stub
 }
 
 
@@ -40,9 +38,9 @@ void NakaoExperiment2DApprox::execute() {
 	//global setting
 	cout.setf(std::ios_base::scientific);
 
-	cout << "Solving the boundary value problem" << endl;
+	cout << "Solving the boundary value problem in general form:" << endl;
 	cout
-			<< "  -d^2u/dx^2 - d^2*u/dy^2 -pi*u = (2*pi - 1) * sin(pi*x)*sin(pi*y),"
+			<< "  -d^2u/dx^2 - d^2*u/dy^2 -c(x,y)*u = f(x,y),"
 			<< endl;
 	cout << "  u(x, 0) = u(0,y) = u(x,1) = u(1,y) = 0" << endl;
 	cout << "by the Galerkin approximation and Nakao''s method." << endl;
@@ -51,6 +49,17 @@ void NakaoExperiment2DApprox::execute() {
 	cout << "Enter the number of subinterval in [0,1]     n = ";
 	cin >> n;
 
+	cout << endl;
+	cout << "Do you want to set integration precision (y - yes, n - no) answer = ";
+	cin >> answer;
+
+	if (answer == 'y'){
+		cout << "integrator_calls = ";
+		cin >> integrator_calls;
+		integrator->setCalls(integrator_calls);
+	}
+
+	cout << endl;
 	while ((output != 's') && (output != 'f')) {
 		cout << "Select the output (s - screen, f - file) output = ";
 		cin >> output;
@@ -237,18 +246,17 @@ void NakaoExperiment2DApprox::execute() {
 			if (j > 1)
 				a1[l1 - 2] = bij_l;
 		}
-//		a1[n2 - 1] = d
-//				* (cos(PI * (i + j) * h) - sph * cos(PI * (i - j) * h));
-				long double testInt = d
-						* (cos(PI * (i + j) * h) - sph * cos(PI * (i - j) * h));
-		long double test_f_ij = (1.0 - 2.0 * M_PI)/(M_PI*M_PI)*(1.0 - cos(M_PI*h))*(1.0 / (h*h));
-		test_f_ij *= (cos(M_PI*(i+j)*h)-sph*cos((i-j)*h));
 
-		//(2.0 * PI-1.0) / (std::pow(M_PI, 2.0)) *
-		a1[n2 - 1] = MIF->item(i,j);// / (std::sqrt( 2.0)); //(2.0 * PI-1.0) / pow(PI * h, 2.0);
-		cout << "Integral(f_ij)_exact = " << testInt << endl;
-		cout << "Integral(f_ij)_approx = " << a1[n2 - 1] << endl;
-		cout << "Integral(f_ij)_approx_err = " << integral_err << endl;
+
+		a1[n2 - 1] = MIF->item(i,j);
+
+//		long double testInt = d
+//						* (cos(PI * (i + j) * h) - sph * cos(PI * (i - j) * h));
+//		long double test_f_ij = (1.0 - 2.0 * M_PI)/(M_PI*M_PI)*(1.0 - cos(M_PI*h))*(1.0 / (h*h));
+//		test_f_ij *= (cos(M_PI*(i+j)*h)-sph*cos((i-j)*h));
+//		cout << "Integral(f_ij)_exact = " << testInt << endl;
+//		cout << "Integral(f_ij)_approx = " << a1[n2 - 1] << endl;
+//		cout << "Integral(f_ij)_approx_err = " << integral_err << endl;
 		for (i = 1; i <= n1; ++i) {
 			rh = r[i - 1];
 			if (rh != 0)
@@ -338,7 +346,7 @@ void NakaoExperiment2DApprox::execute() {
 
 	for (i = 1; i <= n - 1; ++i)
 		for (j = 1; j <= n - 1; ++j) {
-			exact = u_exact(i*h, j*h); //i*h*cos(M_PI/2.0 * i *h)*sin(M_PI*j*h);//(1.0 / M_PI) * sin(M_PI * i * h) * sin(M_PI * j * h);
+			exact = u_exact(i*h, j*h);
 			if (output == 's') {
 				cout << "u(" << i * h << "," << j * h << ") = " << u[i][j]
 						<< endl;
@@ -375,64 +383,24 @@ void NakaoExperiment2DApprox::execute() {
 
 	ih2 = ISqr(ih, error);
 
-//	a = 4.0 / (h * h);
-//	tmpstr = boost::lexical_cast<string>(a);
-//	ia.a = LeftRead<long double>(tmpstr);
-//	ia.b = RightRead<long double>(tmpstr);
-
 	ia = i4/ih2;
 
-//	b = -1.0 / (h * h);
-//	tmpstr = boost::lexical_cast<string>(b);
-//	ib.a = LeftRead<long double>(tmpstr);
-//	ib.b = RightRead<long double>(tmpstr);
-
 	ib = im1 / ih2;
-
-//	tmpstr = boost::lexical_cast<string>(d);
-//	id.a = LeftRead<long double>(tmpstr);
-//	id.b = RightRead<long double>(tmpstr);
 
 	id = ICos(ipi * ih);
 	id = (i1 - id)/(ISqr(ipi * ih, error));
 	id = (i1 - (i2*ipi)) * id;
 
-//	c = std::sqrt(2.0) / 2.0;
-//	tmpstr = boost::lexical_cast<string>(c);
-//	ic.a = LeftRead<long double>(tmpstr);
-//	ic.b = RightRead<long double>(tmpstr);
-//	ic = im11 * ic;
-
 	ic = im11 * (Interval<long double>::ISqr2()/i2);
 
-//	tmpstr = boost::lexical_cast<string>(PI / 12.0);
-//	ipi.a = LeftRead<long double>(tmpstr);
-//	ipi.b = RightRead<long double>(tmpstr);
 
 	ipi12 = ipi/i12;
 
-//	tmpstr = boost::lexical_cast<string>(h);
-//	ih.a = LeftRead<long double>(tmpstr);
-//	ih.b = RightRead<long double>(tmpstr);
-
-//	tmpstr = boost::lexical_cast<string>(pow(PI * h, 2.0) / 2.0);
-//	ia1.a = LeftRead<long double>(tmpstr);
-//	ia1.b = RightRead<long double>(tmpstr);
-
 	ia1 = ISqr(ipi*ih, error) / i2;
 
-//	beta = (2.0 / PI - 4.0) * (1.0 - cos(PI * h));
-//	tmpstr = boost::lexical_cast<string>(beta);
-//	ib1.a = LeftRead<long double>(tmpstr);
-//	ib1.b = RightRead<long double>(tmpstr);
 
 	ib1 = i1 - ICos(ipi*ih);
 	ib1 = ((i2/ipi) - i4) * ib1;
-
-//	tmpstr = boost::lexical_cast<string>(
-//			pow((2.0 * PI - 1.0), 2.0) / 4.0);
-//	ic1.a = LeftRead<long double>(tmpstr);
-//	ic1.b = RightRead<long double>(tmpstr);
 
 	ic1 = ISqr(((i2 * ipi) - i1), error) / i4;
 
@@ -557,40 +525,13 @@ void NakaoExperiment2DApprox::execute() {
 				}
 			}
 
-			//id1 = ipi12 * id1;
-
-
-			///
-			d = std::cos(M_PI * h);
-			d = (1.0- d)/(M_PI*M_PI);
-			d = (1.0 - (2.0*M_PI)) * d;
-
-			///
-			//d = cos(PI * (i + j) * h) - sph * cos(PI * (i - j) * h);
-//			d = integrator->integrate(&g_f_phi, 0, 1, 0, 1,&integral_err)*(-1.0 / (h*h)); //integrator->integrate(&g_f_phi, 0, 1, 0, 1,&integral_err)*(-1.0/(std::sqrt( 2.0)))*(1/d);
-//			tmpstr = boost::lexical_cast<string>(integral_err);
-//			intErr = IntRead<long double>(tmpstr);
-//
-//			tmpstr = boost::lexical_cast<string>(d);
-//			iz.a = LeftRead<long double>(tmpstr);
-//			iz.b = RightRead<long double>(tmpstr);
 			iz = MID->item(i,j);
 
-			id1 = id1 + iz + im11*intErr;//(id * iz);
-
-//
-//			iierr.a = -integral_err;
-//			iierr.b = integral_err;
-//			tmpstr = boost::lexical_cast<string>(d);
-//			iz.a = LeftRead<long double>(tmpstr);
-//			iz.b = RightRead<long double>(tmpstr);
-//			id1 = id1 + iz + iierr;
+			id1 = id1 + iz + im11*intErr;
 
 			tmpstr = boost::lexical_cast<string>(alpha_km1[i][j]);
 			iz.a = LeftRead<long double>(tmpstr);
 			iz.b = RightRead<long double>(tmpstr);
-
-
 
 			interval_a1[n2 - 1] = id1 + (ic * iz);
 			for (int i = 1; i <= n1; ++i) {
@@ -796,8 +737,7 @@ void NakaoExperiment2DApprox::execute() {
 								<< ", " << iu_k[i][j].b << "]" << endl;
 					}
 
-					exact =u_exact(i*h, j*h); //i*h*cos(M_PI/2.0 * i*h)*sin(M_PI*j*h); // (1.0 / PI) * sin(PI * i * h)
-							//* sin(PI * j * h);
+					exact =u_exact(i*h, j*h);
 					if (output == 's')
 						cout << "           exact = " << exact << endl;
 					else
@@ -819,19 +759,10 @@ void NakaoExperiment2DApprox::execute() {
 		}
 	} //end of while(!finish) loop
 
-//	for (int i = 0; i < n; ++i) {
-//			delete[] alpha_k[i];
-//			delete[] alpha_km1[i];
-//			delete[] iu_k[i];
-//			delete[] iu_km1[i];
-//		}
 
-	//delete[] interval_a1;
 	delete[] interval_b1;
 	delete[] interval_x;
 	delete[] r;
-	//delete[] iu_km1;
-	//delete[] iu_k;
 
 	if (output == 'f')
 		results.close();

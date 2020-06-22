@@ -30,8 +30,6 @@ double GSLIntegrator::integrate(double (*f)(double * x_array, size_t dim, void *
 
 		gsl_monte_function G = { f, 2, 0 };
 
-		size_t calls = 500000;
-
 		gsl_rng_env_setup();
 
 		T = gsl_rng_default;
