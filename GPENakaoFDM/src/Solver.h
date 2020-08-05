@@ -8,6 +8,8 @@
 #ifndef SOLVER_H_
 #define SOLVER_H_
 
+#include <chrono>
+
 #include "Utils.h"
 #include "BoundaryConditions.h"
 
@@ -40,6 +42,7 @@ protected:
 	long double maxQ;
 	long double maxR;
 	long double maxS;
+	long int duration;
 	//steps sizes
 	T h;
 	T k;

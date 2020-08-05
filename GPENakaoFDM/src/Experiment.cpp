@@ -129,6 +129,7 @@ template<typename T>
 void Experiment<T>::Execute() {
 	if (_solver_initialized) {
 		solver->Execute();
+
 		solver->WriteResults();
 	}
 }

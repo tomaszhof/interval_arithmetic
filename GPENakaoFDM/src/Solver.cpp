@@ -66,6 +66,8 @@ void Solver<T>::WriteFPResultsToFile() {
 	filestr << "; status = " << st << "; time = " << time << " [s]" << endl;
 	filestr << " u - a solution obtained by interval method" << endl;
 	filestr << " eu - the exact (approximate) solution" << endl;
+	filestr << endl;
+	filestr << " execution time: " << duration << " [ms]" << endl;
 
 	if (st != 0)
 		return;
@@ -174,6 +176,8 @@ void Solver<T>::WriteIntervalResultsToFile() {
 	filestr << "status = " << st << ", time = " << time << " [s]" << endl;
 	filestr << " u - a solution obtained by interval method" << endl;
 	filestr << " eu - the exact (approximate) solution" << endl;
+	filestr << endl;
+	filestr << " execution time: " << duration << " [ms]" << endl;
 
 	filestr.setf(std::ios::scientific);
 	if (st != 0)
@@ -376,6 +380,7 @@ void Solver<T>::SetParameters(Parameters<long double>& p) {
 
 template<typename T>
 void Solver<T>::Execute() {
+	auto t1 = std::chrono::high_resolution_clock::now();
 	switch (params.exp_mode) {
 	case CONST_M_EXP:
 		this->ConstMExperiment();
@@ -387,6 +392,8 @@ void Solver<T>::Execute() {
 		this->SolveInterval();
 		break;
 	}
+	auto t2 = std::chrono::high_resolution_clock::now();
+	duration = std::chrono::duration_cast<std::chrono::milliseconds>( t2 - t1 ).count();
 }
 
 template<typename T>

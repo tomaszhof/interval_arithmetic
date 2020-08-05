@@ -7,7 +7,6 @@
 //============================================================================
 
 #include <iostream>
-#include <chrono>
 
 #include "Interval.h"
 #include "Experiment.h"
@@ -21,11 +20,9 @@ int main(int ac, char *av[]) {
 	Experiment<long double>* exper = new Experiment<long double>(ac, av);
 	exper->Initialize();
 
-	auto t1 = std::chrono::high_resolution_clock::now();
+
 	exper->Execute();
-	auto t2 = std::chrono::high_resolution_clock::now();
-	auto duration = std::chrono::duration_cast<std::chrono::milliseconds>( t2 - t1 ).count();
-	cout << duration;
+
 
 	delete exper;
 	return 0;
