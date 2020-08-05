@@ -34,7 +34,7 @@ private:
 	int error, it, j1, jh, k, kh, l, l1, l2,
 	lh, n, n1, n2, p, q, rh;
 	long double abs_alpha, abs_alphaij,
-	beta, c, delta, epsilon, exact,
+	beta, c, delta, epsilon, exact, width,
 	max, norm_u, norm_uij, s, d, sph;
 	Interval<long double> ia, ia1, ialpha, ib, ib1, ibeta, ic, ic1,
 	id, id1, ih,ih2, imax, interval_s, ipi, ipi12, iz, iierr;
@@ -81,18 +81,18 @@ public:
 //-------------------------------------------------------------
 //-------------------Nakao example 1---------------------------
 //-------------------------------------------------------------
-	static long double u_exact(long double x, long double y){
-		return (1.0 / M_PI) * sin(M_PI * x) * sin(M_PI * y);
-	}
-
-	static long double fe(long double x, long double y){
-			//
-			return (1.0-2.0*M_PI)*sin(M_PI*x)*sin(M_PI*y);
-	}
-
-	static long double ce(long double x, long double y){
-			return  M_PI; //5.0/4.0*M_PI*M_PI;
-	}
+//	static long double u_exact(long double x, long double y){
+//		return (1.0 / M_PI) * sin(M_PI * x) * sin(M_PI * y);
+//	}
+//
+//	static long double fe(long double x, long double y){
+//			//
+//			return (1.0-2.0*M_PI)*sin(M_PI*x)*sin(M_PI*y);
+//	}
+//
+//	static long double ce(long double x, long double y){
+//			return  M_PI; //5.0/4.0*M_PI*M_PI;
+//	}
 
 ////-------------------------------------------------------------
 ////-------------------Nakao example 2---------------------------
@@ -112,19 +112,19 @@ public:
 ////-------------------------------------------------------------
 ////--------------------TH example-------------------------------
 ////-------------------------------------------------------------
-//	static long double u_exact(long double x, long double y){
-//		return x*cos(M_PI/2.0 * x)*sin(M_PI*y);
-//	}
-//
-//
-//	static long double fe(long double x, long double y){
-//			//
-//			return (-1.0*M_PI)*sin(M_PI/2.0*x)*sin(M_PI*y);
-//	}
-//
-//	static long double ce(long double x, long double y){
-//			return  5.0/4.0*M_PI*M_PI;
-//	}
+	static long double u_exact(long double x, long double y){
+		return x*cos(M_PI/2.0 * x)*sin(M_PI*y);
+	}
+
+
+	static long double fe(long double x, long double y){
+			//
+			return (-1.0*M_PI)*sin(M_PI/2.0*x)*sin(M_PI*y);
+	}
+
+	static long double ce(long double x, long double y){
+			return  5.0/4.0*M_PI*M_PI;
+	}
 
 
 

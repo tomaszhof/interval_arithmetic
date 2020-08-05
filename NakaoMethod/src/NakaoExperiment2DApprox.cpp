@@ -250,13 +250,14 @@ void NakaoExperiment2DApprox::execute() {
 
 		a1[n2 - 1] = MIF->item(i,j);
 
-//		long double testInt = d
-//						* (cos(PI * (i + j) * h) - sph * cos(PI * (i - j) * h));
-//		long double test_f_ij = (1.0 - 2.0 * M_PI)/(M_PI*M_PI)*(1.0 - cos(M_PI*h))*(1.0 / (h*h));
-//		test_f_ij *= (cos(M_PI*(i+j)*h)-sph*cos((i-j)*h));
-//		cout << "Integral(f_ij)_exact = " << testInt << endl;
-//		cout << "Integral(f_ij)_approx = " << a1[n2 - 1] << endl;
-//		cout << "Integral(f_ij)_approx_err = " << integral_err << endl;
+		long double testInt = d
+						* (cos(PI * (i + j) * h) - sph * cos(PI * (i - j) * h));
+		long double test_f_ij = (1.0 - 2.0 * M_PI)/(M_PI*M_PI)*(1.0 - cos(M_PI*h))*(1.0 / (h*h));
+		test_f_ij *= (cos(M_PI*(i+j)*h)-sph*cos((i-j)*h));
+//		cout << "------------------------" << endl;
+//		cout << "Integral(f_i=" << i << ", j=" << j << ")_exact = " << testInt << endl;
+//		cout << "Integral(f_i=" << i << ", j=" << j << ")_approx = " << a1[n2 - 1] << endl;
+//		cout << "Integral(f_i=" << i << ", j=" << j << ")_approx_err = " << integral_err << endl;
 		for (i = 1; i <= n1; ++i) {
 			rh = r[i - 1];
 			if (rh != 0)
@@ -738,10 +739,16 @@ void NakaoExperiment2DApprox::execute() {
 					}
 
 					exact =u_exact(i*h, j*h);
+					width = abs(iu_k[i][j].b - iu_k[i][j].a);
 					if (output == 's')
 						cout << "           exact = " << exact << endl;
 					else
 						results << "        exact = " << exact << endl;
+
+					if (output == 's')
+						cout << "           width = " << width << endl;
+					else
+						results << "        width = " << width << endl;
 				} // end for (i,j) loop
 		}
 
