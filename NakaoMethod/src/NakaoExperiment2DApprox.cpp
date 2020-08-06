@@ -65,6 +65,7 @@ void NakaoExperiment2DApprox::execute() {
 		cin >> output;
 	}
 
+	answer = 'n';
 	if (output == 'f') {
 		while (answer != 'y') {
 			cout << "Enter the name of file" << endl;
