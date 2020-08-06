@@ -99,6 +99,7 @@ void NakaoExperiment2DApprox::execute() {
 		cout << endl;
 	}
 
+	auto t1 = std::chrono::high_resolution_clock::now();
 	h = 1.0 / n;
 	n1 = (n - 1) * (n - 1);
 	n2 = n1 + 1;
@@ -187,7 +188,11 @@ void NakaoExperiment2DApprox::execute() {
 
 		}
 	}
+	auto t2 = std::chrono::high_resolution_clock::now();
+	duration = std::chrono::duration_cast<std::chrono::milliseconds>( t2 - t1 ).count();
 	cout << "Integration finished! Start calculations." << endl;
+	cout << endl << "Integration time: " << duration << " [ms]" << endl;
+	results << endl << "Integration time: " << duration << " [ms]" << endl;
 
 
 	r = new int[n1 + 1];

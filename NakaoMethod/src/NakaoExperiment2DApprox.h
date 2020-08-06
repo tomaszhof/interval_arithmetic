@@ -16,6 +16,7 @@
 #include <stdio.h>
 #include <boost/lexical_cast.hpp>
 #include <stdlib.h>
+#include <chrono>
 
 
 using namespace interval_arithmetic;
@@ -49,6 +50,7 @@ private:
 	fstream results;
 
 	long double aij, aij_l, aij_u, bij, bij_l, b_dash_ij, b_dash_ij_u, mhpm2;
+	long int duration = 0;
 
 	const Interval<long double> im1 = {-1.0, -1.0};
 	const Interval<long double> i0 = {0.0, 0.0};
