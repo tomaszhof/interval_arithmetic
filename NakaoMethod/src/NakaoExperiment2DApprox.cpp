@@ -192,8 +192,8 @@ void NakaoExperiment2DApprox::execute() {
 	auto t2 = std::chrono::high_resolution_clock::now();
 	duration = std::chrono::duration_cast<std::chrono::milliseconds>( t2 - t1 ).count();
 	cout << "Integration finished! Start calculations." << endl;
-	cout << endl << "Integration time: " << duration << " [ms]" << endl;
-	results << endl << "Integration time: " << duration << " [ms]" << endl;
+	cout << endl << "Integration time: " << duration << " [ms]" << endl << endl;
+	results << endl << "Integration time: " << duration << " [ms]" << endl << endl;
 
 
 	r = new int[n1 + 1];
@@ -772,6 +772,14 @@ void NakaoExperiment2DApprox::execute() {
 		}
 	} //end of while(!finish) loop
 
+	auto t3 = std::chrono::high_resolution_clock::now();
+	duration = std::chrono::duration_cast<std::chrono::milliseconds>( t3 - t2 ).count();
+	cout << endl << "Iterative method time: " << duration << " [ms]" << endl << endl;
+	results << endl << "Iterative method time: " << duration << " [ms]" << endl << endl;
+
+	duration = std::chrono::duration_cast<std::chrono::milliseconds>( t3 - t1 ).count();
+	cout << endl << "Nakao method time (integration + iteration): " << duration << " [ms]" << endl << endl;
+	results << endl << "Nakao method time (integration + iteration): " << duration << " [ms]" << endl << endl;
 
 	delete[] interval_b1;
 	delete[] interval_x;
