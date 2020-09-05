@@ -50,7 +50,7 @@ void NakaoExperiment2DApprox::execute() {
 	cin >> n;
 
 	cout << endl;
-	cout << "Do you want to set integration precision (y - yes, n - no) answer = ";
+	cout << "Do you want to set integration precision [ default value is: " << integrator->getCalls() << " ] (y - yes, n - no) answer = ";
 	cin >> answer;
 
 	if (answer == 'y'){
