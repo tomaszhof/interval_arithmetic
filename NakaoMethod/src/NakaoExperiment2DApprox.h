@@ -49,7 +49,7 @@ private:
 	string file_name, left, right, st, tmpstr;
 	fstream results;
 
-	long double aij, aij_l, aij_u, bij, bij_l, b_dash_ij, b_dash_ij_u, mhpm2;
+	long double aij, aij_l, aij_u, bij, bij_l, b_dash_ij, b_dash_ij_u, hpm2, mhpm2;
 	long int duration = 0;
 
 	const Interval<long double> im1 = {-1.0, -1.0};

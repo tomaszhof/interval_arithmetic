@@ -558,102 +558,173 @@ Interval<T> ISin(const Interval<T>& x) {
 	return r;
 }
 
+//template<typename T>
+//Interval<T> ICos(const Interval<T>& x) {
+//	bool is_even, finished;
+//	int k;
+//	string left, right;
+//	T eps = 1E-18; //Interval<T>::GetEpsilon();
+//	T diff = std::numeric_limits<T>::max();
+//
+//	Interval<T> d, c, w, w1, x2, tmp;
+//	tmp = x;
+////	if (x.a > x.b)
+////		st = 1;
+////	else
+//	if (x.a < x.b)
+//	{
+//		c.a = 1;
+//		c.b = 1;
+//		w = c;
+//		x2 = IMul(x, x);
+//		k = 1;
+//		is_even = true;
+//		finished = false;
+////		st = 0;
+//
+//		do {
+//			d.a = k * (k + 1);
+//			d.b = d.a;
+//			c = IMul(c, IDiv(x2, d));
+//			if (is_even)
+//				w1 = ISub(w, c);
+//			else
+//				w1 = IAdd(w, c);
+//
+//			T oldMid = (w.a + w.b) / 2;
+//			T newMid = (w1.a + w1.b) / 2;
+//			T currDiff = abs(oldMid - newMid);
+//			finished = (currDiff > diff);
+//			diff = currDiff;
+//			if ((w.a != 0) && (w.b != 0)) {
+//				if ((abs(w.a - w1.a) / abs(w.a) < eps)
+//						&& (abs(w.b - w1.b) / abs(w.b) < eps))
+//					finished = true;
+//				else
+//					;
+//			} else if ((w.a == 0) && (w.b != 0)) {
+//				if ((abs(w.a - w1.a) < eps)
+//						&& (abs(w.b - w1.b) / abs(w.b) < eps))
+//					finished = true;
+//				else
+//					;
+//			}
+//
+//			else if (w.a != 0) {
+//				if ((abs(w.a - w1.a) / abs(w.a) < eps)
+//						& (abs(w.b - w1.b) < eps))
+//					finished = true;
+//				else if ((abs(w.a - w1.a) < eps) & (abs(w.b - w1.b) < eps))
+//					finished = true;
+//			}
+//
+//			if (finished) {
+//				if (w1.b > 1) {
+//					w1.b = 1;
+//					if (w1.a > 1)
+//						w1.a = 1;
+//				}
+//				if (w1.a < -1) {
+//					w1.a = -1;
+//					if (w1.b < -1)
+//						w1.b = -1;
+//				}
+//				return w1;
+//			} else {
+//				w = w1;
+//				k = k + 2;
+//				is_even = !is_even;
+////				if ((w.a <= -1.0)&&(w.b >=-1.0))
+////								{
+////									finished = true;
+////									w = {0,0};
+////									return w;
+////								}
+//				if (k > 100000) {
+//					T wdth = w.GetWidth();
+//					tmp.IEndsToStrings(left, right);
+//					cout << "x=[" << left << "," << right << "]" << endl;
+//					w.IEndsToStrings(left, right);
+//					cout << "[" << left << "," << right << "]" << endl;
+//					cout << "      width =  " << std::setprecision(17) << wdth
+//							<< endl;
+//				}
+//			}
+//		} while (!(finished || (k > INT_MAX / 2)));
+//	}
+////	if (!finished)
+////		st = 2;
+//
+//	Interval<T> r;
+//	r.a = 0;
+//	r.b = 0;
+//	return r;
+//}
+
 template<typename T>
-Interval<T> ICos(const Interval<T>& x) {
+Interval<T> ICos(const Interval<T> &x) {
+	Interval<T> c, d, w, w1, x2;
+	int k, st;
 	bool is_even, finished;
-	int k;
-	string left, right;
-	T eps = 1E-18; //Interval<T>::GetEpsilon();
-	T diff = std::numeric_limits<T>::max();
 
-	Interval<T> d, c, w, w1, x2, tmp;
-	tmp = x;
-//	if (x.a > x.b)
-//		st = 1;
-//	else
-	if (x.a < x.b)
-	{
-		c.a = 1;
-		c.b = 1;
-		w = c;
-		x2 = IMul(x, x);
-		k = 1;
-		is_even = true;
-		finished = false;
-//		st = 0;
+	c.a = 1;
+	c.b = 1;
+	w = c;
+	x2 = IMul(x, x);
+	k = 1;
+	is_even = true;
+	finished = false;
+	st = 0;
 
-		do {
-			d.a = k * (k + 1);
-			d.b = d.a;
-			c = IMul(c, IDiv(x2, d));
-			if (is_even)
-				w1 = ISub(w, c);
-			else
-				w1 = IAdd(w, c);
-
-			T oldMid = (w.a + w.b) / 2;
-			T newMid = (w1.a + w1.b) / 2;
-			T currDiff = abs(oldMid - newMid);
-			finished = (currDiff > diff);
-			diff = currDiff;
-			if ((w.a != 0) && (w.b != 0)) {
-				if ((abs(w.a - w1.a) / abs(w.a) < eps)
-						&& (abs(w.b - w1.b) / abs(w.b) < eps))
+	do {
+		d.a = k * (k + 1);
+		d.b = d.a;
+		c = IMul(c, IDiv(x2, d));
+		if (is_even) {
+			w1 = ISub(w, c);
+		} else {
+			w1 = IAdd(w, c);
+		}
+		if ((w.a != 0) && (w.b != 0)) {
+			if (((abs(w.a - w1.a) / abs(w.a)) < 1e-18)
+					&& (abs(w.b - w1.b) / abs(w.b) < 1e-18))
+				finished = true;
+		} else {
+			if ((w.a == 0) && (w.b != 0)) {
+				if ((abs(w.a - w1.a) < 1e-18)
+						&& (abs(w.b - w1.b) / abs(w.b) < 1e-18)) {
 					finished = true;
-				else
-					;
-			} else if ((w.a == 0) && (w.b != 0)) {
-				if ((abs(w.a - w1.a) < eps)
-						&& (abs(w.b - w1.b) / abs(w.b) < eps))
-					finished = true;
-				else
-					;
-			}
-
-			else if (w.a != 0) {
-				if ((abs(w.a - w1.a) / abs(w.a) < eps)
-						& (abs(w.b - w1.b) < eps))
-					finished = true;
-				else if ((abs(w.a - w1.a) < eps) & (abs(w.b - w1.b) < eps))
-					finished = true;
-			}
-
-			if (finished) {
-				if (w1.b > 1) {
-					w1.b = 1;
-					if (w1.a > 1)
-						w1.a = 1;
 				}
-				if (w1.a < -1) {
-					w1.a = -1;
-					if (w1.b < -1)
-						w1.b = -1;
-				}
-				return w1;
-			} else {
-				w = w1;
-				k = k + 2;
-				is_even = !is_even;
-//				if ((w.a <= -1.0)&&(w.b >=-1.0))
-//								{
-//									finished = true;
-//									w = {0,0};
-//									return w;
-//								}
-				if (k > 100000) {
-					T wdth = w.GetWidth();
-					tmp.IEndsToStrings(left, right);
-					cout << "x=[" << left << "," << right << "]" << endl;
-					w.IEndsToStrings(left, right);
-					cout << "[" << left << "," << right << "]" << endl;
-					cout << "      width =  " << std::setprecision(17) << wdth
-							<< endl;
-				}
+			} else if (w.a != 0) {
+				if ((abs(w.a - w1.a) / abs(w.a) < 1e-18)
+						&& (abs(w.b - w1.b) < 1e-18))
+					finished = true;
+			} else if ((abs(w.a - w1.a) < 1e-18) && (abs(w.b - w1.b) < 1e-18))
+				finished = true;
+
+		}
+		if (finished) {
+			if (w1.b > 1) {
+				w1.b = 1;
+				if (w1.a > 1)
+					w1.a = 1;
 			}
-		} while (!(finished || (k > INT_MAX / 2)));
-	}
-//	if (!finished)
-//		st = 2;
+			if (w1.a < -1) {
+				w1.a = -1;
+				if (w1.b < -1)
+					w1.b = -1;
+			}
+			return w1;
+		} else {
+			w = w1;
+			k = k + 2;
+			is_even = !is_even;
+		}
+
+	} while (!finished || (k > INT_MAX / 2));
+
+	if (!finished)
+		st = 2;
 
 	Interval<T> r;
 	r.a = 0;

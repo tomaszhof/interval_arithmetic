@@ -148,7 +148,6 @@ Interval<T> Example09<T>::PHI2(const Interval<T>& ix, int& st)
 
 	r = IExp(ithree * ix);
 	return r;
-	return r;
 }
 
 template<typename T>

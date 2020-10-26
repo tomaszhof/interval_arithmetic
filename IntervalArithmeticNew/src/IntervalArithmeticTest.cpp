@@ -28,18 +28,18 @@ int main(int ac, char *av[]) {
 //	delete tester;
 
 	//experiment for the Generalized Poisson Equation
-//	Experiment<long double>* exper = new Experiment<long double>(ac, av);
-//	exper->Initialize();
-//	exper->Execute();
-//	delete exper;
+	Experiment<long double>* exper = new Experiment<long double>(ac, av);
+	exper->Initialize();
+	exper->Execute();
+	delete exper;
 
 //	NakaoExperiment* exper = new NakaoExperiment();
 //	exper->execute();
 //	delete exper;
 
-	NakaoExperiment2D* exper = new NakaoExperiment2D();
-	exper->execute();
-	delete exper;
+//	NakaoExperiment2D* exper = new NakaoExperiment2D();
+//	exper->execute();
+//	delete exper;
 
 	return 0;
 }
