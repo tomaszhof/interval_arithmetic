@@ -7,6 +7,7 @@
 
 #include "NakaoExperiment2DApprox.h"
 #include "Matrix2D.h"
+//#include <omp.h>
 
 int NakaoExperiment2DApprox::i = 0;
 int NakaoExperiment2DApprox::j = 0;
@@ -14,6 +15,7 @@ long double NakaoExperiment2DApprox::h = 0.0;
 
 NakaoExperiment2DApprox::NakaoExperiment2DApprox() {
 	this->integrator = new GSLIntegrator();
+	this->bintegrator = new BoostIntegrator();
 }
 
 NakaoExperiment2DApprox::~NakaoExperiment2DApprox() {
@@ -22,7 +24,7 @@ NakaoExperiment2DApprox::~NakaoExperiment2DApprox() {
 
 void NakaoExperiment2DApprox::execute() {
 
-	double integral_err = 0.0;
+	long double integral_err = 0.0;
 	Interval<long double> intErr = {0.0, 0.0};
 	long double tmp_int_res = 0.0;
 
@@ -122,17 +124,19 @@ void NakaoExperiment2DApprox::execute() {
 
 	for (i=0; i<n;i++){
 		for (j=0; j<n;j++){
-			tmp_int_res = integrator->integrate(&g_int_c_ij1, 0, 1, 0, 1,&integral_err)*(1.0 / (h*h));
-			integral_err = integral_err*(1.0 / (h*h));
+			//tmp_int_res = integrator->integrate(&g_int_c_ij1, 0, 1, 0, 1,&integral_err)*(1.0 / (h*h));
+			tmp_int_res = bintegrator->integrate(&bg_int_c_ij1, 0, 1, 0, 1,&integral_err)*(1.0L / (h*h));
+			integral_err = integral_err*(1.0L / (h*h));
 			tmpstr = boost::lexical_cast<string>(tmp_int_res);
 			iIntCij1 = IntRead<long double>(tmpstr);
-			intErr.a = - integral_err;
+			intErr.a = integral_err;
 			intErr.b = integral_err;
 			iIntCij1 = iIntCij1 + im11 * intErr;
 			MIC_1->item(i,j) = iIntCij1;
 
-			tmp_int_res = integrator->integrate(&g_int_c_ij2, 0, 1, 0, 1,&integral_err)*(1.0 / (h*h));
-			integral_err = integral_err*(1.0 / (h*h));
+			//tmp_int_res = integrator->integrate(&g_int_c_ij2, 0, 1, 0, 1,&integral_err)*(1.0 / (h*h));
+			tmp_int_res = bintegrator->integrate(&bg_int_c_ij2, 0, 1, 0, 1,&integral_err)*(1.0L / (h*h));
+			integral_err = integral_err*(1.0L / (h*h));
 			tmpstr = boost::lexical_cast<string>(tmp_int_res);
 			iIntCij2 = IntRead<long double>(tmpstr);
 			intErr.a = integral_err;
@@ -140,8 +144,9 @@ void NakaoExperiment2DApprox::execute() {
 			iIntCij2 = iIntCij2 + (im11 * intErr);
 			MIC_2->item(i,j) = iIntCij2;
 
-			tmp_int_res = integrator->integrate(&g_int_c_ij3, 0, 1, 0, 1,&integral_err)*(1.0 / (h*h));
-			integral_err = integral_err*(1.0 / (h*h));
+			//tmp_int_res = integrator->integrate(&g_int_c_ij3, 0, 1, 0, 1,&integral_err)*(1.0 / (h*h));
+			tmp_int_res = bintegrator->integrate(&bg_int_c_ij3, 0, 1, 0, 1,&integral_err)*(1.0L / (h*h));
+			integral_err = integral_err*(1.0L / (h*h));
 			tmpstr = boost::lexical_cast<string>(tmp_int_res);
 			iIntCij3 = IntRead<long double>(tmpstr);
 			intErr.a = integral_err;
@@ -149,8 +154,9 @@ void NakaoExperiment2DApprox::execute() {
 			iIntCij3 = iIntCij3 + (im11 * intErr);
 			MIC_3->item(i,j) = iIntCij3;
 
-			tmp_int_res = integrator->integrate(&g_int_c_ij4, 0, 1, 0, 1,&integral_err)*(1.0 / (h*h));
-			integral_err = integral_err*(1.0 / (h*h));
+			//tmp_int_res = integrator->integrate(&g_int_c_ij4, 0, 1, 0, 1,&integral_err)*(1.0 / (h*h));
+			tmp_int_res = bintegrator->integrate(&bg_int_c_ij4, 0, 1, 0, 1,&integral_err)*(1.0L / (h*h));
+			integral_err = integral_err*(1.0L / (h*h));
 			tmpstr = boost::lexical_cast<string>(tmp_int_res);
 			iIntCij4 = IntRead<long double>(tmpstr);
 			intErr.a = integral_err;
@@ -158,8 +164,9 @@ void NakaoExperiment2DApprox::execute() {
 			iIntCij4 = iIntCij4 + (im11 * intErr);
 			MIC_4->item(i,j) = iIntCij4;
 
-			tmp_int_res = integrator->integrate(&g_int_c_ij5, 0, 1, 0, 1,&integral_err)*(1.0 / (h*h));
-			integral_err = integral_err*(1.0 / (h*h));
+			//tmp_int_res = integrator->integrate(&g_int_c_ij5, 0, 1, 0, 1,&integral_err)*(1.0 / (h*h));
+			tmp_int_res = bintegrator->integrate(&bg_int_c_ij5, 0, 1, 0, 1,&integral_err)*(1.0L / (h*h));
+			integral_err = integral_err*(1.0L / (h*h));
 			tmpstr = boost::lexical_cast<string>(tmp_int_res);
 			iIntCij5 = IntRead<long double>(tmpstr);
 			intErr.a = integral_err;
@@ -168,8 +175,9 @@ void NakaoExperiment2DApprox::execute() {
 			MIC_5->item(i,j) = iIntCij5;
 
 
-			tmp_int_res = integrator->integrate(&g_int_c_ij6, 0, 1, 0, 1,&integral_err)*(1.0 / (h*h));
-			integral_err = integral_err*(1.0 / (h*h));
+			//tmp_int_res = integrator->integrate(&g_int_c_ij6, 0, 1, 0, 1,&integral_err)*(1.0 / (h*h));
+			tmp_int_res = bintegrator->integrate(&bg_int_c_ij6, 0, 1, 0, 1,&integral_err)*(1.0L / (h*h));
+			integral_err = integral_err*(1.0L / (h*h));
 			tmpstr = boost::lexical_cast<string>(tmp_int_res);
 			iIntCij6 = IntRead<long double>(tmpstr);
 			intErr.a = integral_err;
@@ -178,8 +186,9 @@ void NakaoExperiment2DApprox::execute() {
 			MIC_6->item(i,j) = iIntCij6;
 
 
-			tmp_int_res = integrator->integrate(&g_int_c_ij7, 0, 1, 0, 1,&integral_err)*(1.0 / (h*h));
-			integral_err = integral_err*(1.0 / (h*h));
+			//tmp_int_res = integrator->integrate(&g_int_c_ij7, 0, 1, 0, 1,&integral_err)*(1.0 / (h*h));
+			tmp_int_res = bintegrator->integrate(&bg_int_c_ij7, 0, 1, 0, 1,&integral_err)*(1.0L / (h*h));
+			integral_err = integral_err*(1.0L / (h*h));
 			tmpstr = boost::lexical_cast<string>(tmp_int_res);
 			iIntCij7 = IntRead<long double>(tmpstr);
 			intErr.a = integral_err;
@@ -187,13 +196,17 @@ void NakaoExperiment2DApprox::execute() {
 			iIntCij7 = iIntCij7 + (im11 * intErr);
 			MIC_7->item(i,j) = iIntCij7;
 
-			tmp_int_res = integrator->integrate(&g_f_phi, 0, 1, 0, 1,&integral_err)*(-1.0 / (h*h));
-			integral_err = integral_err*(1.0 / (h*h));
+			double ferr = 0.0;
+			tmp_int_res = integrator->integrate(&g_f_phi, 0, 1, 0, 1,&ferr);
+		    tmp_int_res = tmp_int_res*(-1.0 / (h*h));
+			integral_err = ferr;
+			//tmp_int_res = bintegrator->integrate(&bg_f_phi, 0, 1, 0, 1,&integral_err)*(-1.0L / (h*h));
+			//integral_err = integral_err*(-1.0L/ (h*h));
 			MIF->item(i,j) = tmp_int_res;
-			intErr.a = - integral_err;
+			intErr.a = integral_err;
 			intErr.b = integral_err;
 			tmpstr = boost::lexical_cast<string>(tmp_int_res);
-			MID->item(i,j) = IntRead<long double>(tmpstr) + intErr;
+			MID->item(i,j) = IntRead<long double>(tmpstr) + (im11 * intErr);
 
 		}
 	}
@@ -265,10 +278,10 @@ void NakaoExperiment2DApprox::execute() {
 
 		a1[n2 - 1] = MIF->item(i,j);
 
-		long double testInt = d
-						* (cos(PI * (i + j) * h) - sph * cos(PI * (i - j) * h));
-		long double test_f_ij = (1.0 - 2.0 * M_PI)/(M_PI*M_PI)*(1.0 - cos(M_PI*h))*(1.0 / (h*h));
-		test_f_ij *= (cos(M_PI*(i+j)*h)-sph*cos((i-j)*h));
+//		long double testInt = d
+//						* (cos(PI * (i + j) * h) - sph * cos(PI * (i - j) * h));
+//		long double test_f_ij = (1.0 - 2.0 * M_PI)/(M_PI*M_PI)*(1.0 - cos(M_PI*h))*(1.0 / (h*h));
+//		test_f_ij *= (cos(M_PI*(i+j)*h)-sph*cos((i-j)*h));
 //		cout << "------------------------" << endl;
 //		cout << "Integral(f_i=" << i << ", j=" << j << ")_exact = " << testInt << endl;
 //		cout << "Integral(f_i=" << i << ", j=" << j << ")_approx = " << a1[n2 - 1] << endl;
@@ -543,13 +556,15 @@ void NakaoExperiment2DApprox::execute() {
 
 			iz = MID->item(i,j);
 
-			id1 = id1 + iz + im11*intErr;
+			id1 = id1 + iz ;//* im11*intErr;
 
 			tmpstr = boost::lexical_cast<string>(alpha_km1[i][j]);
 			iz.a = LeftRead<long double>(tmpstr);
 			iz.b = RightRead<long double>(tmpstr);
 
 			interval_a1[n2 - 1] = id1 + (ic * iz);
+
+			//#pragma omp parallel for
 			for (int i = 1; i <= n1; ++i) {
 				rh = r[i - 1];
 				if (rh != 0) {
@@ -561,7 +576,7 @@ void NakaoExperiment2DApprox::execute() {
 			l = 0;
 			imax = i0;
 
-
+            //#pragma omp parallel for
 			for (j1 = 1; j1 <= n2; ++j1) {
 				if (r[j1 - 1] == 0) {
 					interval_s = interval_a1[j1 - 1];
@@ -596,11 +611,15 @@ void NakaoExperiment2DApprox::execute() {
 			imax = i1 / interval_a1[lh - 1];
 			r[jh - 1] = k;
 
+            //#pragma omp parallel for
 			for (i = 1; i <= p; ++i) {
 				interval_a1[i - 1] = imax * interval_a1[i - 1];
 			}
+
 			jh = 0;
 			q = 0;
+
+            //#pragma omp parallel for
 			for (j1 = 1; j1 <= kh; ++j1) {
 				interval_s = interval_x[q + lh - 1];
 				for (int i = 1; i <= p; ++i) {
@@ -613,6 +632,7 @@ void NakaoExperiment2DApprox::execute() {
 				q = q + p;
 			}
 
+            //#pragma omp parallel for
 			for (int i = 1; i <= p; ++i) {
 				if (i != lh) {
 					jh = jh + 1;
@@ -624,6 +644,7 @@ void NakaoExperiment2DApprox::execute() {
 				j = 0;
 		} //inner while loop
 
+        //#pragma omp parallel for
 		for (k = 1; k <= n1; ++k) {
 			rh = r[k - 1];
 			if (rh != k) {
@@ -642,6 +663,7 @@ void NakaoExperiment2DApprox::execute() {
 			}
 		}
 
+        //#pragma omp parallel for
 		for (int i = 1; i <= n - 1; ++i)
 			for (int j = 1; j <= n - 1; ++j) {
 				iu_k[i][j] = interval_x[(i - 1) * (n - 1) + j - 1];
@@ -663,6 +685,7 @@ void NakaoExperiment2DApprox::execute() {
 			for (int j = 1; j <= n - 1; ++j) {
 				d = cos(PI * (i + j) * h) - sph * cos(PI * (i - 1) * h);
 				tmpstr = boost::lexical_cast<string>(d);
+//				ibeta = IntRead<long double>(tmpstr);
 				ibeta.a = LeftRead<long double>(tmpstr);
 				ibeta.b = RightRead<long double>(tmpstr);
 				ibeta = ib1 * ibeta * iu_km1[i][j];
@@ -672,6 +695,7 @@ void NakaoExperiment2DApprox::execute() {
 				if (error == 0) {
 					tmpstr = boost::lexical_cast<string>(
 					PI * h * alpha_km1[i][j]);
+					id1 = IntRead<long double>(tmpstr);
 					id1.a = LeftRead<long double>(tmpstr);
 					id1.b = RightRead<long double>(tmpstr);
 					ibeta = ih * (ibeta + id1);

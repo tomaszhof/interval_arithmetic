@@ -10,6 +10,7 @@
 
 #include "Interval.h"
 #include "GSLIntegrator.h"
+#include "BoostIntegrator.h"
 #include <string>
 #include <fstream>
 #include <math.h>
@@ -30,6 +31,7 @@ class NakaoExperiment2DApprox {
 
 private:
 	GSLIntegrator* integrator;
+	BoostIntegrator* bintegrator;
 	static int i, j;
 	static long double h;
 	int error, it, j1, jh, k, kh, l, l1, l2,
@@ -218,6 +220,50 @@ public:
 		double x = k[0];
 		double y = k[1];
 
+		return ce(x,y)*phi(i, j, x, y)*phi(i+1, j-1, x, y);
+
+	}
+
+
+	//duplicates for BoostIntegrator
+	static long double bg_f_phi(long double x, long double y){
+		return fe(x,y) * phi(i, j, x, y);
+
+	}
+
+	static long double bg_int_c_ij1(long double x, long double y){
+		return ce(x,y)*phi(i, j, x, y)*phi(i, j, x, y);
+
+	}
+
+	static long double bg_int_c_ij2(long double x, long double y){
+		return ce(x,y)*phi(i, j, x, y)*phi(i, j-1, x, y);
+
+	}
+
+	static long double bg_int_c_ij3(long double x, long double y){
+		return ce(x,y)*phi(i, j, x, y)*phi(i, j+1, x, y);
+
+	}
+
+	static long double bg_int_c_ij4(long double x, long double y){
+		return ce(x,y)*phi(i, j, x, y)*phi(i-1, j, x, y);
+
+	}
+
+	static long double bg_int_c_ij5(long double x, long double y){
+
+		return ce(x,y)*phi(i, j, x, y)*phi(i+1, j, x, y);
+
+	}
+
+	static long double bg_int_c_ij6(long double x, long double y){
+		return ce(x,y)*phi(i, j, x, y)*phi(i-1, j+1, x, y);
+
+	}
+
+
+	static long double bg_int_c_ij7(long double x, long double y){
 		return ce(x,y)*phi(i, j, x, y)*phi(i+1, j-1, x, y);
 
 	}

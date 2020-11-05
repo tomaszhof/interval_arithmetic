@@ -27,7 +27,7 @@
 #include <mpreal.h>
 
 using namespace std;
-using namespace mpfr;
+//using namespace mpfr;
 
 namespace interval_arithmetic {
 
@@ -75,7 +75,7 @@ template<typename T> Interval<T> DICos(const Interval<T> &x, int &st);
 template<typename T> Interval<T> DIExp(const Interval<T> &x);
 
 template<typename T> int SetRounding(int rounding);
-template<> Interval<mpreal> IntRead(const string &sa);
+template<> Interval<mpfr::mpreal> IntRead(const string &sa);
 
 template<typename T> class Interval {
 private:
@@ -197,7 +197,7 @@ inline Interval<T>& Interval<T>::operator =(Interval<T> i) {
 
 template<typename T>
 inline void Interval<T>::SetPrecision(IAPrecision p) {
-	mpreal::set_default_prec(p);
+	mpfr::mpreal::set_default_prec(p);
 	Interval<T>::precision = p;
 }
 
@@ -258,15 +258,15 @@ inline Interval<T> IntRead(const string &sa) {
 }
 
 template<>
-inline Interval<mpreal> IntRead(const string &sa) {
-	Interval<mpreal> r;
+inline Interval<mpfr::mpreal> IntRead(const string &sa) {
+	Interval<mpfr::mpreal> r;
 	mpfr_t rop;
-	mpfr_init2(rop, Interval<mpreal>::precision);
+	mpfr_init2(rop, Interval<mpfr::mpreal>::precision);
 	mpfr_set_str(rop, sa.c_str(), 10, MPFR_RNDD);
-	mpreal le = rop;
+	mpfr::mpreal le = rop;
 
 	mpfr_set_str(rop, sa.c_str(), 10, MPFR_RNDU);
-	mpreal re = rop;
+	mpfr::mpreal re = rop;
 
 	r.a = le;
 	r.b = re;
@@ -430,7 +430,7 @@ inline void Interval<T>::Initialize() {
 		Interval<T>::SetOutDigits(FLOAT_DIGITS);
 	}
 
-	if (strcmp(typeid(T).name(), typeid(mpreal).name()) == 0) {
+	if (strcmp(typeid(T).name(), typeid(mpfr::mpreal).name()) == 0) {
 		Interval<T>::SetPrecision(MPREAL_PREC);
 		Interval<T>::SetOutDigits(FLOAT_DIGITS);
 	}
@@ -1564,7 +1564,7 @@ inline Interval<T> operator /(Interval<T> x, const Interval<T> &y) {
 }
 
 template<>
-inline void Interval<mpreal>::IEndsToStrings(string &left, string &right) {
+inline void Interval<mpfr::mpreal>::IEndsToStrings(string &left, string &right) {
 	mpfr_t rop;
 	mpfr_exp_t exponent;
 	mpfr_init2(rop, precision);
@@ -1575,7 +1575,7 @@ inline void Interval<mpreal>::IEndsToStrings(string &left, string &right) {
 	str = buffer;
 
 	stringstream ss;
-	int prec = std::numeric_limits<mpreal>::digits10();
+	int prec = std::numeric_limits<mpfr::mpreal>::digits10();
 	ss.setf(std::ios_base::scientific);
 	bool minus = (str[0] == '-');
 	int splitpoint = minus ? 1 : 0;
@@ -1597,18 +1597,18 @@ inline void Interval<mpreal>::IEndsToStrings(string &left, string &right) {
 }
 
 template<>
-inline mpreal DIntWidth<mpreal>(const Interval<mpreal> &x) {
-	mpreal w1, w2;
+inline mpfr::mpreal DIntWidth<mpfr::mpreal>(const Interval<mpfr::mpreal> &x) {
+	mpfr::mpreal w1, w2;
 
-	mpreal::set_default_rnd(MPFR_RNDU);
+	mpfr::mpreal::set_default_rnd(MPFR_RNDU);
 	w1 = x.b - x.a;
 	if (w1 < 0)
 		w1 = -w1;
-	mpreal::set_default_rnd(MPFR_RNDD);
+	mpfr::mpreal::set_default_rnd(MPFR_RNDD);
 	w2 = x.b - x.a;
 	if (w2 < 0)
 		w2 = -w2;
-	mpreal::set_default_rnd(MPFR_RNDN);
+	mpfr::mpreal::set_default_rnd(MPFR_RNDN);
 	if (w1 > w2)
 		return w1;
 	else
@@ -1637,7 +1637,7 @@ template long double DIntWidth(const Interval<long double> &x);
 template class Interval<long double> ;
 template class Interval<double> ;
 template class Interval<float> ;
-template class Interval<mpreal> ;
+template class Interval<mpfr::mpreal> ;
 
 template<typename T> IAMode Interval<T>::mode = PINT_MODE;
 template<typename T> IAOutDigits Interval<T>::outdigits = LONGDOUBLE_DIGITS;
@@ -1646,7 +1646,7 @@ template<typename T> IAOutDigits Interval<T>::outdigits = LONGDOUBLE_DIGITS;
 //template<> IAPrecision Interval<double>::precision = DOUBLE_PREC;
 //template<> IAPrecision Interval<float>::precision = FLOAT_PREC;
 
-template<> IAPrecision Interval<mpreal>::precision = MPREAL_PREC;
+template<> IAPrecision Interval<mpfr::mpreal>::precision = MPREAL_PREC;
 template<typename T> IAPrecision Interval<T>::precision = LONGDOUBLE_PREC;
 //template IAOutDigits Interval<mpreal>::outdigits = LONGDOUBLE_DIGITS;
 
