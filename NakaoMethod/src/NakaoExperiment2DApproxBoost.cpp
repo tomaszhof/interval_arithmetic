@@ -1,29 +1,29 @@
 /*
- * NakaoExperiment2DApprox.cpp
+ * NakaoExperiment2DApproxBoost.cpp
  *
  *  Created on: Jun 10, 2020
  *      Author: numeric
  */
 
-#include "NakaoExperiment2DApprox.h"
+#include "NakaoExperiment2DApproxBoost.h"
 #include "Matrix2D.h"
+//#include <omp.h>
 
-int NakaoExperiment2DApprox::i = 0;
-int NakaoExperiment2DApprox::j = 0;
-long double NakaoExperiment2DApprox::h = 0.0;
+int NakaoExperiment2DApproxBoost::i = 0;
+int NakaoExperiment2DApproxBoost::j = 0;
+long double NakaoExperiment2DApproxBoost::h = 0.0;
 
-NakaoExperiment2DApprox::NakaoExperiment2DApprox() {
+NakaoExperiment2DApproxBoost::NakaoExperiment2DApproxBoost() {
 	this->integrator = new GSLIntegrator();
 	this->bintegrator = new BoostIntegrator();
 }
 
-NakaoExperiment2DApprox::~NakaoExperiment2DApprox() {
+NakaoExperiment2DApproxBoost::~NakaoExperiment2DApproxBoost() {
 }
 
 
-void NakaoExperiment2DApprox::execute() {
+void NakaoExperiment2DApproxBoost::execute() {
 
-//	double integral_err = 0.0;
 	long double integral_err = 0.0;
 	Interval<long double> intErr = {0.0, 0.0};
 	long double tmp_int_res = 0.0;
@@ -108,6 +108,7 @@ void NakaoExperiment2DApprox::execute() {
 
 	auto t1 = std::chrono::high_resolution_clock::now();
 	h = 1.0 / n;
+	h2 = h*h;
 	np1 = n+1;
 	n1 = (n - 1) * (n - 1);
 	n2 = n1 + 1;
@@ -116,237 +117,139 @@ void NakaoExperiment2DApprox::execute() {
 	cout << "Preparing integrals coefficients... (it may take some time)" << endl;
 
 
-	Matrix2D<Interval<long double>>* MIC_1 = new Matrix2D<Interval<long double>>(np1, np1);
-	Matrix2D<Interval<long double>>* MIC_2 = new Matrix2D<Interval<long double>>(np1, np1);
-	Matrix2D<Interval<long double>>* MIC_3 = new Matrix2D<Interval<long double>>(np1, np1);
-	Matrix2D<Interval<long double>>* MIC_4 = new Matrix2D<Interval<long double>>(np1, np1);
-	Matrix2D<Interval<long double>>* MIC_5 = new Matrix2D<Interval<long double>>(np1, np1);
-	Matrix2D<Interval<long double>>* MIC_6 = new Matrix2D<Interval<long double>>(np1, np1);
-	Matrix2D<Interval<long double>>* MIC_7 = new Matrix2D<Interval<long double>>(np1, np1);
+	Matrix2D<Interval<long double>>* MIC_1 = new Matrix2D<Interval<long double>>(n2, n2);
+	Matrix2D<Interval<long double>>* MIC_2 = new Matrix2D<Interval<long double>>(n2, n2);
+	Matrix2D<Interval<long double>>* MIC_3 = new Matrix2D<Interval<long double>>(n2, n2);
+	Matrix2D<Interval<long double>>* MIC_4 = new Matrix2D<Interval<long double>>(n2, n2);
+	Matrix2D<Interval<long double>>* MIC_5 = new Matrix2D<Interval<long double>>(n2, n2);
+	Matrix2D<Interval<long double>>* MIC_6 = new Matrix2D<Interval<long double>>(n2, n2);
+	Matrix2D<Interval<long double>>* MIC_7 = new Matrix2D<Interval<long double>>(n2, n2);
 
-	Matrix2D<long double>* MIF = new Matrix2D<long double>(np1, np1);
-	Matrix2D<Interval<long double>>* MID = new Matrix2D<Interval<long double>>(np1, np1);
+	Matrix2D<long double>* MIF = new Matrix2D<long double>(n2, n2);
+	Matrix2D<Interval<long double>>* MID = new Matrix2D<Interval<long double>>(n2, n2);
 
-	Matrix2D<Interval<long double>>* MICE2 = new Matrix2D<Interval<long double>>(np1, np1);
-	Matrix2D<Interval<long double>>* MICEFE = new Matrix2D<Interval<long double>>(np1, np1);
-	Matrix2D<Interval<long double>>* MIF2 = new Matrix2D<Interval<long double>>(np1, np1);
+	Matrix2D<Interval<long double>>* MICE2 = new Matrix2D<Interval<long double>>(n2, n2);
+	Matrix2D<Interval<long double>>* MICEFE = new Matrix2D<Interval<long double>>(n2, n2);
+	Matrix2D<Interval<long double>>* MIF2 = new Matrix2D<Interval<long double>>(n2, n2);
 
-//	for (i=0; i<=n;i++){
-//		for (j=0; j<=n;j++){
-//			tmp_int_res = integrator->integrate(&g_int_c_ij1, 0, 1, 0, 1,&integral_err);//*(1.0 / (h*h));
-//			//integral_err = integral_err*(1.0 / (h*h));
-//			tmpstr = boost::lexical_cast<string>(tmp_int_res);
-//			iIntCij1 = IntRead<long double>(tmpstr);
-//			intErr.a = - integral_err;
-//			intErr.b = integral_err;
-//			iIntCij1 = iIntCij1 + im11 * intErr;
-//			MIC_1->item(i,j) = iIntCij1;
-//
-//			tmp_int_res = integrator->integrate(&g_int_c_ij2, 0, 1, 0, 1,&integral_err);//*(1.0 / (h*h));
-//			//integral_err = integral_err*(1.0 / (h*h));
-//			tmpstr = boost::lexical_cast<string>(tmp_int_res);
-//			iIntCij2 = IntRead<long double>(tmpstr);
-//			intErr.a = integral_err;
-//			intErr.b = integral_err;
-//			iIntCij2 = iIntCij2 + (im11 * intErr);
-//			MIC_2->item(i,j) = iIntCij2;
-//
-//			tmp_int_res = integrator->integrate(&g_int_c_ij3, 0, 1, 0, 1,&integral_err);//*(1.0 / (h*h));
-//			//integral_err = integral_err*(1.0 / (h*h));
-//			tmpstr = boost::lexical_cast<string>(tmp_int_res);
-//			iIntCij3 = IntRead<long double>(tmpstr);
-//			intErr.a = integral_err;
-//			intErr.b = integral_err;
-//			iIntCij3 = iIntCij3 + (im11 * intErr);
-//			MIC_3->item(i,j) = iIntCij3;
-//
-//			tmp_int_res = integrator->integrate(&g_int_c_ij4, 0, 1, 0, 1,&integral_err);//*(1.0 / (h*h));
-//			//integral_err = integral_err*(1.0 / (h*h));
-//			tmpstr = boost::lexical_cast<string>(tmp_int_res);
-//			iIntCij4 = IntRead<long double>(tmpstr);
-//			intErr.a = integral_err;
-//			intErr.b = integral_err;
-//			iIntCij4 = iIntCij4 + (im11 * intErr);
-//			MIC_4->item(i,j) = iIntCij4;
-//
-//			tmp_int_res = integrator->integrate(&g_int_c_ij5, 0, 1, 0, 1,&integral_err);//*(1.0 / (h*h));
-//			//integral_err = integral_err*(1.0 / (h*h));
-//			tmpstr = boost::lexical_cast<string>(tmp_int_res);
-//			iIntCij5 = IntRead<long double>(tmpstr);
-//			intErr.a = integral_err;
-//			intErr.b = integral_err;
-//			iIntCij5 = iIntCij5 + (im11 * intErr);
-//			MIC_5->item(i,j) = iIntCij5;
-//
-//
-//			tmp_int_res = integrator->integrate(&g_int_c_ij6, 0, 1, 0, 1,&integral_err);//*(1.0 / (h*h));
-//			//integral_err = integral_err*(1.0 / (h*h));
-//			tmpstr = boost::lexical_cast<string>(tmp_int_res);
-//			iIntCij6 = IntRead<long double>(tmpstr);
-//			intErr.a = integral_err;
-//			intErr.b = integral_err;
-//			iIntCij6 = iIntCij6 + (im11 * intErr);
-//			MIC_6->item(i,j) = iIntCij6;
-//
-//
-//			tmp_int_res = integrator->integrate(&g_int_c_ij7, 0, 1, 0, 1,&integral_err);//*(1.0 / (h*h));
-//			//integral_err = integral_err*(1.0 / (h*h));
-//			tmpstr = boost::lexical_cast<string>(tmp_int_res);
-//			iIntCij7 = IntRead<long double>(tmpstr);
-//			intErr.a = integral_err;
-//			intErr.b = integral_err;
-//			iIntCij7 = iIntCij7 + (im11 * intErr);
-//			MIC_7->item(i,j) = iIntCij7;
-//
-//			tmp_int_res = integrator->integrate(&g_f_phi, 0, 1, 0, 1,&integral_err);//*(1.0 / (h*h));
-//			//integral_err = integral_err*(1.0 / (h*h));
-//			MIF->item(i,j) = tmp_int_res;
-//			intErr.a = - integral_err;
-//			intErr.b = integral_err;
-//			tmpstr = boost::lexical_cast<string>(tmp_int_res);
-//			MID->item(i,j) = IntRead<long double>(tmpstr) + intErr;
-//
-//			//tmp_int_res = integrator->integrate(&g_int_c_ij7, 0, 1, 0, 1,&integral_err)*(1.0 / (h*h));
-//			tmp_int_res = integrator->integrate(&g_c2, 0, 1, 0, 1,&integral_err);
-//			//integral_err = integral_err*(1.0L / (h*h));
-//			tmpstr = boost::lexical_cast<string>(tmp_int_res);
-//			iIntCij = IntRead<long double>(tmpstr);
-//			intErr.a = integral_err;
-//			intErr.b = integral_err;
-//			iIntCij = iIntCij + (im11 * intErr);
-//			MICE2->item(i,j) = iIntCij;
-//
-//			//tmp_int_res = integrator->integrate(&g_int_c_ij7, 0, 1, 0, 1,&integral_err)*(1.0 / (h*h));
-//			tmp_int_res = integrator->integrate(&g_cefe, 0, 1, 0, 1,&integral_err);
-//			//integral_err = integral_err*(1.0L / (h*h));
-//			tmpstr = boost::lexical_cast<string>(tmp_int_res);
-//			iIntCFij = IntRead<long double>(tmpstr);
-//			intErr.a = integral_err;
-//			intErr.b = integral_err;
-//			iIntCFij = iIntCij + (im11 * intErr);
-//			MICEFE->item(i,j) = iIntCFij;
-//
-//			//tmp_int_res = integrator->integrate(&g_int_c_ij7, 0, 1, 0, 1,&integral_err)*(1.0 / (h*h));
-//			tmp_int_res = integrator->integrate(&g_f2, 0, 1, 0, 1,&integral_err);
-//			//integral_err = integral_err*(1.0L / (h*h));
-//			tmpstr = boost::lexical_cast<string>(tmp_int_res);
-//			iIntF2ij = IntRead<long double>(tmpstr);
-//			intErr.a = integral_err;
-//			intErr.b = integral_err;
-//			iIntF2ij = iIntF2ij + (im11 * intErr);
-//			MIF2->item(i,j) = iIntF2ij;
-//
-//		}
-//	}
+	for (i=0; i<n;i++){
+		for (j=0; j<n;j++){
+			//tmp_int_res = integrator->integrate(&g_int_c_ij1, 0, 1, 0, 1,&integral_err)*(1.0 / (h*h));
+			tmp_int_res = bintegrator->integrate(&bg_int_c_ij1, 0, 1, 0, 1,&integral_err)*(1.0L / (h2));
+			//integral_err = integral_err*(1.0L / (h*h));
+			tmpstr = boost::lexical_cast<string>(tmp_int_res);
+			iIntCij1 = IntRead<long double>(tmpstr);
+			intErr.a = integral_err;
+			intErr.b = integral_err;
+			iIntCij1 = iIntCij1 + im11 * intErr;
+			MIC_1->item(i,j) = iIntCij1;
 
-	for (i=0; i<=n;i++){
-			for (j=0; j<=n;j++){
-				tmp_int_res = bintegrator->integrate(&bg_int_c_ij1, 0, 1, 0, 1,&integral_err);//*(1.0 / (h*h));
-				//integral_err = integral_err*(1.0 / (h*h));
-				tmpstr = boost::lexical_cast<string>(tmp_int_res);
-				iIntCij1 = IntRead<long double>(tmpstr);
-				intErr.a = - integral_err;
-				intErr.b = integral_err;
-				iIntCij1 = iIntCij1 + im11 * intErr;
-				MIC_1->item(i,j) = iIntCij1;
+			//tmp_int_res = integrator->integrate(&g_int_c_ij2, 0, 1, 0, 1,&integral_err)*(1.0 / (h*h));
+			tmp_int_res = bintegrator->integrate(&bg_int_c_ij2, 0, 1, 0, 1,&integral_err)*(1.0L / (h2));
+			//integral_err = integral_err*(1.0L / (h*h));
+			tmpstr = boost::lexical_cast<string>(tmp_int_res);
+			iIntCij2 = IntRead<long double>(tmpstr);
+			intErr.a = integral_err;
+			intErr.b = integral_err;
+			iIntCij2 = iIntCij2 + (im11 * intErr);
+			MIC_2->item(i,j) = iIntCij2;
 
-				tmp_int_res = bintegrator->integrate(&bg_int_c_ij2, 0, 1, 0, 1,&integral_err);//*(1.0 / (h*h));
-				//integral_err = integral_err*(1.0 / (h*h));
-				tmpstr = boost::lexical_cast<string>(tmp_int_res);
-				iIntCij2 = IntRead<long double>(tmpstr);
-				intErr.a = integral_err;
-				intErr.b = integral_err;
-				iIntCij2 = iIntCij2 + (im11 * intErr);
-				MIC_2->item(i,j) = iIntCij2;
+			//tmp_int_res = integrator->integrate(&g_int_c_ij3, 0, 1, 0, 1,&integral_err)*(1.0 / (h*h));
+			tmp_int_res = bintegrator->integrate(&bg_int_c_ij3, 0, 1, 0, 1,&integral_err)*(1.0L / (h2));
+			//integral_err = integral_err*(1.0L / (h*h));
+			tmpstr = boost::lexical_cast<string>(tmp_int_res);
+			iIntCij3 = IntRead<long double>(tmpstr);
+			intErr.a = integral_err;
+			intErr.b = integral_err;
+			iIntCij3 = iIntCij3 + (im11 * intErr);
+			MIC_3->item(i,j) = iIntCij3;
 
-				tmp_int_res = bintegrator->integrate(&bg_int_c_ij3, 0, 1, 0, 1,&integral_err);//*(1.0 / (h*h));
-				//integral_err = integral_err*(1.0 / (h*h));
-				tmpstr = boost::lexical_cast<string>(tmp_int_res);
-				iIntCij3 = IntRead<long double>(tmpstr);
-				intErr.a = integral_err;
-				intErr.b = integral_err;
-				iIntCij3 = iIntCij3 + (im11 * intErr);
-				MIC_3->item(i,j) = iIntCij3;
+			//tmp_int_res = integrator->integrate(&g_int_c_ij4, 0, 1, 0, 1,&integral_err)*(1.0 / (h*h));
+			tmp_int_res = bintegrator->integrate(&bg_int_c_ij4, 0, 1, 0, 1,&integral_err)*(1.0L / (h2));
+			//integral_err = integral_err*(1.0L / (h*h));
+			tmpstr = boost::lexical_cast<string>(tmp_int_res);
+			iIntCij4 = IntRead<long double>(tmpstr);
+			intErr.a = integral_err;
+			intErr.b = integral_err;
+			iIntCij4 = iIntCij4 + (im11 * intErr);
+			MIC_4->item(i,j) = iIntCij4;
 
-				tmp_int_res = bintegrator->integrate(&bg_int_c_ij4, 0, 1, 0, 1,&integral_err);//*(1.0 / (h*h));
-				//integral_err = integral_err*(1.0 / (h*h));
-				tmpstr = boost::lexical_cast<string>(tmp_int_res);
-				iIntCij4 = IntRead<long double>(tmpstr);
-				intErr.a = integral_err;
-				intErr.b = integral_err;
-				iIntCij4 = iIntCij4 + (im11 * intErr);
-				MIC_4->item(i,j) = iIntCij4;
-
-				tmp_int_res = bintegrator->integrate(&bg_int_c_ij5, 0, 1, 0, 1,&integral_err);//*(1.0 / (h*h));
-				//integral_err = integral_err*(1.0 / (h*h));
-				tmpstr = boost::lexical_cast<string>(tmp_int_res);
-				iIntCij5 = IntRead<long double>(tmpstr);
-				intErr.a = integral_err;
-				intErr.b = integral_err;
-				iIntCij5 = iIntCij5 + (im11 * intErr);
-				MIC_5->item(i,j) = iIntCij5;
+			//tmp_int_res = integrator->integrate(&g_int_c_ij5, 0, 1, 0, 1,&integral_err)*(1.0 / (h*h));
+			tmp_int_res = bintegrator->integrate(&bg_int_c_ij5, 0, 1, 0, 1,&integral_err)*(1.0L / (h2));
+			//integral_err = integral_err*(1.0L / (h*h));
+			tmpstr = boost::lexical_cast<string>(tmp_int_res);
+			iIntCij5 = IntRead<long double>(tmpstr);
+			intErr.a = integral_err;
+			intErr.b = integral_err;
+			iIntCij5 = iIntCij5 + (im11 * intErr);
+			MIC_5->item(i,j) = iIntCij5;
 
 
-				tmp_int_res = bintegrator->integrate(&bg_int_c_ij6, 0, 1, 0, 1,&integral_err);//*(1.0 / (h*h));
-				//integral_err = integral_err*(1.0 / (h*h));
-				tmpstr = boost::lexical_cast<string>(tmp_int_res);
-				iIntCij6 = IntRead<long double>(tmpstr);
-				intErr.a = integral_err;
-				intErr.b = integral_err;
-				iIntCij6 = iIntCij6 + (im11 * intErr);
-				MIC_6->item(i,j) = iIntCij6;
+			//tmp_int_res = integrator->integrate(&g_int_c_ij6, 0, 1, 0, 1,&integral_err)*(1.0 / (h*h));
+			tmp_int_res = bintegrator->integrate(&bg_int_c_ij6, 0, 1, 0, 1,&integral_err)*(1.0L / (h2));
+			//integral_err = integral_err*(1.0L / (h*h));
+			tmpstr = boost::lexical_cast<string>(tmp_int_res);
+			iIntCij6 = IntRead<long double>(tmpstr);
+			intErr.a = integral_err;
+			intErr.b = integral_err;
+			iIntCij6 = iIntCij6 + (im11 * intErr);
+			MIC_6->item(i,j) = iIntCij6;
 
 
-				tmp_int_res = bintegrator->integrate(&bg_int_c_ij7, 0, 1, 0, 1,&integral_err);//*(1.0 / (h*h));
-				//integral_err = integral_err*(1.0 / (h*h));
-				tmpstr = boost::lexical_cast<string>(tmp_int_res);
-				iIntCij7 = IntRead<long double>(tmpstr);
-				intErr.a = integral_err;
-				intErr.b = integral_err;
-				iIntCij7 = iIntCij7 + (im11 * intErr);
-				MIC_7->item(i,j) = iIntCij7;
+			//tmp_int_res = integrator->integrate(&g_int_c_ij7, 0, 1, 0, 1,&integral_err)*(1.0 / (h*h));
+			tmp_int_res = bintegrator->integrate(&bg_int_c_ij7, 0, 1, 0, 1,&integral_err)*(1.0L / (h2));
+			//integral_err = integral_err*(1.0L / (h*h));
+			tmpstr = boost::lexical_cast<string>(tmp_int_res);
+			iIntCij7 = IntRead<long double>(tmpstr);
+			intErr.a = integral_err;
+			intErr.b = integral_err;
+			iIntCij7 = iIntCij7 + (im11 * intErr);
+			MIC_7->item(i,j) = iIntCij7;
 
-				tmp_int_res = bintegrator->integrate(&bg_f_phi, 0, 1, 0, 1,&integral_err);//*(1.0 / (h*h));
-				//integral_err = integral_err*(1.0 / (h*h));
-				MIF->item(i,j) = tmp_int_res;
-				intErr.a = - integral_err;
-				intErr.b = integral_err;
-				tmpstr = boost::lexical_cast<string>(tmp_int_res);
-				MID->item(i,j) = IntRead<long double>(tmpstr) + intErr;
+			double ferr = 0.0;
+			//tmp_int_res = integrator->integrate(&g_f_phi, 0, 1, 0, 1,&ferr);
+		    //tmp_int_res = tmp_int_res*(-1.0 / (h*h));
+			//integral_err = ferr;
+			tmp_int_res = bintegrator->integrate(&bg_f_phi, 0, 1, 0, 1,&integral_err)*(-1.0L / (h2));
+			//integral_err = integral_err*(-1.0L/ (h*h));
+			MIF->item(i,j) = tmp_int_res;
+			intErr.a = -integral_err;
+			intErr.b = integral_err;
+			tmpstr = boost::lexical_cast<string>(tmp_int_res);
+			MID->item(i,j) = IntRead<long double>(tmpstr) +  intErr;
 
-				//tmp_int_res = integrator->integrate(&g_int_c_ij7, 0, 1, 0, 1,&integral_err)*(1.0 / (h*h));
-				tmp_int_res = bintegrator->integrate(&bg_c2, 0, 1, 0, 1,&integral_err);
-				//integral_err = integral_err*(1.0L / (h*h));
-				tmpstr = boost::lexical_cast<string>(tmp_int_res);
-				iIntCij = IntRead<long double>(tmpstr);
-				intErr.a = integral_err;
-				intErr.b = integral_err;
-				iIntCij = iIntCij + (im11 * intErr);
-				MICE2->item(i,j) = iIntCij;
+			//tmp_int_res = integrator->integrate(&g_int_c_ij7, 0, 1, 0, 1,&integral_err)*(1.0 / (h*h));
+			tmp_int_res = bintegrator->integrate(&bg_c2, 0, 1, 0, 1,&integral_err);
+			//integral_err = integral_err*(1.0L / (h*h));
+			tmpstr = boost::lexical_cast<string>(tmp_int_res);
+			iIntCij = IntRead<long double>(tmpstr);
+			intErr.a = integral_err;
+			intErr.b = integral_err;
+			iIntCij = iIntCij + (im11 * intErr);
+			MICE2->item(i,j) = iIntCij;
 
-				//tmp_int_res = integrator->integrate(&g_int_c_ij7, 0, 1, 0, 1,&integral_err)*(1.0 / (h*h));
-				tmp_int_res = bintegrator->integrate(&bg_cefe, 0, 1, 0, 1,&integral_err);
-				//integral_err = integral_err*(1.0L / (h*h));
-				tmpstr = boost::lexical_cast<string>(tmp_int_res);
-				iIntCFij = IntRead<long double>(tmpstr);
-				intErr.a = integral_err;
-				intErr.b = integral_err;
-				iIntCFij = iIntCij + (im11 * intErr);
-				MICEFE->item(i,j) = iIntCFij;
+			//tmp_int_res = integrator->integrate(&g_int_c_ij7, 0, 1, 0, 1,&integral_err)*(1.0 / (h*h));
+			tmp_int_res = bintegrator->integrate(&bg_cefe, 0, 1, 0, 1,&integral_err);
+			//integral_err = integral_err*(1.0L / (h*h));
+			tmpstr = boost::lexical_cast<string>(tmp_int_res);
+			iIntCFij = IntRead<long double>(tmpstr);
+			intErr.a = integral_err;
+			intErr.b = integral_err;
+			iIntCFij = iIntCij + (im11 * intErr);
+			MICEFE->item(i,j) = iIntCFij;
 
-				//tmp_int_res = integrator->integrate(&g_int_c_ij7, 0, 1, 0, 1,&integral_err)*(1.0 / (h*h));
-				tmp_int_res = bintegrator->integrate(&bg_f2, 0, 1, 0, 1,&integral_err);
-				//integral_err = integral_err*(1.0L / (h*h));
-				tmpstr = boost::lexical_cast<string>(tmp_int_res);
-				iIntF2ij = IntRead<long double>(tmpstr);
-				intErr.a = integral_err;
-				intErr.b = integral_err;
-				iIntF2ij = iIntF2ij + (im11 * intErr);
-				MIF2->item(i,j) = iIntF2ij;
+			//tmp_int_res = integrator->integrate(&g_int_c_ij7, 0, 1, 0, 1,&integral_err)*(1.0 / (h*h));
+			tmp_int_res = bintegrator->integrate(&bg_f2, 0, 1, 0, 1,&integral_err);
+			//integral_err = integral_err*(1.0L / (h*h));
+			tmpstr = boost::lexical_cast<string>(tmp_int_res);
+			iIntF2ij = IntRead<long double>(tmpstr);
+			intErr.a = integral_err;
+			intErr.b = integral_err;
+			iIntF2ij = iIntF2ij + (im11 * intErr);
+			MIF2->item(i,j) = iIntF2ij;
 
-			}
 		}
-
+	}
 	auto t2 = std::chrono::high_resolution_clock::now();
 	duration = std::chrono::duration_cast<std::chrono::milliseconds>( t2 - t1 ).count();
 	cout << "Integration finished! Start calculations." << endl;
@@ -370,7 +273,7 @@ void NakaoExperiment2DApprox::execute() {
 	sph = sin(PI * h) / (PI * h);
 
 	hpm2 = 1.0/(h*h);
-	mhpm2 = -1.0*hpm2;
+	mhpm2 = -1.0/(h*h);
 
 	finish = false;
 	while (k != n1) {
@@ -384,15 +287,15 @@ void NakaoExperiment2DApprox::execute() {
 		l2 = l1 + n - 1;
 
 
-		aij = hpm2*(4.0 - MIC_1->item(i,j).a);
-		aij_l = mhpm2*(1.0 + MIC_2->item(i,j).a);
-		aij_u = mhpm2*(1.0 + MIC_3->item(i,j).a);
+		aij = hpm2*(4.0 - h2*MIC_1->item(i,j).b);
+		aij_l = mhpm2*(1.0 + h2*MIC_2->item(i,j).b);
+		aij_u = mhpm2*(1.0 + h2*MIC_3->item(i,j).b);
 
-		bij = mhpm2*(1.0 + MIC_5->item(i,j).a);
-		bij_l =mhpm2*MIC_7->item(i,j).a;
+		bij = mhpm2*(1.0 + h2*MIC_5->item(i,j).b);
+		bij_l = mhpm2*(h2*MIC_7->item(i,j).b);
 
-		b_dash_ij = mhpm2*(1.0 + MIC_4->item(i,j).a);
-		b_dash_ij_u = mhpm2*MIC_6->item(i,j).a;
+		b_dash_ij = mhpm2*(1.0 + h2*MIC_4->item(i,j).b);
+		b_dash_ij_u = mhpm2*(h2*MIC_6->item(i,j).b);
 
 		if (i > 1) {
 			a1[l1 - 1] = b_dash_ij;
@@ -413,7 +316,7 @@ void NakaoExperiment2DApprox::execute() {
 		}
 
 
-		a1[n2 - 1] = hpm2*MIF->item(i,j);
+		a1[n2 - 1] = MIF->item(i,j);
 
 //		long double testInt = d
 //						* (cos(PI * (i + j) * h) - sph * cos(PI * (i - j) * h));
@@ -550,6 +453,7 @@ void NakaoExperiment2DApprox::execute() {
 	tmpstr = boost::lexical_cast<string>(hpm2);
 	ihpm2.a = LeftRead<long double>(tmpstr);
 	ihpm2.b = RightRead<long double>(tmpstr);
+	imhpm2 = im1 * imhpm2;
 
 	ih2 = ISqr(ih, error);
 
@@ -557,9 +461,9 @@ void NakaoExperiment2DApprox::execute() {
 
 	ib = im1 / ih2;
 
-	id = ICos(ipi * ih);
-	id = (i1 - id)/(ISqr(ipi * ih, error));
-	id = (i1 - (i2*ipi)) * id;
+//	id = ICos(ipi * ih);
+//	id = (i1 - id)/(ISqr(ipi * ih, error));
+//	id = (i1 - (i2*ipi)) * id;
 
 	ic = im11 * (Interval<long double>::ISqr2()/i2);
 
@@ -697,13 +601,15 @@ void NakaoExperiment2DApprox::execute() {
 
 			iz = MID->item(i,j);
 
-			id1 = ihpm2*(id1 + iz);// + im11*intErr;
+			id1 = id1 + iz ;//* im11*intErr;
 
 			tmpstr = boost::lexical_cast<string>(alpha_km1[i][j]);
 			iz.a = LeftRead<long double>(tmpstr);
 			iz.b = RightRead<long double>(tmpstr);
 
 			interval_a1[n2 - 1] = id1 + (ic * iz);
+
+			//#pragma omp parallel for
 			for (int i = 1; i <= n1; ++i) {
 				rh = r[i - 1];
 				if (rh != 0) {
@@ -715,7 +621,7 @@ void NakaoExperiment2DApprox::execute() {
 			l = 0;
 			imax = i0;
 
-
+            //#pragma omp parallel for
 			for (j1 = 1; j1 <= n2; ++j1) {
 				if (r[j1 - 1] == 0) {
 					interval_s = interval_a1[j1 - 1];
@@ -750,11 +656,15 @@ void NakaoExperiment2DApprox::execute() {
 			imax = i1 / interval_a1[lh - 1];
 			r[jh - 1] = k;
 
+            //#pragma omp parallel for
 			for (i = 1; i <= p; ++i) {
 				interval_a1[i - 1] = imax * interval_a1[i - 1];
 			}
+
 			jh = 0;
 			q = 0;
+
+            //#pragma omp parallel for
 			for (j1 = 1; j1 <= kh; ++j1) {
 				interval_s = interval_x[q + lh - 1];
 				for (int i = 1; i <= p; ++i) {
@@ -767,6 +677,7 @@ void NakaoExperiment2DApprox::execute() {
 				q = q + p;
 			}
 
+            //#pragma omp parallel for
 			for (int i = 1; i <= p; ++i) {
 				if (i != lh) {
 					jh = jh + 1;
@@ -778,6 +689,7 @@ void NakaoExperiment2DApprox::execute() {
 				j = 0;
 		} //inner while loop
 
+        //#pragma omp parallel for
 		for (k = 1; k <= n1; ++k) {
 			rh = r[k - 1];
 			if (rh != k) {
@@ -796,6 +708,7 @@ void NakaoExperiment2DApprox::execute() {
 			}
 		}
 
+        //#pragma omp parallel for
 		for (int i = 1; i <= n - 1; ++i)
 			for (int j = 1; j <= n - 1; ++j) {
 				iu_k[i][j] = interval_x[(i - 1) * (n - 1) + j - 1];
@@ -815,13 +728,13 @@ void NakaoExperiment2DApprox::execute() {
 
 		for (int i = 1; i <= n - 1; ++i) {
 			for (int j = 1; j <= n - 1; ++j) {
-
 				ibeta = iu_km1[i][j]*iu_km1[i][j]*MICE2->item(i,j);
 				ibeta = ibeta + i2*iu_km1[i][j]*MICEFE->item(i,j);
 				ibeta = ibeta + MIF2->item(i,j);
 
 //				d = cos(PI * (i + j) * h) - sph * cos(PI * (i - 1) * h);
 //				tmpstr = boost::lexical_cast<string>(d);
+////				ibeta = IntRead<long double>(tmpstr);
 //				ibeta.a = LeftRead<long double>(tmpstr);
 //				ibeta.b = RightRead<long double>(tmpstr);
 //				ibeta = ib1 * ibeta * iu_km1[i][j];
@@ -830,7 +743,8 @@ void NakaoExperiment2DApprox::execute() {
 				ibeta = interval_arithmetic::ISqrt(ibeta, error);
 				if (error == 0) {
 					tmpstr = boost::lexical_cast<string>(
-					PI * h * alpha_km1[i][j]);
+					abs(ce(i*h, j*h))*h * alpha_km1[i][j]);
+					id1 = IntRead<long double>(tmpstr);
 					id1.a = LeftRead<long double>(tmpstr);
 					id1.b = RightRead<long double>(tmpstr);
 					ibeta = ih * (ibeta + id1);

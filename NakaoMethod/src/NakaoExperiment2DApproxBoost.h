@@ -1,12 +1,12 @@
 /*
- * NakaoExperiment2DApprox.h
+ * NakaoExperiment2DApproxBoost.h
  *
  *  Created on: Jun 10, 2020
  *      Author: numeric
  */
 
-#ifndef NAKAOEXPERIMENT2D_APPROX_H_
-#define NAKAOEXPERIMENT2D_APPROX_H_
+#ifndef NAKAOEXPERIMENT2D_APPROX_BOOST_H_
+#define NAKAOEXPERIMENT2D_APPROX_BOOST_H_
 
 #include "Interval.h"
 #include "GSLIntegrator.h"
@@ -27,7 +27,7 @@ const long double PI = 3.141592653589793238L;
 
 
 
-class NakaoExperiment2DApprox {
+class NakaoExperiment2DApproxBoost {
 
 private:
 	GSLIntegrator* integrator;
@@ -38,9 +38,9 @@ private:
 	lh, n, n1, n2, np1, p, q, rh;
 	long double abs_alpha, abs_alphaij,
 	beta, c, delta, epsilon, exact, width,
-	max, norm_u, norm_uij, s, d, sph;
+	max, norm_u, norm_uij, s, d, sph, h2;
 	Interval<long double> ia, ia1, ialpha, ib, ib1, ibeta, ic, ic1,
-	id, id1, ih,ih2, imax, interval_s, ipi, ipi12, iz, iierr, ihpm2;
+	id, id1, ih,ih2, imax, interval_s, ipi, ipi12, iz, iierr, ihpm2, imhpm2;
 	int *r;
 	long double *a1, *b1, *x;
 	Interval<long double> *interval_a1, *interval_b1, *interval_x;
@@ -62,13 +62,14 @@ private:
 	const Interval<long double> i6 = {6.0, 6.0};
 	const Interval<long double> i12 = {12.0, 12.0};
 	const Interval<long double> im11 = {-1.0, 1.0};
+	const Interval<long double> im4 = {-4.0, -4.0};
 
 	size_t integrator_calls = 500000;
 
 
 public:
-	NakaoExperiment2DApprox();
-	virtual ~NakaoExperiment2DApprox();
+	NakaoExperiment2DApproxBoost();
+	virtual ~NakaoExperiment2DApproxBoost();
 //	static long double phi(int i, int j, long double x, long double y);
 //	static long double f(long double x, long double y);
 //	static double g_f_phi(double *k, size_t dim, void *params);
@@ -91,7 +92,7 @@ public:
 //
 //	static long double fe(long double x, long double y){
 //			//
-//			return (2.0*M_PI-1.0)*sin(M_PI*x)*sin(M_PI*y);
+//			return (1.0-2.0*M_PI)*sin(M_PI*x)*sin(M_PI*y);
 //	}
 //
 //	static long double ce(long double x, long double y){
@@ -106,16 +107,16 @@ public:
 //	}
 //
 //	static long double fe(long double x, long double y){
-//			return (2.0*M_PI-1.0)*sin(M_PI*x)*sin(M_PI*y);
+//			return (1.0-2.0*M_PI)*sin(M_PI*x)*sin(M_PI*y);
 //	}
 //
 //	static long double ce(long double x, long double y){
 //			return  20.0*x*y;
 //	}
 
-////-------------------------------------------------------------
-////--------------------TH example-------------------------------
-////-------------------------------------------------------------
+//-------------------------------------------------------------
+//--------------------TH example-------------------------------
+//-------------------------------------------------------------
 	static long double u_exact(long double x, long double y){
 		return x*cos(M_PI/2.0 * x)*sin(M_PI*y);
 	}
@@ -123,7 +124,7 @@ public:
 
 	static long double fe(long double x, long double y){
 			//
-			return (1.0*M_PI)*sin(M_PI/2.0*x)*sin(M_PI*y);
+			return (-1.0*M_PI)*sin(M_PI/2.0*x)*sin(M_PI*y);
 	}
 
 	static long double ce(long double x, long double y){
@@ -224,88 +225,66 @@ public:
 
 	}
 
-	static double g_c2(double *k, size_t dim, void *params){
-		double x = k[0];
-		double y = k[1];
-
-		return ce(x,y)*ce(x,y)*phi(i, j, x, y)*phi(i, j, x, y);
-
-	}
-
-	static double g_cefe(double *k, size_t dim, void *params){
-		double x = k[0];
-		double y = k[1];
-
-		return ce(x,y)*fe(x,y)*phi(i, j, x, y);
-
-	}
-
-	static double g_f2(double *k, size_t dim, void *params){
-		double x = k[0];
-		double y = k[1];
-
-		return fe(x,y)*fe(x,y);
-	}
 
 	//duplicates for BoostIntegrator
-		static long double bg_f_phi(long double x, long double y){
-			return fe(x,y) * phi(i, j, x, y);
+	static long double bg_f_phi(long double x, long double y){
+		return fe(x,y) * phi(i, j, x, y);
 
-		}
+	}
 
-		static long double bg_int_c_ij1(long double x, long double y){
-			return ce(x,y)*phi(i, j, x, y)*phi(i, j, x, y);
+	static long double bg_int_c_ij1(long double x, long double y){
+		return ce(x,y)*phi(i, j, x, y)*phi(i, j, x, y);
 
-		}
+	}
 
-		static long double bg_int_c_ij2(long double x, long double y){
-			return ce(x,y)*phi(i, j, x, y)*phi(i, j-1, x, y);
+	static long double bg_int_c_ij2(long double x, long double y){
+		return ce(x,y)*phi(i, j, x, y)*phi(i, j-1, x, y);
 
-		}
+	}
 
-		static long double bg_int_c_ij3(long double x, long double y){
-			return ce(x,y)*phi(i, j, x, y)*phi(i, j+1, x, y);
+	static long double bg_int_c_ij3(long double x, long double y){
+		return ce(x,y)*phi(i, j, x, y)*phi(i, j+1, x, y);
 
-		}
+	}
 
-		static long double bg_int_c_ij4(long double x, long double y){
-			return ce(x,y)*phi(i, j, x, y)*phi(i-1, j, x, y);
+	static long double bg_int_c_ij4(long double x, long double y){
+		return ce(x,y)*phi(i, j, x, y)*phi(i-1, j, x, y);
 
-		}
+	}
 
-		static long double bg_int_c_ij5(long double x, long double y){
+	static long double bg_int_c_ij5(long double x, long double y){
 
-			return ce(x,y)*phi(i, j, x, y)*phi(i+1, j, x, y);
+		return ce(x,y)*phi(i, j, x, y)*phi(i+1, j, x, y);
 
-		}
+	}
 
-		static long double bg_int_c_ij6(long double x, long double y){
-			return ce(x,y)*phi(i, j, x, y)*phi(i-1, j+1, x, y);
+	static long double bg_int_c_ij6(long double x, long double y){
+		return ce(x,y)*phi(i, j, x, y)*phi(i-1, j+1, x, y);
 
-		}
+	}
 
 
-		static long double bg_int_c_ij7(long double x, long double y){
-			return ce(x,y)*phi(i, j, x, y)*phi(i+1, j-1, x, y);
+	static long double bg_int_c_ij7(long double x, long double y){
+		return ce(x,y)*phi(i, j, x, y)*phi(i+1, j-1, x, y);
 
-		}
+	}
 
-		static long double bg_c2(long double x, long double y){
-				return ce(x,y)*ce(x,y)*phi(i, j, x, y)*phi(i, j, x, y);
+	static long double bg_c2(long double x, long double y){
+			return ce(x,y)*ce(x,y)*phi(i, j, x, y)*phi(i, j, x, y);
 
-		}
+	}
 
-		static long double bg_cefe(long double x, long double y){
-				return ce(x,y)*fe(x,y)*phi(i, j, x, y);
+	static long double bg_cefe(long double x, long double y){
+			return ce(x,y)*fe(x,y)*phi(i, j, x, y);
 
-		}
+	}
 
-		static long double bg_f2(long double x, long double y){
-					return fe(x,y)*fe(x,y);
+	static long double bg_f2(long double x, long double y){
+				return fe(x,y)*fe(x,y);
 
-		}
+	}
 
 };
 
 
-#endif /* NAKAOEXPERIMENT2D_APPROX_H_ */
+#endif /* NAKAOEXPERIMENT2D_APPROX_BOOST_H_ */

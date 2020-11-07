@@ -40,7 +40,10 @@ int main() {
 //	delete exper1D;
 
 //	NakaoExperiment2D* exper = new NakaoExperiment2D();
+
 	NakaoExperiment2DApprox* exper = new NakaoExperiment2DApprox();
+//	NakaoExperiment2DApproxBoost* exper = new NakaoExperiment2DApproxBoost();
+
 //	NakaoExperiment2DCxy* exper = new NakaoExperiment2DCxy();
 	exper->execute();
 	delete exper;
