@@ -7,6 +7,7 @@
 //============================================================================
 
 #include <iostream>
+#include "Configuration.h"
 #include "Interval.h"
 //#include "NakaoExperiment.h"
 //#include "NakaoExperiment2D.h"
@@ -18,7 +19,10 @@
 
 using namespace std;
 
-int main() {
+
+int main(int ac, char *av[]) {
+
+	Configuration* configuration = new Configuration();
 
 //	int st;
 //	long double iex = GaussLegendreTH(e, 4, GL_X4, GL_A4, -3.0, 3.0, st);
@@ -40,6 +44,15 @@ int main() {
 //	delete exper1D;
 
 //	NakaoExperiment2D* exper = new NakaoExperiment2D();
+
+    if (ac > 1){
+    	Configuration* configuration = new Configuration();
+    	configuration->parseCommandArgs(ac, av);
+    	NakaoExperiment2DApprox* exper = new NakaoExperiment2DApprox(configuration);
+    	exper->execute();
+    	delete exper;
+    	return 0;
+    }
 
 	NakaoExperiment2DApprox* exper = new NakaoExperiment2DApprox();
 //	NakaoExperiment2DApproxBoost* exper = new NakaoExperiment2DApproxBoost();

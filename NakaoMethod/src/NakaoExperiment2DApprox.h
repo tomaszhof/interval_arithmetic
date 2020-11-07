@@ -8,6 +8,7 @@
 #ifndef NAKAOEXPERIMENT2D_APPROX_H_
 #define NAKAOEXPERIMENT2D_APPROX_H_
 
+#include "Configuration.h"
 #include "Interval.h"
 #include "GSLIntegrator.h"
 #include "BoostIntegrator.h"
@@ -30,8 +31,10 @@ const long double PI = 3.141592653589793238L;
 class NakaoExperiment2DApprox {
 
 private:
+	Configuration* config;
 	GSLIntegrator* integrator;
 	BoostIntegrator* bintegrator;
+	bool use_boost = false;
 	static int i, j;
 	static long double h;
 	int error, it, j1, jh, k, kh, l, l1, l2,
@@ -68,6 +71,7 @@ private:
 
 public:
 	NakaoExperiment2DApprox();
+	NakaoExperiment2DApprox(Configuration* configuration);
 	virtual ~NakaoExperiment2DApprox();
 //	static long double phi(int i, int j, long double x, long double y);
 //	static long double f(long double x, long double y);
