@@ -96,6 +96,7 @@ void NakaoExperiment2DApprox::execute() {
 		output='f';
 		n = config->n;
 		this->use_boost = config->use_boost;
+		file_name = config->fname;
 	}
 
 

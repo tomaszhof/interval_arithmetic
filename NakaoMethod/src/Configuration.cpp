@@ -51,6 +51,11 @@ void Configuration::parseCommandArgs(int ac, char *av[]) {
 			this->use_boost = true;
 	}
 
+	if (vm.count("f"))
+	{
+		this->fname = vm["f"].as<string>();
+	}
+
 	if (vm.count("n"))
 	{
 		this->n = vm["n"].as<int>();

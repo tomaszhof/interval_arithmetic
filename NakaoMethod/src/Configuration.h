@@ -19,6 +19,7 @@ class Configuration {
 
 public:
 	string mode;
+	string fname;
 	bool use_boost = false;
 	int example = 1;
 	int n = 10;
