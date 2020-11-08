@@ -37,6 +37,7 @@ private:
 	bool use_boost = false;
 	static int i, j;
 	static long double h;
+	static long double beta_ukm1ij;
 	int error, it, j1, jh, k, kh, l, l1, l2,
 	lh, n, n1, n2, np1, p, q, rh;
 	long double abs_alpha, abs_alphaij,
@@ -66,12 +67,13 @@ private:
 	const Interval<long double> i12 = {12.0, 12.0};
 	const Interval<long double> im11 = {-1.0, 1.0};
 
-	size_t integrator_calls = 500000;
-
+	size_t integrator_calls = 10000;
 
 public:
+
 	NakaoExperiment2DApprox();
 	NakaoExperiment2DApprox(Configuration* configuration);
+	Interval<long double> calculateBetaIJ(long double uh);
 	virtual ~NakaoExperiment2DApprox();
 //	static long double phi(int i, int j, long double x, long double y);
 //	static long double f(long double x, long double y);
@@ -84,7 +86,6 @@ public:
 //	double g_int_c_ij6(double *k, size_t dim, void *params);
 //	double g_int_c_ij7(double *k, size_t dim, void *params);
 	void execute();
-
 
 //-------------------------------------------------------------
 //-------------------Nakao example 1---------------------------
@@ -118,22 +119,42 @@ public:
 //	}
 
 ////-------------------------------------------------------------
-////--------------------TH example-------------------------------
+////--------------------TH example 01-------------------------------
+////-------------------------------------------------------------
+//	static long double u_exact(long double x, long double y){
+//		return x*cos(M_PI/2.0 * x)*sin(M_PI*y);
+//	}
+//
+//
+//	static long double fe(long double x, long double y){
+//			//
+//			return (1.0*M_PI)*sin(M_PI/2.0*x)*sin(M_PI*y);
+//	}
+//
+//	static long double ce(long double x, long double y){
+//			return  5.0/4.0*M_PI*M_PI;
+//	}
+
+
+////-------------------------------------------------------------
+////--------------------TH example 02-------------------------------
 ////-------------------------------------------------------------
 	static long double u_exact(long double x, long double y){
-		return x*cos(M_PI/2.0 * x)*sin(M_PI*y);
+		//u=(1-x)*(1-y)*(1-%e^(x*y))
+		return 1.0*(1-x)*(1-y)*(1-exp(x*y));
 	}
 
 
 	static long double fe(long double x, long double y){
-			//
-			return (1.0*M_PI)*sin(M_PI/2.0*x)*sin(M_PI*y);
+
+		//20*(1-x)*(1-y)*(1-%e^(x*y))*sin(%pi*x*y)-(1-x)*(1-y)*y^2*%e^(x*y)+2*(1-y)*y*%e^(x*y)-(1-x)*x^2*(1-y)*%e^(x*y)+2*(1-x)*x*%e^(x*y)
+		long double result = 20*(1-x)*(1-y)*(1-exp(x*y))*sin(PI*x*y)-(1-x)*(1-y)*pow(y,2.0)*exp(x*y)+2*(1-y)*y*exp(x*y)-(1-x)*pow(x,2.)*(1-y)*exp(x*y)+2*(1-x)*x*exp(x*y);
+		return -1.0*result;
 	}
 
 	static long double ce(long double x, long double y){
-			return  5.0/4.0*M_PI*M_PI;
+		return 20*sin(PI*x*y);
 	}
-
 
 
 	static long double phi(int i, int j, long double x, long double y){
@@ -251,6 +272,12 @@ public:
 		return fe(x,y)*fe(x,y);
 	}
 
+	static double g_cuhf(double *k, size_t dim, void *params){
+		double x = k[0];
+		double y = k[1];
+		return pow(beta_ukm1ij*ce(x,y)*phi(i, j, x, y) + fe(x,y),2.0);
+	}
+
 	//duplicates for BoostIntegrator
 		static long double bg_f_phi(long double x, long double y){
 			return fe(x,y) * phi(i, j, x, y);
@@ -306,6 +333,12 @@ public:
 
 		static long double bg_f2(long double x, long double y){
 					return fe(x,y)*fe(x,y);
+
+		}
+
+
+		static long double bg_cuhf(long double x, long double y){
+				return pow(beta_ukm1ij*ce(x,y)*phi(i, j, x, y) + fe(x,y),2.0);
 
 		}
 

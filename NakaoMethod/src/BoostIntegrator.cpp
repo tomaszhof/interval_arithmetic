@@ -23,10 +23,10 @@ long double BoostIntegrator::integrate(long double (*f)(long double x, long doub
 	        auto g = [&](long double y) {
 	            return f(x, y);
 	        };
-	        return gauss_kronrod<long double, 15>::integrate(g, a2, b2, 3);
+	        return gauss_kronrod<long double, 61>::integrate(g, a2, b2, 2);
 	    };
 
-	    long double Q = gauss_kronrod<long double, 31>::integrate(f1, a1, b1, 3, 1e-08, int_err);
+	    long double Q = gauss_kronrod<long double, 61>::integrate(f1, a1, b1, 2, 1e-9, int_err);
 	    //std::cout << Q << ", error estimated at " << *int_err <<std::endl;
 	    return Q;
 }

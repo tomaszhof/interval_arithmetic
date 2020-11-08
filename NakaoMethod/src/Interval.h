@@ -74,6 +74,8 @@ template<typename T> Interval<T> DISin(const Interval<T> &x);
 template<typename T> Interval<T> DICos(const Interval<T> &x, int &st);
 template<typename T> Interval<T> DIExp(const Interval<T> &x);
 
+template<typename T> Interval<T> IAbs(const Interval<T> &x);
+
 template<typename T> int SetRounding(int rounding);
 template<> Interval<mpfr::mpreal> IntRead(const string &sa);
 
@@ -139,6 +141,8 @@ public:
 	friend Interval DISin<T>(const Interval &x);
 	friend Interval DICos<T>(const Interval &x, int &st);
 	friend Interval DIExp<T>(const Interval &x);
+
+	friend Interval IAbs<T>(const Interval &x);
 
 	friend int SetRounding<T>(int rounding);
 };
@@ -1613,6 +1617,21 @@ inline mpfr::mpreal DIntWidth<mpfr::mpreal>(const Interval<mpfr::mpreal> &x) {
 		return w1;
 	else
 		return w2;
+}
+
+template<typename T>
+Interval<T> IAbs(const Interval<T> &x) {
+	T tmp = 0;
+	Interval<T> r = { 0, 0 };
+	r.a = abs(x.a);
+	r.b = abs(x.b);
+	if (r.b < r.a) {
+		tmp = r.a;
+		r.a = r.b;
+		r.b = tmp;
+	}
+
+	return r;
 }
 
 //template<>
