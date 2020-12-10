@@ -18,6 +18,7 @@
 #include "ExampleGPE06.h"
 #include "ExampleGPE07.h"
 #include "ExampleGPE08.h"
+#include "ExampleGPE11.h"
 
 using namespace interval_arithmetic;
 

@@ -71,10 +71,11 @@ template<typename T> Interval<T> DIDiv(const Interval<T> &x,
 template<typename T> Interval<T> DIMul(const Interval<T> &x,
 		const Interval<T> &y);
 template<typename T> Interval<T> DISin(const Interval<T> &x);
-template<typename T> Interval<T> DICos(const Interval<T> &x, int &st);
+template<typename T> Interval<T> DICos(const Interval<T> &x);
 template<typename T> Interval<T> DIExp(const Interval<T> &x);
 template<typename T> Interval<T> Hull(const Interval<T> &x,
 		const Interval<T> &y);
+template<typename T> Interval<T> IAbs(const Interval<T> &x);
 
 template<typename T> int SetRounding(int rounding);
 template<> Interval<mpreal> IntRead(const string &sa);
@@ -139,9 +140,10 @@ public:
 	friend Interval DIDiv<T>(const Interval &x, const Interval &y);
 	friend Interval DIMul<T>(const Interval &x, const Interval &y);
 	friend Interval DISin<T>(const Interval &x);
-	friend Interval DICos<T>(const Interval &x, int &st);
+	friend Interval DICos<T>(const Interval &x);
 	friend Interval DIExp<T>(const Interval &x);
 
+	friend Interval IAbs<T>(const Interval &x);
 	friend Interval Hull<T>(const Interval &x, const Interval &y);
 
 	friend int SetRounding<T>(int rounding);
@@ -1208,9 +1210,9 @@ Interval<T> DISin(const Interval<T> &x) {
 }
 
 template<typename T>
-Interval<T> DICos(const Interval<T> &x, int &st) {
+Interval<T> DICos(const Interval<T> &x) {
 	bool is_even, finished;
-	int k;
+	int k, st;
 	Interval<T> d, c, w, w1, x2;
 	if (x.a > x.b)
 		st = 1;
@@ -1631,6 +1633,21 @@ inline mpreal DIntWidth<mpreal>(const Interval<mpreal> &x) {
 		return w1;
 	else
 		return w2;
+}
+
+template<typename T>
+Interval<T> IAbs(const Interval<T> &x) {
+	T tmp = 0;
+	Interval<T> r = { 0, 0 };
+	r.a = abs(x.a);
+	r.b = abs(x.b);
+	if (r.b < r.a) {
+		tmp = r.a;
+		r.a = r.b;
+		r.b = tmp;
+	}
+
+	return r;
 }
 
 //template<>

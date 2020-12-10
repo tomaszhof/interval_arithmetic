@@ -44,8 +44,11 @@ int GPESolver3C<T>::SetExample(int eid) {
 		bc = new ExampleGPE07<T>();
 		break;
 	case 8:
-			bc = new ExampleGPE08<T>();
-			break;
+		bc = new ExampleGPE08<T>();
+		break;
+	case 11:
+		bc = new ExampleGPE11<T>();
+		break;
 	default:
 		bc = NULL;
 		break;

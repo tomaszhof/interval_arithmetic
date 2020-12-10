@@ -17,7 +17,7 @@
 
 class GSLIntegrator {
 private:
-	size_t calls = 5000;
+	size_t calls = 50000;
 public:
 	GSLIntegrator();
 	virtual ~GSLIntegrator();
@@ -28,7 +28,7 @@ public:
 		return calls;
 	}
 
-	void setCalls(size_t calls = 10000) {
+	void setCalls(size_t calls = 50000) {
 		this->calls = calls;
 	}
 };

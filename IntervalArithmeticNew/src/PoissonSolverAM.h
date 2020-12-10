@@ -20,6 +20,7 @@
 #include "Example07.h"
 #include "Example08.h"
 #include "Example09.h"
+#include "Example10.h"
 
 using namespace interval_arithmetic;
 

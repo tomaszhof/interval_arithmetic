@@ -50,6 +50,9 @@ int PoissonSolverAM<T>::SetExample(int eid) {
 	case 9:
 		bc = new Example09<T>();
 		break;
+	case 10:
+		bc = new Example10<T>();
+		break;
 	default:
 		bc = NULL;
 		break;
@@ -613,7 +616,7 @@ int PoissonSolverAM<T>::SolvePIA() {
 					st = 5;
 				else {
 					tmpi = bm.FromMap(lh - 1);
-					MAX = (ione / tmpi);
+					MAX = tmpi.Inverse();//(ione / tmpi);
 					r[jh - 1] = k;
 					for (int i = 1; i <= p; i++) {
 						tmpi = bm.FromMap(i - 1);

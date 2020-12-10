@@ -35,40 +35,49 @@ double GSLIntegrator::integrate(double (*f)(double * x_array, size_t dim, void *
 		T = gsl_rng_default;
 		r = gsl_rng_alloc(T);
 //
-//		{
-//			gsl_monte_plain_state *s = gsl_monte_plain_alloc(2);
-//			gsl_monte_plain_integrate(&G, xl, xu, 2, calls, r, s, &res, &err);
-//			gsl_monte_plain_free(s);
-//
-//			display_results("plain", res, err);
-//		}
-
 		{
-			gsl_monte_miser_state *s = gsl_monte_miser_alloc(2);
-			gsl_monte_miser_integrate(&G, xl, xu, 2, calls, r, s, &res, &err);
-			gsl_monte_miser_free(s);
-			display_results("miser", res, err);
-			*int_err = err;
+			gsl_monte_plain_state *s = gsl_monte_plain_alloc(2);
+			gsl_monte_plain_integrate(&G, xl, xu, 2, calls, r, s, &res, &err);
+			gsl_monte_plain_free(s);
+
+//			display_results("plain", res, err);
 		}
 
 //		{
-//			gsl_monte_vegas_state *s = gsl_monte_vegas_alloc(2);
-//
-//			gsl_monte_vegas_integrate(&G, xl, xu, 2, 10000, r, s, &res, &err);
-//			display_results("vegas warm-up", res, err);
-//
-//			printf("converging...\n");
-//
-//			do {
-//				gsl_monte_vegas_integrate(&G, xl, xu, 2, calls / 5, r, s, &res,
-//						&err);
-//				printf("result = % .6f sigma = % .6f "
-//						"chisq/dof = %.1f\n", res, err, s->chisq);
-//			} while (fabs(s->chisq - 1.0) > 0.5);
-//
-//			display_results("vegas final", res, err);
-//
-//			gsl_monte_vegas_free(s);
+//			gsl_monte_miser_state *s = gsl_monte_miser_alloc(2);
+//			gsl_monte_miser_integrate(&G, xl, xu, 2, calls, r, s, &res, &err);
+//			gsl_monte_miser_free(s);
+//			display_results("miser", res, err);
+//			*int_err = err;
 //		}
+
+
+//		  {
+//		    gsl_monte_vegas_state *s = gsl_monte_vegas_alloc (2);
+//
+//		    gsl_monte_vegas_integrate (&G, xl, xu, 2, 10000, r, s,
+//		                               &res, &err);
+//
+////		    display_results ("vegas warm-up", res, err);
+////		    printf ("converging...\n");
+//
+//		    double chisq = 0.0;
+//		    do
+//		      {
+//		        gsl_monte_vegas_integrate (&G, xl, xu, 2, 100000, r, s,
+//		                                   &res, &err);
+//		        chisq = gsl_monte_vegas_chisq (s);
+////		        printf ("result = % .6f sigma = % .6f "
+////		                "chisq/dof = %.1f\n", res, err, chisq);
+//		      }
+//		    while ((fabs(chisq) > 0.0) && (fabs(chisq - 1.0) > 0.5));
+//
+////		    display_results ("vegas final", res, err);
+//
+//		    gsl_monte_vegas_free (s);
+//		  }
+
+		  gsl_rng_free (r);
+
 		return res;
 }

@@ -75,57 +75,59 @@ void Solver<T>::WriteFPResultsToFile() {
 	h = (delta - alpha) / n;
 	k = (gamma - beta) / m;
 //	l = 0;
-	imod = n / 10;
-	jmod = m / 10;
+	imod = n / 20;
+	jmod = m / 20;
 	ui = n / 2;
 	uj = m / 2;
 
 	filestr << endl;
 
-	for (j = 0; j <= m; j++) {
-		if (j % jmod == 0) {
-			exact = bc->ExactSol(alpha + ui * h, beta + j * k); // exact solution
-			if ((j != 0) && (j != m))
-				sol = u[ui][j];
-			else {
-				if (j == 0)
-					sol = bc->phi2(alpha + ui * h);
-				else
-					sol = bc->phi4(alpha + ui * h);
-			}
-			w = abs(sol - exact);
-			filestr << " " << endl;
-			filestr << " u(" << std::setprecision(2) << alpha + ui * h << ","
-					<< beta + j * k << ") = ";
-			filestr << std::setprecision(dprec) << sol << endl;
-			filestr << "      err =  " << w << endl;
-			filestr << "eu(" << std::setprecision(2) << alpha + ui * h << ","
-					<< beta + j * k << ") =" << std::setprecision(dprec)
-					<< exact << endl;
-		}
-	}
 	for (int i = 0; i <= n; i++) {
-		if (i % imod == 0) {
-			exact = bc->ExactSol(alpha + i * h, beta + uj * k); // exact solution
-			if ((i != 0) && (i != n))
-				sol = u[i][uj];
-			else {
-				if (i == 0)
-					sol = bc->phi1(beta + uj * k);
-				else
-					sol = bc->phi3(beta + uj * k);
+		for (j = 0; j <= m; j++) {
+			if ((i % imod == 0) && (j % jmod == 0)) {
+				exact = bc->ExactSol(alpha + i * h, beta + j * k); // exact solution
+				if ((j != 0) && (j != m))
+					sol = u[i][j];
+				else {
+					if (j == 0)
+						sol = bc->phi2(alpha + i * h);
+					else
+						sol = bc->phi4(alpha + i * h);
+				}
+				w = abs(sol - exact);
+				filestr << " " << endl;
+				filestr << " u(" << std::setprecision(2) << alpha + i * h << ","
+						<< beta + j * k << ") = ";
+				filestr << std::setprecision(dprec) << sol << endl;
+				filestr << "      err =  " << w << endl;
+				filestr << "eu(" << std::setprecision(2) << alpha + i * h << ","
+						<< beta + j * k << ") =" << std::setprecision(dprec)
+						<< exact << endl;
 			}
-			w = abs(sol - exact);
-			filestr << " " << endl;
-			filestr << " u(" << std::setprecision(2) << alpha + i * h << ","
-					<< beta + uj * k << ") = ";
-			filestr << std::setprecision(dprec) << sol << endl;
-			filestr << "      err =  " << w << endl;
-			filestr << "eu(" << std::setprecision(2) << alpha + i * h << ","
-					<< beta + uj * k << ") =" << std::setprecision(dprec)
-					<< exact << endl;
 		}
 	}
+//	for (int i = 0; i <= n; i++) {
+//		if (i % imod == 0) {
+//			exact = bc->ExactSol(alpha + i * h, beta + uj * k); // exact solution
+//			if ((i != 0) && (i != n))
+//				sol = u[i][uj];
+//			else {
+//				if (i == 0)
+//					sol = bc->phi1(beta + uj * k);
+//				else
+//					sol = bc->phi3(beta + uj * k);
+//			}
+//			w = abs(sol - exact);
+//			filestr << " " << endl;
+//			filestr << " u(" << std::setprecision(2) << alpha + i * h << ","
+//					<< beta + uj * k << ") = ";
+//			filestr << std::setprecision(dprec) << sol << endl;
+//			filestr << "      err =  " << w << endl;
+//			filestr << "eu(" << std::setprecision(2) << alpha + i * h << ","
+//					<< beta + uj * k << ") =" << std::setprecision(dprec)
+//					<< exact << endl;
+//		}
+//	}
 	stringstream ss;
 //	int prec = Interval<T>::GetOutDigits();
 	ss << file_name << "_m_" << m;
@@ -292,14 +294,16 @@ void Solver<T>::InitializeX(int m, int n) {
 template<typename T>
 int Solver<T>::ConstMExperiment() {
 	this->SetEstimateMN(true);
-	for (int i = 2; i < 11; ++i) {
+	for (int i = 0; i < 3; ++i) {
 		this->params.m = (i + 1) * 10;
 		this->params.n = this->params.m;
 		this->SolveFP();
+		this->vecConstM.push_back(this->GetMaxM());
+		this->vecConstN.push_back(this->GetMaxN());
 		this->vecConstP.push_back(this->GetMaxP());
 		this->vecConstQ.push_back(this->GetMaxQ());
-		cout << "M = " << this->GetMaxP() << endl;
-		cout << "N = " << this->GetMaxQ() << endl;
+		cout << "M = " << this->GetMaxM() << endl;
+		cout << "N = " << this->GetMaxN() << endl;
 	}
 	return 0;
 }
@@ -314,10 +318,14 @@ void Solver<T>::WriteConstMResults() {
 
 	long double constM = 0;
 	long double constN = 0;
+	long double constP = 0;
+	long double constQ = 0;
 	for (size_t i = 0; i < vecConstP.size(); ++i) {
-		constM = this->vecConstP.at(i);
-		constN = this->vecConstQ.at(i);
-		filestr << constM << ";" << constN << endl;
+		constM = this->vecConstM.at(i);
+		constN = this->vecConstN.at(i);
+		constP = this->vecConstP.at(i);
+		constQ = this->vecConstQ.at(i);
+		filestr << constM << ";" << constN << ";" << constP << ";" << constQ << endl;
 	}
 	filestr.close();
 }
@@ -400,6 +408,17 @@ long double Solver<T>::GetMaxP() {
 template<typename T>
 long double Solver<T>::GetMaxQ() {
 	return this->maxQ;
+}
+
+
+template<typename T>
+long double Solver<T>::GetMaxM() {
+	return this->maxM;
+}
+
+template<typename T>
+long double Solver<T>::GetMaxN() {
+	return this->maxN;
 }
 
 template<typename T>

@@ -50,6 +50,12 @@ int GPDESolver<T>::SetExample(int eid) {
 	case 9:
 		bc = new Example09<T>();
 		break;
+	case 10:
+		bc = new Example10<T>();
+		break;
+	case 11:
+		bc = new Example11<T>();
+		break;
 	default:
 		bc = NULL;
 		break;

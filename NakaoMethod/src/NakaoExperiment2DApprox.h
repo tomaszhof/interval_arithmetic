@@ -38,6 +38,10 @@ private:
 	static int i, j;
 	static long double h;
 	static long double beta_ukm1ij;
+	static Interval<long double> ibeta_ukm1ij;
+	static Interval<long double> iIntCPhiij;
+	static Interval<long double> iIntFij;
+
 	int error, it, j1, jh, k, kh, l, l1, l2,
 	lh, n, n1, n2, np1, p, q, rh;
 	long double abs_alpha, abs_alphaij,
@@ -73,7 +77,7 @@ public:
 
 	NakaoExperiment2DApprox();
 	NakaoExperiment2DApprox(Configuration* configuration);
-	Interval<long double> calculateBetaIJ(long double uh);
+	Interval<long double> calculateBetaIJ(Interval<long double> uh);
 	virtual ~NakaoExperiment2DApprox();
 //	static long double phi(int i, int j, long double x, long double y);
 //	static long double f(long double x, long double y);
@@ -275,6 +279,18 @@ public:
 	static double g_cuhf(double *k, size_t dim, void *params){
 		double x = k[0];
 		double y = k[1];
+
+//		string tmpstr = boost::lexical_cast<string>(ce(x,y)*phi(i, j, x, y));
+//		Interval<long double> iIntCPhiij = IntRead<long double>(tmpstr);
+//
+//		tmpstr = boost::lexical_cast<string>(fe(x,y));
+//		Interval<long double> iIntFij = IntRead<long double>(tmpstr);
+//
+//		Interval<long double> iIntCUhFij = ibeta_ukm1ij*iIntCPhiij+iIntFij;
+//		iIntCUhFij = iIntCUhFij*iIntCUhFij;
+//
+//		return iIntCUhFij.b;
+
 		return pow(beta_ukm1ij*ce(x,y)*phi(i, j, x, y) + fe(x,y),2.0);
 	}
 
@@ -338,7 +354,17 @@ public:
 
 
 		static long double bg_cuhf(long double x, long double y){
-				return pow(beta_ukm1ij*ce(x,y)*phi(i, j, x, y) + fe(x,y),2.0);
+				string tmpstr = boost::lexical_cast<string>(ce(x,y)*phi(i, j, x, y));
+				Interval<long double> iIntCPhiij = IntRead<long double>(tmpstr);
+
+				tmpstr = boost::lexical_cast<string>(fe(x,y));
+				Interval<long double> iIntFij = IntRead<long double>(tmpstr);
+
+				Interval<long double> iIntCUhFij = ibeta_ukm1ij*iIntCPhiij+iIntFij;
+				iIntCUhFij = iIntCUhFij*iIntCUhFij;
+
+				return iIntCUhFij.b;
+				//return pow(beta_ukm1ij*ce(x,y)*phi(i, j, x, y) + fe(x,y),2.0);
 
 		}
 

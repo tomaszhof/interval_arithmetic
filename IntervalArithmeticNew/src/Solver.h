@@ -40,6 +40,8 @@ protected:
 	long double maxQ;
 	long double maxM;
 	long double maxN;
+	vector<long double> vecConstM;
+	vector<long double> vecConstN;
 	vector<long double> vecConstP;
 	vector<long double> vecConstQ;
 public:
@@ -61,6 +63,8 @@ public:
 	bool GetEstimateMN();
 	long double GetMaxP();
 	long double GetMaxQ();
+	long double GetMaxM();
+	long double GetMaxN();
 	virtual int SolveFP();
 	virtual int SolvePIA();
 	virtual int SolveDIA();
