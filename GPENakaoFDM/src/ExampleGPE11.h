@@ -402,28 +402,28 @@ long double ExampleGPE11<T>::GetConstN() {
 
 template<typename T>
 long double ExampleGPE11<T>::GetConstP() {
-	long double constP = 146;
+	long double constP = 32;
 
 	return constP;
 }
 
 template<typename T>
 long double ExampleGPE11<T>::GetConstQ() {
-	long double constQ = 146;
+	long double constQ = 32;
 
 	return constQ;
 }
 
 template<typename T>
 long double ExampleGPE11<T>::GetConstR() {
-	long double constR = 10;
+	long double constR = 32;
 
 	return constR;
 }
 
 template<typename T>
 long double ExampleGPE11<T>::GetConstS() {
-	long double constS = 10;
+	long double constS = 97.5;
 
 	return constS;
 }
