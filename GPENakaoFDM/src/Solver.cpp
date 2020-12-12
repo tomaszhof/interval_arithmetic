@@ -198,59 +198,95 @@ void Solver<T>::WriteIntervalResultsToFile() {
 	UJJ.b = uj;
 	filestr << endl;
 
-
-	for (j = 0; j <= m; j++) {
-		if (j % jmod == 0) {
-			exact = bc->ExactSol(alpha + ui * h, beta + j * k); // exact solution
-			if ((j != 0) && (j != m))
-				sol = X[(ui - 1) * (m - 1) + j - 1];
-			else {
-				UIH = intalpha + (UII * HH);
-				if (j == 0)
-					sol = bc->PHI2(UIH, st);
-				else
-					sol = bc->PHI4(UIH, st);
-			}
-			sol = sol.Projection();
-			w = sol.GetWidth();
-			sol.IEndsToStrings(left, right);
-			filestr << " " << endl;
-			filestr << std::setprecision(2) << " u(" << alpha + ui * h << ","
-					<< beta + j * k << ") = ";
-			filestr << "[" << left << ", " << right << "]" << endl;
-			filestr << "      width =  " << std::setprecision(dprec) << w
-					<< endl;
-			filestr << std::setprecision(2) << "eu(" << alpha + ui * h << ","
-					<< beta + j * k << ") = " << std::setprecision(dprec)
-					<< exact << endl;
-		}
-	}
 	for (i = 0; i <= n; i++) {
-		if (i % imod == 0) {
-			exact = bc->ExactSol(alpha + i * h, beta + uj * k); // exact solution
-			if ((i != 0) && (i != n))
-				sol = X[(i - 1) * (m - 1) + uj - 1];
-			else {
-				UJK = intbeta + (UJJ * KK);
-				if (i == 0)
-					sol = bc->PHI1(UJK, st);
-				else
-					sol = bc->PHI3(UJK, st);
+			for (j = 0; j <= m; j++) {
+					ui = i;
+					uj = j;
+					UII.a = ui;
+					UII.b = ui;
+					UJJ.a = uj;
+					UJJ.b = uj;
+			//		if (j % jmod == 0) {
+						exact = bc->ExactSol(alpha + i * h, beta + j * k); // exact solution
+						if (((i != 0) && (i != n))&&((j != 0) && (j != m)))
+							sol = X[(i - 1) * (m - 1) + uj - 1];
+						else {
+								UIH = intalpha + (UII * HH);
+								if (j == 0)
+									sol = bc->PHI2(UIH, st);
+								else
+									sol = bc->PHI4(UIH, st);
+						}
+
+						sol = sol.Projection();
+						w = sol.GetWidth();
+						sol.IEndsToStrings(left, right);
+						filestr << " " << endl;
+						filestr << std::setprecision(2) << " u(" << alpha + i * h << ","
+								<< beta + j * k << ") = ";
+						filestr << "[" << left << ", " << right << "]" << endl;
+						filestr << "      width =  " << std::setprecision(dprec) << w
+								<< endl;
+						filestr << std::setprecision(2) << "eu(" << alpha + i * h << ","
+								<< beta + j * k << ") = " << std::setprecision(dprec)
+								<< exact << endl;
+			//		}
+				}
 			}
-			sol = sol.Projection();
-			w = sol.GetWidth();
-			sol.IEndsToStrings(left, right);
-			filestr << " " << endl;
-			filestr << std::setprecision(2) << " u(" << alpha + i * h << ","
-					<< beta + uj * k << ") = ";
-			filestr << "[" << left << ", " << right << "]" << endl;
-			filestr << "      width =  " << std::setprecision(dprec) << w
-					<< endl;
-			filestr << std::setprecision(2) << "eu(" << alpha + i * h << ","
-					<< beta + uj * k << ") = " << std::setprecision(dprec)
-					<< exact << endl;
-		}
-	}
+
+//	for (j = 0; j <= m; j++) {
+//		if (j % jmod == 0) {
+//			exact = bc->ExactSol(alpha + ui * h, beta + j * k); // exact solution
+//			if ((j != 0) && (j != m))
+//				sol = X[(ui - 1) * (m - 1) + j - 1];
+//			else {
+//				UIH = intalpha + (UII * HH);
+//				if (j == 0)
+//					sol = bc->PHI2(UIH, st);
+//				else
+//					sol = bc->PHI4(UIH, st);
+//			}
+//			sol = sol.Projection();
+//			w = sol.GetWidth();
+//			sol.IEndsToStrings(left, right);
+//			filestr << " " << endl;
+//			filestr << std::setprecision(2) << " u(" << alpha + ui * h << ","
+//					<< beta + j * k << ") = ";
+//			filestr << "[" << left << ", " << right << "]" << endl;
+//			filestr << "      width =  " << std::setprecision(dprec) << w
+//					<< endl;
+//			filestr << std::setprecision(2) << "eu(" << alpha + ui * h << ","
+//					<< beta + j * k << ") = " << std::setprecision(dprec)
+//					<< exact << endl;
+//		}
+//	}
+//	for (i = 0; i <= n; i++) {
+//		if (i % imod == 0) {
+//			exact = bc->ExactSol(alpha + i * h, beta + uj * k); // exact solution
+//			if ((i != 0) && (i != n))
+//				sol = X[(i - 1) * (m - 1) + uj - 1];
+//			else {
+//				UJK = intbeta + (UJJ * KK);
+//				if (i == 0)
+//					sol = bc->PHI1(UJK, st);
+//				else
+//					sol = bc->PHI3(UJK, st);
+//			}
+//			sol = sol.Projection();
+//			w = sol.GetWidth();
+//			sol.IEndsToStrings(left, right);
+//			filestr << " " << endl;
+//			filestr << std::setprecision(2) << " u(" << alpha + i * h << ","
+//					<< beta + uj * k << ") = ";
+//			filestr << "[" << left << ", " << right << "]" << endl;
+//			filestr << "      width =  " << std::setprecision(dprec) << w
+//					<< endl;
+//			filestr << std::setprecision(2) << "eu(" << alpha + i * h << ","
+//					<< beta + uj * k << ") = " << std::setprecision(dprec)
+//					<< exact << endl;
+//		}
+//	}
+
 	filestr.close();
 }
 

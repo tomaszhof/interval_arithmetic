@@ -135,7 +135,7 @@ void Solver<T>::WriteFPResultsToFile() {
 
 template<typename T>
 void Solver<T>::WriteIntervalResultsToFile() {
-	int imod, j, jmod, ui, uj; //i,l;
+	int imod, j, jmod, ui, uj, i; //i,l;
 	long double exact, h, k;
 	T w;
 	bool dint_mode;
@@ -196,65 +196,102 @@ void Solver<T>::WriteIntervalResultsToFile() {
 //	l = 0;
 	imod = n / 10;
 	jmod = m / 10;
-	ui = n / 2;
-	uj = m / 2;
-	UII.a = ui;
-	UII.b = ui;
-	UJJ.a = uj;
-	UJJ.b = uj;
+//	ui = n / 4;
+//	uj = m / 4;
+//	UII.a = ui;
+//	UII.b = ui;
+//	UJJ.a = uj;
+//	UJJ.b = uj;
 	filestr << endl;
-	for (j = 0; j <= m; j++) {
-		if (j % jmod == 0) {
-			exact = bc->ExactSol(alpha + ui * h, beta + j * k); // exact solution
-			if ((j != 0) && (j != m))
-				sol = X[(ui - 1) * (m - 1) + j - 1];
-			else {
-				UIH = intalpha + (UII * HH);
-				if (j == 0)
-					sol = bc->PHI2(UIH, st);
-				else
-					sol = bc->PHI4(UIH, st);
+
+	for (i = 0; i <= n; i++) {
+		for (j = 0; j <= m; j++) {
+				ui = i;
+				uj = j;
+				UII.a = ui;
+				UII.b = ui;
+				UJJ.a = uj;
+				UJJ.b = uj;
+		//		if (j % jmod == 0) {
+					exact = bc->ExactSol(alpha + i * h, beta + j * k); // exact solution
+					if (((i != 0) && (i != n))&&((j != 0) && (j != m)))
+						sol = X[(i - 1) * (m - 1) + uj - 1];
+					else {
+							UIH = intalpha + (UII * HH);
+							if (j == 0)
+								sol = bc->PHI2(UIH, st);
+							else
+								sol = bc->PHI4(UIH, st);
+					}
+
+					sol = sol.Projection();
+					w = sol.GetWidth();
+					sol.IEndsToStrings(left, right);
+					filestr << " " << endl;
+					filestr << std::setprecision(2) << " u(" << alpha + i * h << ","
+							<< beta + j * k << ") = ";
+					filestr << "[" << left << ", " << right << "]" << endl;
+					filestr << "      width =  " << std::setprecision(dprec) << w
+							<< endl;
+					filestr << std::setprecision(2) << "eu(" << alpha + i * h << ","
+							<< beta + j * k << ") = " << std::setprecision(dprec)
+							<< exact << endl;
+		//		}
 			}
-			sol = sol.Projection();
-			w = sol.GetWidth();
-			sol.IEndsToStrings(left, right);
-			filestr << " " << endl;
-			filestr << std::setprecision(2) << " u(" << alpha + ui * h << ","
-					<< beta + j * k << ") = ";
-			filestr << "[" << left << ", " << right << "]" << endl;
-			filestr << "      width =  " << std::setprecision(dprec) << w
-					<< endl;
-			filestr << std::setprecision(2) << "eu(" << alpha + ui * h << ","
-					<< beta + j * k << ") = " << std::setprecision(dprec)
-					<< exact << endl;
 		}
-	}
-	for (int i = 0; i <= n; i++) {
-		if (i % imod == 0) {
-			exact = bc->ExactSol(alpha + i * h, beta + uj * k); // exact solution
-			if ((i != 0) && (i != n))
-				sol = X[(i - 1) * (m - 1) + uj - 1];
-			else {
-				UJK = intbeta + (UJJ * KK);
-				if (i == 0)
-					sol = bc->PHI1(UJK, st);
-				else
-					sol = bc->PHI3(UJK, st);
-			}
-			sol = sol.Projection();
-			w = sol.GetWidth();
-			sol.IEndsToStrings(left, right);
-			filestr << " " << endl;
-			filestr << std::setprecision(2) << " u(" << alpha + i * h << ","
-					<< beta + uj * k << ") = ";
-			filestr << "[" << left << ", " << right << "]" << endl;
-			filestr << "      width =  " << std::setprecision(dprec) << w
-					<< endl;
-			filestr << std::setprecision(2) << "eu(" << alpha + i * h << ","
-					<< beta + uj * k << ") = " << std::setprecision(dprec)
-					<< exact << endl;
-		}
-	}
+
+//	for (j = 0; j <= m; j++) {
+////		if (j % jmod == 0) {
+//			exact = bc->ExactSol(alpha + ui * h, beta + j * k); // exact solution
+//			if ((j != 0) && (j != m))
+//				sol = X[(ui - 1) * (m - 1) + j - 1];
+//			else {
+//				UIH = intalpha + (UII * HH);
+//				if (j == 0)
+//					sol = bc->PHI2(UIH, st);
+//				else
+//					sol = bc->PHI4(UIH, st);
+//			}
+//			sol = sol.Projection();
+//			w = sol.GetWidth();
+//			sol.IEndsToStrings(left, right);
+//			filestr << " " << endl;
+//			filestr << std::setprecision(2) << " u(" << alpha + ui * h << ","
+//					<< beta + j * k << ") = ";
+//			filestr << "[" << left << ", " << right << "]" << endl;
+//			filestr << "      width =  " << std::setprecision(dprec) << w
+//					<< endl;
+//			filestr << std::setprecision(2) << "eu(" << alpha + ui * h << ","
+//					<< beta + j * k << ") = " << std::setprecision(dprec)
+//					<< exact << endl;
+////		}
+//	}
+//	for (int i = 0; i <= n; i++) {
+////		if (i % imod == 0) {
+//			exact = bc->ExactSol(alpha + i * h, beta + uj * k); // exact solution
+//			if ((i != 0) && (i != n))
+//				sol = X[(i - 1) * (m - 1) + uj - 1];
+//			else {
+//				UJK = intbeta + (UJJ * KK);
+//				if (i == 0)
+//					sol = bc->PHI1(UJK, st);
+//				else
+//					sol = bc->PHI3(UJK, st);
+//			}
+//			sol = sol.Projection();
+//			w = sol.GetWidth();
+//			sol.IEndsToStrings(left, right);
+//			filestr << " " << endl;
+//			filestr << std::setprecision(2) << " u(" << alpha + i * h << ","
+//					<< beta + uj * k << ") = ";
+//			filestr << "[" << left << ", " << right << "]" << endl;
+//			filestr << "      width =  " << std::setprecision(dprec) << w
+//					<< endl;
+//			filestr << std::setprecision(2) << "eu(" << alpha + i * h << ","
+//					<< beta + uj * k << ") = " << std::setprecision(dprec)
+//					<< exact << endl;
+////		}
+//	}
 	filestr.close();
 }
 
@@ -294,7 +331,7 @@ void Solver<T>::InitializeX(int m, int n) {
 template<typename T>
 int Solver<T>::ConstMExperiment() {
 	this->SetEstimateMN(true);
-	for (int i = 0; i < 3; ++i) {
+	for (int i = 0; i < 12; ++i) {
 		this->params.m = (i + 1) * 10;
 		this->params.n = this->params.m;
 		this->SolveFP();
