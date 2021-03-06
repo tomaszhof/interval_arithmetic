@@ -41,7 +41,7 @@ int GPDESolver<T>::SetExample(int eid) {
 		bc = new ExampleGPE06<T>();
 		break;
 	case 11:
-		bc = new ExampleGPE06<T>();
+		bc = new ExampleGPE11<T>();
 		break;
 	default:
 		bc = NULL;
@@ -481,7 +481,7 @@ int GPDESolver<T>::SolvePIA() {
 	int i, j, jh, j1, k, kh, l, lh, l1, l2, n1, n2, n3, p, q, rh;
 	int num;
 	Interval<T> AF, BB0, BB1, CF, H1, HH, HH1, MHH, II, JJ, K1, KK, KK1, MKK,
-			MAX, MM, AA, CC, Pconst, Qconst, Rconst, Sconst, NN, S, S1, S2, S3,
+			MAX, MM, AA, CC, Pconst, Qconst, Rconst, Sconst, Tconst, NN, S, S1, S2, S3,
 			S4, S5, ERR, H1POW2, K1POW2, H1POW2K1POW2, A1F, A2F, H2D12, K2D12;
 	bool list_exists;
 	Interval<T> aij;
@@ -500,8 +500,10 @@ int GPDESolver<T>::SolvePIA() {
 	Qconst.b = bc->GetConstQ();
 	Rconst.a = -bc->GetConstR();
 	Rconst.b = bc->GetConstR();
-	Sconst.a = -bc->GetConstS();
-	Sconst.b = bc->GetConstS();
+	Sconst.a = -bc->GetConstR();
+	Sconst.b = bc->GetConstR();
+	Tconst.a = -bc->GetConstS();
+	Tconst.b = bc->GetConstS();
 
 	if ((n < 2) || (m < 2))
 		st = 1;
@@ -651,25 +653,25 @@ int GPDESolver<T>::SolvePIA() {
 			S = bc->F(HH1, KK1, st);
 			ERR = (this->ih2 / i12)
 					* (bc->D2FDX2(HH1 + HH, KK1, st)
-							+ i2 * (bc->DA1DX(HH1 + HH, KK1, st)) * Rconst
-							+ i2 * bc->DA2DX(HH1 + HH, KK1, st) * Qconst
-							+ bc->A2(HH1 + HH, KK1, st) * Sconst);
+							- i2 * (bc->DA1DX(HH1 + HH, KK1, st)) * Rconst
+							- i2 * bc->DA2DX(HH1 + HH, KK1, st) * Qconst
+							+ bc->A2(HH1 + HH, KK1, st) * Tconst);
 
 
-			cout << k << "ADD DX2 B: S= [" << S.a << " ; " << S.b << "]" << endl;
-			cout << k << "ADD1 DX2: ERR= [" << ERR.a << " ; " << ERR.b << "]"
-					<< endl;
+//			cout << k << "ADD DX2 B: S= [" << S.a << " ; " << S.b << "]" << endl;
+//			cout << k << "ADD1 DX2: ERR= [" << ERR.a << " ; " << ERR.b << "]"
+//					<< endl;
 
 			S = S + ERR;
 
 			ERR = (this->ik2 / i12)
 					* (bc->D2FDY2(HH1, KK1 + KK, st)
-							+ i2 * (bc->DA2DY(HH1, KK1 + KK, st)) * Rconst
-							+ i2 * bc->DA1DY(HH1, KK1 + KK, st) * Pconst
-							+ bc->A1(HH1, KK1 + KK, st) * Sconst);
-			cout << k << "ADD2 DY2: S= [" << S.a << " ; " << S.b << "]" << endl;
-			cout << k << "ADD2 DY2: ERR= [" << ERR.a << " ; " << ERR.b << "]"
-					<< endl;
+							- i2 * (bc->DA2DY(HH1, KK1 + KK, st)) * Rconst
+							- i2 * bc->DA1DY(HH1, KK1 + KK, st) * Pconst
+							+ bc->A1(HH1, KK1 + KK, st) * Tconst);
+//			cout << k << "ADD2 DY2: S= [" << S.a << " ; " << S.b << "]" << endl;
+//			cout << k << "ADD2 DY2: ERR= [" << ERR.a << " ; " << ERR.b << "]"
+//					<< endl;
 			S = S + ERR;
 
 //			S = S
@@ -729,8 +731,8 @@ int GPDESolver<T>::SolvePIA() {
 			}
 
 			//filestr
-			cout << k << " B: S= [" << S.a << " ; " << S.b << "]" << endl;
-			cout << k << " B: ERR= [" << ERR.a << " ; " << ERR.b << "]" << endl;
+//			cout << k << " B: S= [" << S.a << " ; " << S.b << "]" << endl;
+//			cout << k << " B: ERR= [" << ERR.a << " ; " << ERR.b << "]" << endl;
 
 //			filestr << k << " E: S= [" << S.a << " ; " << S.b << "]" << endl;
 			if (st == 0) {
@@ -876,7 +878,7 @@ int GPDESolver<T>::SolveDIA() {
 	int i, j, jh, j1, k, kh, l, lh, l1, l2, n1, n2, n3, p, q, rh;
 	int num;
 	Interval<T> AF, BB0, BB1, CF, H1, HH, HH1, II, JJ, K1, KK, KK1, MAX, MM, AA,
-			CC, Pconst, Qconst, Rconst, Sconst, NN, S, S1, S2, S3, S4, S5, A1F,
+			CC, Pconst, Qconst, Rconst, Sconst, Tconst, NN, S, S1, S2, S3, S4, S5, A1F,
 			ERR, A2F;
 	bool list_exists;
 	Interval<T> aij;
@@ -895,8 +897,10 @@ int GPDESolver<T>::SolveDIA() {
 	Qconst.b = bc->GetConstQ();
 	Rconst.a = -bc->GetConstR();
 	Rconst.b = bc->GetConstR();
-	Sconst.a = -bc->GetConstS();
-	Sconst.b = bc->GetConstS();
+	Sconst.a = -bc->GetConstR();
+	Sconst.b = bc->GetConstR();
+	Tconst.a = -bc->GetConstS();
+	Tconst.b = bc->GetConstS();
 
 	if ((n < 2) || (m < 2))
 		st = 1;

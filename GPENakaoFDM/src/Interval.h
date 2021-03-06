@@ -1,7 +1,7 @@
 /*
  * Interval.h
  *
- *  Created on: 7 wrz 2014
+ *  Created on: 27 lut 2021
  *      Author: tomhof
  */
 
@@ -553,22 +553,6 @@ Interval<T> ISin(const Interval<T> &x) {
 				w = w1;
 				k = k + 2;
 				is_even = !is_even;
-//				if ((w.a <= 0.0)&&(w.b >=0.0))
-//				{
-//					finished = true;
-//					w = {0,0};
-//					return w;
-//				}
-//				if (k>10000)
-//				{
-//					T wdth = w.GetWidth();
-//					tmp.IEndsToStrings(left, right);
-//					cout << "x=[" << left << "," << right << "]" << endl;
-//					w.IEndsToStrings(left, right);
-//					cout << "[" << left << "," << right << "]" << endl;
-//								cout << "      width =  " << std::setprecision(17) << wdth
-//										<< endl;
-//				}
 			}
 		} while (!(finished || (k > INT_MAX / 2)));
 	}
