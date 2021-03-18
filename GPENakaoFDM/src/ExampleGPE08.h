@@ -79,6 +79,7 @@ public:
 	long double GetConstQ();
 	long double GetConstR();
 	long double GetConstS();
+	long double GetConstT();
 	void SetArithmeticMode(IAMode mode);
 
 	const Interval<long double> i0 = { 0.0, 0.0 };
@@ -359,9 +360,16 @@ long double ExampleGPE08<T>::GetConstR() {
 
 template<typename T>
 long double ExampleGPE08<T>::GetConstS() {
-	long double constQ = 35L;
+	long double constS = 7.5L;
 
-	return constQ;
+	return constS;
+}
+
+template<typename T>
+long double ExampleGPE08<T>::GetConstT() {
+	long double constT = 36.0L;
+
+	return constT;
 }
 
 template<typename T>

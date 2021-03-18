@@ -79,6 +79,7 @@ public:
 	long double GetConstQ();
 	long double GetConstR();
 	long double GetConstS();
+	long double GetConstT();
 	void SetArithmeticMode(IAMode mode);
 };
 
@@ -415,6 +416,13 @@ long double ExampleGPE11<T>::GetConstR() {
 
 template<typename T>
 long double ExampleGPE11<T>::GetConstS() {
+	long double constS = 32;
+
+	return constS;
+}
+
+template<typename T>
+long double ExampleGPE11<T>::GetConstT() {
 	long double constS = 97.5;
 
 	return constS;
@@ -562,11 +570,10 @@ inline Interval<T> ExampleGPE11<T>::DFDY(const Interval<T> &ix,
 	sinxsiny = sinx * siny;
 	isinxcosy = sinx * icosy;
 
-	r =
-			imone * ipi2 * ix * (iexpx * sinxsiny + iexpy * sinxsiny)
-					- ipi2 * ix * iy
-							* (iexpy * sinxsiny + iexpx * isinxcosy
-									+ iexpy * isinxcosy);
+	r = imone * ipi2 * ix * (iexpx * sinxsiny + iexpy * sinxsiny)
+			- ipi2 * ix * iy
+					* (iexpy * sinxsiny + iexpx * ipi * isinxcosy
+							+ iexpy * ipi * isinxcosy);
 
 	return r;
 }
@@ -597,11 +604,10 @@ inline Interval<T> ExampleGPE11<T>::DFDX(const Interval<T> &ix,
 	sinxsiny = sinx * siny;
 	icosxsiny = icosx * siny;
 
-	r =
-			imone * ipi2 * iy * (iexpx * sinxsiny + iexpy * sinxsiny)
-					- ipi2 * ix * iy
-							* (iexpx * sinxsiny + iexpx * icosxsiny
-									+ iexpy * icosxsiny);
+	r = imone * ipi2 * iy * (iexpx * sinxsiny + iexpy * sinxsiny)
+			- ipi2 * ix * iy
+					* (iexpx * sinxsiny + iexpx * ipi * icosxsiny
+							+ iexpy * ipi * icosxsiny);
 	return r;
 }
 
@@ -635,11 +641,11 @@ inline Interval<T> ExampleGPE11<T>::D2FDY2(const Interval<T> &ix,
 	r = imone * itwo * ipi2 * ix
 			* (itwo
 					* (iexpx * ipi * isinxcosy + iexpy * ipi * isinxcosy
-							+ iexpy * sinxsiny)
+							+ iexpy * sinxsiny))
 					+ iy
 							* (itwo * iexpy * ipi * isinxcosy + iexpy * sinxsiny
 									- iexpx * ipi2 * sinxsiny
-									- iexpy * ipi2 * sinxsiny));
+									- iexpy * ipi2 * sinxsiny);
 
 	return r;
 }
@@ -673,11 +679,11 @@ inline Interval<T> ExampleGPE11<T>::D2FDX2(const Interval<T> &ix,
 
 	r = imone * itwo * ipi2 * iy
 			* (iexpx * ipi * icosxsiny + iexpy * ipi * icosxsiny
-					+ iexpx * sinxsiny
+					+ iexpx * sinxsiny)
 					- ipi2 * ix * iy
-							* (imone * (iexpy * ipi2 * sinxsiny)
-									+ (itwo * iexpx * ipi * icosx + iexpx * sinx
-											- iexpx * ipi2 * sinx) * siny));
+							* ((itwo * iexpx * ipi * icosx + iexpx * sinx
+									- iexpx * ipi2 * sinx) * siny
+					- iexpy * ipi2 * sinxsiny);
 	return r;
 }
 

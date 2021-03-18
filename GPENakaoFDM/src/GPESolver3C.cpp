@@ -714,8 +714,8 @@ int GPESolver3C<T>::SolvePIA() {
 	Qconst.b = bc->GetConstQ();
 	Rconst.a = -bc->GetConstR();
 	Rconst.b = bc->GetConstR();
-	Sconst.a = -bc->GetConstS();
-	Sconst.b = bc->GetConstS();
+	Sconst.a = -bc->GetConstT();
+	Sconst.b = bc->GetConstT();
 
 	if ((n < 2) || (m < 2))
 		st = 1;
@@ -884,9 +884,12 @@ int GPESolver3C<T>::SolvePIA() {
 													/ bc->A1(HH1, KK1, st))
 									* Pconst - bc->A2(HH1, KK1, st) * Sconst);
 
+//			cout << "(i,j) = (" << i << ", " << j << ")" << endl;
+//			cout << k << "ADD DX2 B: S= [" << S.a << " ; " << S.b << "]" << endl;
+//			cout << k << "ADD1 DX2: ERR= [" << ERR.a << " ; " << ERR.b << "]"
+//					<< endl;
+
 			S = S + ERR;
-//			cout << k << "S [+ERR1] = [" << S.a << " ; " << S.b << "]" << endl;
-//			cout << k << "[ERR1] = [" << ERR.a << " ; " << ERR.b << "]" << endl;
 
 			ERR = (this->ik2 / i12)
 					* (bc->D2FDY2(HH1, KK1 + KK, st)
@@ -899,7 +902,12 @@ int GPESolver3C<T>::SolvePIA() {
 													* bc->DA2DY(HH1, KK1, st)
 													/ bc->A2(HH1, KK1, st))
 									* Qconst - bc->A1(HH1, KK1, st) * Sconst);
-//			cout << k << "[ERR2] = [" << ERR.a << " ; " << ERR.b << "]" << endl;
+
+//			cout << "(i,j) = (" << i << ", " << j << ")" << endl;
+//			cout << k << "ADD2 DY2: S= [" << S.a << " ; " << S.b << "]" << endl;
+//			cout << k << "ADD2 DY2: ERR= [" << ERR.a << " ; " << ERR.b << "]"
+//					<< endl;
+
 			S = S + ERR;
 //			cout << k << "S [+ERR2] = [" << S.a << " ; " << S.b << "]" << endl;
 			S = S + isigma;
@@ -932,6 +940,8 @@ int GPESolver3C<T>::SolvePIA() {
 //			cout << "--------------------------------------------" << endl
 //					<< endl;
 //			filestr << k << " E: S= [" << S.a << " ; " << S.b << "]" << endl;
+			if (S.a > S.b)
+				runtime_error("Wrong F value!");
 			if (st == 0) {
 				bm.ToMap(n2 - 1, S);
 
@@ -1095,8 +1105,8 @@ int GPESolver3C<T>::SolveDIA() {
 		Qconst.b = bc->GetConstQ();
 		Rconst.a = -bc->GetConstR();
 		Rconst.b = bc->GetConstR();
-		Sconst.a = -bc->GetConstS();
-		Sconst.b = bc->GetConstS();
+		Sconst.a = -bc->GetConstT();
+		Sconst.b = bc->GetConstT();
 
 		if ((n < 2) || (m < 2))
 			st = 1;

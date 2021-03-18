@@ -42,6 +42,7 @@ protected:
 	long double maxQ;
 	long double maxR;
 	long double maxS;
+	long double maxT;
 	long int duration;
 	//steps sizes
 	T h;
@@ -57,6 +58,7 @@ protected:
 	vector<long double> vecConstQ;
 	vector<long double> vecConstR;
 	vector<long double> vecConstS;
+	vector<long double> vecConstT;
 public:
 	Interval<T>* X;
 	Solver();
@@ -78,6 +80,7 @@ public:
 	long double GetMaxQ();
 	long double GetMaxR();
 	long double GetMaxS();
+	long double GetMaxT();
 	virtual int SolveFP();
 	virtual int SolvePIA();
 	virtual int SolveDIA();

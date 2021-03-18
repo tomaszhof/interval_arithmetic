@@ -484,9 +484,14 @@ Interval<T> ISin(const Interval<T> &x) {
 	int st = 0;
 	Interval<T> d, s, w, w1, x2, tmp;
 	Interval<T> izero(0, 0);
+	Interval<T> ione(1, 1);
 	string left, right;
-	T eps = 1E-18; //Interval<T>::GetEpsilon();
+	T eps = 1E-17; //Interval<T>::GetEpsilon();
 	T diff = std::numeric_limits<T>::max();
+	if ((x.a < M_PI) && (x.b > M_PI))
+		return izero;
+	if ((x.a < M_PI/2.0L) && (x.b > M_PI/2.0L))
+			return ione;
 	if (x.a > x.b)
 		st = 1;
 	else {
@@ -567,73 +572,76 @@ Interval<T> ISin(const Interval<T> &x) {
 
 template<typename T>
 Interval<T> ICos(const Interval<T> &x) {
-	Interval<T> c, d, w, w1, x2;
-	int k, st;
-	bool is_even, finished;
 
-	c.a = 1;
-	c.b = 1;
-	w = c;
-	x2 = IMul(x, x);
-	k = 1;
-	is_even = true;
-	finished = false;
-	st = 0;
-
-	do {
-		d.a = k * (k + 1);
-		d.b = d.a;
-		c = IMul(c, IDiv(x2, d));
-		if (is_even) {
-			w1 = ISub(w, c);
-		} else {
-			w1 = IAdd(w, c);
-		}
-		if ((w.a != 0) && (w.b != 0)) {
-			if (((abs(w.a - w1.a) / abs(w.a)) < 1e-18)
-					&& (abs(w.b - w1.b) / abs(w.b) < 1e-18))
-				finished = true;
-		} else {
-			if ((w.a == 0) && (w.b != 0)) {
-				if ((abs(w.a - w1.a) < 1e-18)
-						&& (abs(w.b - w1.b) / abs(w.b) < 1e-18)) {
-					finished = true;
-				}
-			} else if (w.a != 0) {
-				if ((abs(w.a - w1.a) / abs(w.a) < 1e-18)
-						&& (abs(w.b - w1.b) < 1e-18))
-					finished = true;
-			} else if ((abs(w.a - w1.a) < 1e-18) && (abs(w.b - w1.b) < 1e-18))
-				finished = true;
-
-		}
-		if (finished) {
-			if (w1.b > 1) {
-				w1.b = 1;
-				if (w1.a > 1)
-					w1.a = 1;
-			}
-			if (w1.a < -1) {
-				w1.a = -1;
-				if (w1.b < -1)
-					w1.b = -1;
-			}
-			return w1;
-		} else {
-			w = w1;
-			k = k + 2;
-			is_even = !is_even;
-		}
-
-	} while (!finished || (k > INT_MAX / 2));
-
-	if (!finished)
-		st = 2;
-
-	Interval<T> r;
-	r.a = 0;
-	r.b = 0;
-	return r;
+	Interval<T> itwo(2, 2);
+	return ISin(x - Interval<T>::IPi()/itwo);
+//	Interval<T> c, d, w, w1, x2;
+//	int k, st;
+//	bool is_even, finished;
+//
+//	c.a = 1;
+//	c.b = 1;
+//	w = c;
+//	x2 = IMul(x, x);
+//	k = 1;
+//	is_even = true;
+//	finished = false;
+//	st = 0;
+//
+//	do {
+//		d.a = k * (k + 1);
+//		d.b = d.a;
+//		c = IMul(c, IDiv(x2, d));
+//		if (is_even) {
+//			w1 = ISub(w, c);
+//		} else {
+//			w1 = IAdd(w, c);
+//		}
+//		if ((w.a != 0) && (w.b != 0)) {
+//			if (((abs(w.a - w1.a) / abs(w.a)) < 1e-18)
+//					&& (abs(w.b - w1.b) / abs(w.b) < 1e-18))
+//				finished = true;
+//		} else {
+//			if ((w.a == 0) && (w.b != 0)) {
+//				if ((abs(w.a - w1.a) < 1e-17)
+//						&& (abs(w.b - w1.b) / abs(w.b) < 1e-17)) {
+//					finished = true;
+//				}
+//			} else if (w.a != 0) {
+//				if ((abs(w.a - w1.a) / abs(w.a) < 1e-17)
+//						&& (abs(w.b - w1.b) < 1e-17))
+//					finished = true;
+//			} else if ((abs(w.a - w1.a) < 1e-17) && (abs(w.b - w1.b) < 1e-17))
+//				finished = true;
+//
+//		}
+//		if (finished) {
+//			if (w1.b > 1) {
+//				w1.b = 1;
+//				if (w1.a > 1)
+//					w1.a = 1;
+//			}
+//			if (w1.a < -1) {
+//				w1.a = -1;
+//				if (w1.b < -1)
+//					w1.b = -1;
+//			}
+//			return w1;
+//		} else {
+//			w = w1;
+//			k = k + 2;
+//			is_even = !is_even;
+//		}
+//
+//	} while (!finished || (k > INT_MAX / 2));
+//
+//	if (!finished)
+//		st = 2;
+//
+//	Interval<T> r;
+//	r.a = 0;
+//	r.b = 0;
+//	return r;
 }
 
 template<typename T>
@@ -671,6 +679,8 @@ Interval<T> IExp(const Interval<T> &x) {
 			if ((abs(w.a - w1.a) / abs(w.a) < eps)
 					&& (abs(w.b - w1.b) / abs(w.b) < eps)) {
 				finished = true;
+				if (w1.a > w1.b)
+					throw runtime_error("Cannot find exponent!");
 				return w1;
 			} else {
 				w = w1;

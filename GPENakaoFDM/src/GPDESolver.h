@@ -16,6 +16,7 @@
 #include "ExampleGPE04.h"
 #include "ExampleGPE05.h"
 #include "ExampleGPE06.h"
+#include "ExampleGPE08.h"
 #include "ExampleGPE11.h"
 
 using namespace interval_arithmetic;
@@ -34,6 +35,7 @@ using Solver<T>::maxP;
 using Solver<T>::maxQ;
 using Solver<T>::maxR;
 using Solver<T>::maxS;
+using Solver<T>::maxT;
 using Solver<T>::_initparams;
 
 using Solver<T>::ih;

@@ -334,12 +334,14 @@ int Solver<T>::ConstMExperiment() {
 		this->vecConstQ.push_back(this->GetMaxQ());
 		this->vecConstR.push_back(this->GetMaxR());
 		this->vecConstS.push_back(this->GetMaxS());
+		this->vecConstT.push_back(this->GetMaxT());
 		cout << "--------------------------------" << endl;
 	    cout << "m=n=" << this->params.m <<  endl;
 		cout << "P = " << this->GetMaxP() << endl;
 		cout << "Q = " << this->GetMaxQ() << endl;
 		cout << "R = " << this->GetMaxR() << endl;
 		cout << "S = " << this->GetMaxS() << endl;
+		cout << "T = " << this->GetMaxT() << endl;
 	}
 	return 0;
 }
@@ -478,6 +480,12 @@ long double Solver<T>::GetMaxR() {
 template<typename T>
 long double Solver<T>::GetMaxS() {
 	return this->maxS;
+}
+
+
+template<typename T>
+long double Solver<T>::GetMaxT() {
+	return this->maxT;
 }
 
 template<typename T>

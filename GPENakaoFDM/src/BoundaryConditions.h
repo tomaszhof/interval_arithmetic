@@ -116,6 +116,7 @@ public:
 	virtual long double GetConstQ();
 	virtual long double GetConstR();
 	virtual long double GetConstS();
+	virtual long double GetConstT();
 	virtual void SetArithmeticMode(int mode);
 };
 
@@ -423,6 +424,11 @@ inline long double BoundaryConditions<T>::GetConstR() {
 
 template<typename T>
 inline long double BoundaryConditions<T>::GetConstS() {
+	return 0.0L;
+}
+
+template<typename T>
+inline long double BoundaryConditions<T>::GetConstT() {
 	return 0.0L;
 }
 

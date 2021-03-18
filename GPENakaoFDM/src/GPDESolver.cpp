@@ -40,6 +40,10 @@ int GPDESolver<T>::SetExample(int eid) {
 	case 6:
 		bc = new ExampleGPE06<T>();
 		break;
+
+	case 8:
+		bc = new ExampleGPE08<T>();
+		break;
 	case 11:
 		bc = new ExampleGPE11<T>();
 		break;
@@ -136,7 +140,7 @@ template<typename T>
 int GPDESolver<T>::SolveFP() {
 	int i, j, jh, j1, k, kh, l, lh, l1, l2, n1, n2, p, q, rh, st;
 	long double a1f, a2f, h1, k1, h2, k2, hh1, kk1, max, s, tmpP, tmpQ, tmpR,
-			tmpS;
+			tmpS, tmpT;
 
 	if (!Solver<T>::_initparams)
 		throw runtime_error("Parameters not initialized!");
@@ -380,6 +384,7 @@ int GPDESolver<T>::SolveFP() {
 			maxQ = 0;
 			maxR = 0;
 			maxS = 0;
+			maxT = 0;
 			if (this->_estimateMN) {
 
 				for (int i = 3; i <= n - 3; i++)
@@ -415,29 +420,31 @@ int GPDESolver<T>::SolveFP() {
 //						tmpR = (1.0 / (16 * h1 * h1 * k1 * k1)) * tmpR;
 						tmpR = u[i + 2][j] - 2.0 * u[i + 1][j] + 2.0 * u[i - 1][j]
 								- u[i - 2][j];
-//						cout << "tmpR = " << tmpR << endl;
-						tmpS = (1.0 / (2.0 * h1 * h1 * h1));
-//						cout << "1/(2*h^3) = " << tmpS << endl;
-						tmpR = tmpS * tmpR;
-//						cout << "[1/(2*h^3)] * tmpR = " << tmpR << endl;
+						tmpR = tmpR * (1.0 / (2.0 * h1 * h1 * h1));
 						if (abs(tmpR) > maxR)
 							maxR = abs(tmpR);
+
+						tmpS = u[i][j+ 2] - 2.0 * u[i][j+ 1] + 2.0 * u[i][j- 1]
+														- u[i][j - 2];
+						tmpS = tmpS * (1.0 / (2.0 * k1 * k1 * k1));
+						if (abs(tmpS) > maxS)
+							maxS = abs(tmpS);
 
 //						tmpS = -u[i - 2][j] + 2 * u[i - 1][j] - 2 * u[i + 1][j]
 //								+ u[i + 2][j];
 //						tmpS = (1.0 / (2.0 * h1 * h1 * h1)) * tmpS;
-						tmpS = u[i + 1][j + 1] - 2 * u[i][j + 1]
+						tmpT = u[i + 1][j + 1] - 2 * u[i][j + 1]
 								+ u[i - 1][j + 1] - 2 * u[i + 1][j]
 								+ 4 * u[i][j] - 2 * u[i - 1][j]
 								+ u[i + 1][j - 1] - 2 * u[i][j - 1]
 								+ u[i - 1][j - 1];
-						cout << "tmpS = " << tmpS << endl;
+						//cout << "tmpT = " << tmpT << endl;
 						tmpR = (1.0 / (h1 * h1 * k1 * k1));
-						cout << "1/(h^2*k^2) = " << tmpR << endl;
-						tmpS = tmpR* tmpS;
-						cout << "[1/(h^2*k^2)] * tmpS = " << tmpS << endl;
-						if (abs(tmpS) > maxS)
-							maxS = abs(tmpS);
+						//cout << "1/(h^2*k^2) = " << tmpR << endl;
+						tmpT = tmpR* tmpT;
+						//cout << "[1/(h^2*k^2)] * tmpT = " << tmpT << endl;
+						if (abs(tmpT) > maxT)
+							maxT = abs(tmpT);
 					}
 
 //				for (int i = 0; i <= n; i++)
@@ -500,10 +507,10 @@ int GPDESolver<T>::SolvePIA() {
 	Qconst.b = bc->GetConstQ();
 	Rconst.a = -bc->GetConstR();
 	Rconst.b = bc->GetConstR();
-	Sconst.a = -bc->GetConstR();
-	Sconst.b = bc->GetConstR();
-	Tconst.a = -bc->GetConstS();
-	Tconst.b = bc->GetConstS();
+	Sconst.a = -bc->GetConstS();
+	Sconst.b = bc->GetConstS();
+	Tconst.a = -bc->GetConstT();
+	Tconst.b = bc->GetConstT();
 
 	if ((n < 2) || (m < 2))
 		st = 1;
@@ -658,6 +665,7 @@ int GPDESolver<T>::SolvePIA() {
 							+ bc->A2(HH1 + HH, KK1, st) * Tconst);
 
 
+//			cout << "(i,j) = (" << i << ", " << j << ")" << endl;
 //			cout << k << "ADD DX2 B: S= [" << S.a << " ; " << S.b << "]" << endl;
 //			cout << k << "ADD1 DX2: ERR= [" << ERR.a << " ; " << ERR.b << "]"
 //					<< endl;
@@ -666,9 +674,10 @@ int GPDESolver<T>::SolvePIA() {
 
 			ERR = (this->ik2 / i12)
 					* (bc->D2FDY2(HH1, KK1 + KK, st)
-							- i2 * (bc->DA2DY(HH1, KK1 + KK, st)) * Rconst
+							- i2 * (bc->DA2DY(HH1, KK1 + KK, st)) * Sconst
 							- i2 * bc->DA1DY(HH1, KK1 + KK, st) * Pconst
 							+ bc->A1(HH1, KK1 + KK, st) * Tconst);
+//			cout << "(i,j) = (" << i << ", " << j << ")" << endl;
 //			cout << k << "ADD2 DY2: S= [" << S.a << " ; " << S.b << "]" << endl;
 //			cout << k << "ADD2 DY2: ERR= [" << ERR.a << " ; " << ERR.b << "]"
 //					<< endl;
@@ -891,16 +900,16 @@ int GPDESolver<T>::SolveDIA() {
 	NN.b = n;
 	MM.a = m;
 	MM.b = m;
-	Pconst.a = -bc->GetConstP();
-	Pconst.b = bc->GetConstP();
-	Qconst.a = -bc->GetConstQ();
-	Qconst.b = bc->GetConstQ();
-	Rconst.a = -bc->GetConstR();
-	Rconst.b = bc->GetConstR();
-	Sconst.a = -bc->GetConstR();
-	Sconst.b = bc->GetConstR();
-	Tconst.a = -bc->GetConstS();
-	Tconst.b = bc->GetConstS();
+	Pconst.a = bc->GetConstP();
+	Pconst.b = -bc->GetConstP();
+	Qconst.a = bc->GetConstQ();
+	Qconst.b = -bc->GetConstQ();
+	Rconst.a = bc->GetConstR();
+	Rconst.b = -bc->GetConstR();
+	Sconst.a = bc->GetConstS();
+	Sconst.b = -bc->GetConstS();
+	Tconst.a = bc->GetConstT();
+	Tconst.b = -bc->GetConstT();
 
 	if ((n < 2) || (m < 2))
 		st = 1;
@@ -1044,19 +1053,28 @@ int GPDESolver<T>::SolveDIA() {
 			}
 
 			S = bc->F(HH1, KK1, st);
-			ERR = (im1 * this->ih2 / i12)
+			ERR = (this->ih2 / i12)
 					* (bc->D2FDX2(HH1 + HH, KK1, st)
-							+ i2 * (bc->DA1DX(HH1 + HH, KK1, st)) * Rconst
-							+ i2 * bc->DA2DX(HH1 + HH, KK1, st) * Qconst
-							+ bc->A2(HH1 + HH, KK1, st) * Sconst);
-			S = S + ERR.Opposite();
+							- i2 * (bc->DA1DX(HH1 + HH, KK1, st)) * Rconst
+							- i2 * bc->DA2DX(HH1 + HH, KK1, st) * Qconst
+							+ bc->A2(HH1 + HH, KK1, st) * Tconst);
 
-			ERR = (im1 * this->ik2 / i12)
+
+//			cout << k << "ADD DX2 B: S= [" << S.a << " ; " << S.b << "]" << endl;
+//			cout << k << "ADD1 DX2: ERR= [" << ERR.a << " ; " << ERR.b << "]"
+//					<< endl;
+
+			S = S + ERR;
+
+			ERR = (this->ik2 / i12)
 					* (bc->D2FDY2(HH1, KK1 + KK, st)
-							+ i2 * (bc->DA2DY(HH1, KK1 + KK, st)) * Rconst
-							+ i2 * bc->DA1DY(HH1, KK1 + KK, st) * Pconst
-							+ bc->A1(HH1, KK1 + KK, st) * Sconst);
-			S = S + ERR.Opposite();
+							- i2 * (bc->DA2DY(HH1, KK1 + KK, st)) * Sconst
+							- i2 * bc->DA1DY(HH1, KK1 + KK, st) * Pconst
+							+ bc->A1(HH1, KK1 + KK, st) * Tconst);
+//			cout << k << "ADD2 DY2: S= [" << S.a << " ; " << S.b << "]" << endl;
+//			cout << k << "ADD2 DY2: ERR= [" << ERR.a << " ; " << ERR.b << "]"
+//					<< endl;
+			S = S + ERR;
 
 //			S = S
 //					+ ((im1 * this->ih2 / i12)
@@ -1171,7 +1189,7 @@ int GPDESolver<T>::SolveDIA() {
 					st = 5;
 				else {
 					tmpi = bm.FromMap(lh - 1);
-					MAX = ione / tmpi;
+					MAX = tmpi.Inverse(); //ione / tmpi;
 					r[jh - 1] = k;
 					for (int i = 1; i <= p; i++) {
 						tmpi = bm.FromMap(i - 1);
