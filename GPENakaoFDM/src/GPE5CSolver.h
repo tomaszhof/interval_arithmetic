@@ -5,8 +5,8 @@
  *      Author: thof
  */
 
-#ifndef GPDESOLVER_H_
-#define GPDESOLVER_H_
+#ifndef GPE5CSOLVER_H_
+#define GPE5CSOLVER_H_
 
 #include "Solver.h"
 #include "THashMap.h"
@@ -25,7 +25,7 @@ namespace interval_arithmetic
 {
 
 template<typename T>
-class GPDESolver: public Solver<T>
+class GPE5CSolver: public Solver<T>
 {
 using Solver<T>::bc;
 using Solver<T>::params;
@@ -58,8 +58,8 @@ Interval<T> IBetaX(Interval<T> xi, Interval<T> yj);
 Interval<T> IBetaY(Interval<T> xi, Interval<T> yj);
 
 public:
-	GPDESolver();
-	virtual ~GPDESolver();
+	GPE5CSolver();
+	virtual ~GPE5CSolver();
 	int SolveFP();
 	int SolvePIA();
 	int SolveDIA();
@@ -71,11 +71,11 @@ public:
 } /* namespace intervalarth */
 
 template<typename T>
-inline void interval_arithmetic::GPDESolver<T>::WriteFPResultsToCsv() {
+inline void interval_arithmetic::GPE5CSolver<T>::WriteFPResultsToCsv() {
 }
 
 template<typename T>
-inline void interval_arithmetic::GPDESolver<T>::WriteIntervalResultsToCsv() {
+inline void interval_arithmetic::GPE5CSolver<T>::WriteIntervalResultsToCsv() {
 }
 
-#endif /* GPDESOLVER_H_ */
+#endif /* GPE5CSOLVER_H_ */

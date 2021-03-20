@@ -26,7 +26,7 @@
 #include <float.h>
 #include <boost/lexical_cast.hpp>
 #include "ConfigReader.h"
-#include "GPDESolver.h"
+#include "GPE5CSolver.h"
 #include "GPESolver3C.h"
 
 

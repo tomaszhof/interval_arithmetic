@@ -29,7 +29,7 @@ namespace interval_arithmetic
 {
 
 template<typename T>
-class GPDESolver: public Solver<T>
+class GPE5CSolver: public Solver<T>
 {
 using Solver<T>::bc;
 using Solver<T>::params;
@@ -40,8 +40,8 @@ using Solver<T>::maxN;
 using Solver<T>::_initparams;
 
 public:
-	GPDESolver();
-	virtual ~GPDESolver();
+	GPE5CSolver();
+	virtual ~GPE5CSolver();
 	int SolveFP();
 	int SolvePIA();
 	int SolveDIA();
@@ -53,11 +53,11 @@ public:
 } /* namespace intervalarth */
 
 template<typename T>
-inline void interval_arithmetic::GPDESolver<T>::WriteFPResultsToCsv() {
+inline void interval_arithmetic::GPE5CSolver<T>::WriteFPResultsToCsv() {
 }
 
 template<typename T>
-inline void interval_arithmetic::GPDESolver<T>::WriteIntervalResultsToCsv() {
+inline void interval_arithmetic::GPE5CSolver<T>::WriteIntervalResultsToCsv() {
 }
 
 #endif /* GPDESOLVER_H_ */

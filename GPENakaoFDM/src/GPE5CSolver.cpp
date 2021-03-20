@@ -1,26 +1,26 @@
 /*
- * GPDESolver.cpp
+ * GPE5CSolver.cpp
  *
  *  Created on: 25-01-2014
  *      Author: thof
  */
 
-#include "GPDESolver.h"
+#include "GPE5CSolver.h"
 
 namespace interval_arithmetic {
 
 template<typename T>
-GPDESolver<T>::GPDESolver() {
+GPE5CSolver<T>::GPE5CSolver() {
 
 }
 
 template<typename T>
-GPDESolver<T>::~GPDESolver() {
+GPE5CSolver<T>::~GPE5CSolver() {
 	// TODO Auto-generated destructor stub
 }
 
 template<typename T>
-int GPDESolver<T>::SetExample(int eid) {
+int GPE5CSolver<T>::SetExample(int eid) {
 	switch (eid) {
 	case 1:
 		bc = new ExampleGPE01<T>();
@@ -58,7 +58,7 @@ int GPDESolver<T>::SetExample(int eid) {
 }
 
 template<typename T>
-T GPDESolver<T>::alphax(T xi, T yj) {
+T GPE5CSolver<T>::alphax(T xi, T yj) {
 	T result = 0.0;
 	T h2d12 = this->h * this->h / 12.0;
 	T k2d12 = this->k * this->k / 12.0;
@@ -68,7 +68,7 @@ T GPDESolver<T>::alphax(T xi, T yj) {
 }
 
 template<typename T>
-T GPDESolver<T>::alphay(T xi, T yj) {
+T GPE5CSolver<T>::alphay(T xi, T yj) {
 	T result = 0.0;
 	T h2d12 = this->h * this->h / 12.0;
 	T k2d12 = this->k * this->k / 12.0;
@@ -80,7 +80,7 @@ T GPDESolver<T>::alphay(T xi, T yj) {
 }
 
 template<typename T>
-T GPDESolver<T>::betax(T xi, T yj) {
+T GPE5CSolver<T>::betax(T xi, T yj) {
 	T result = 0.0;
 	T h2d6 = this->h * this->h / 6.0;
 	result = h2d6 * bc->dcdx(xi, yj);
@@ -88,7 +88,7 @@ T GPDESolver<T>::betax(T xi, T yj) {
 }
 
 template<typename T>
-T GPDESolver<T>::betay(T xi, T yj) {
+T GPE5CSolver<T>::betay(T xi, T yj) {
 	T result = 0.0;
 	T k2d6 = this->k * this->k / 6.0;
 	result = k2d6 * bc->dcdy(xi, yj);
@@ -96,7 +96,7 @@ T GPDESolver<T>::betay(T xi, T yj) {
 }
 
 template<typename T>
-Interval<T> GPDESolver<T>::IAlphaX(Interval<T> xi, Interval<T> yj) {
+Interval<T> GPE5CSolver<T>::IAlphaX(Interval<T> xi, Interval<T> yj) {
 	Interval<T> result = { 0.0L, 0.0L };
 	int st = 0;
 	Interval<T> h2d12 = this->ih2 / this->i12;
@@ -107,7 +107,7 @@ Interval<T> GPDESolver<T>::IAlphaX(Interval<T> xi, Interval<T> yj) {
 }
 
 template<typename T>
-Interval<T> GPDESolver<T>::IAlphaY(Interval<T> xi, Interval<T> yj) {
+Interval<T> GPE5CSolver<T>::IAlphaY(Interval<T> xi, Interval<T> yj) {
 	Interval<T> result = { 0.0L, 0.0L };
 	int st = 0;
 	Interval<T> h2d12 = this->ih2 / this->i12;
@@ -119,7 +119,7 @@ Interval<T> GPDESolver<T>::IAlphaY(Interval<T> xi, Interval<T> yj) {
 }
 
 template<typename T>
-Interval<T> GPDESolver<T>::IBetaX(Interval<T> xi, Interval<T> yj) {
+Interval<T> GPE5CSolver<T>::IBetaX(Interval<T> xi, Interval<T> yj) {
 	Interval<T> result = { 0.0L, 0.0L };
 	int st = 0;
 	Interval<T> h2d6 = this->ih2 / this->i6;
@@ -128,7 +128,7 @@ Interval<T> GPDESolver<T>::IBetaX(Interval<T> xi, Interval<T> yj) {
 }
 
 template<typename T>
-Interval<T> GPDESolver<T>::IBetaY(Interval<T> xi, Interval<T> yj) {
+Interval<T> GPE5CSolver<T>::IBetaY(Interval<T> xi, Interval<T> yj) {
 	Interval<T> result = { 0.0L, 0.0L };
 	int st;
 	Interval<T> k2d6 = this->ik2 / this->i6;
@@ -137,7 +137,7 @@ Interval<T> GPDESolver<T>::IBetaY(Interval<T> xi, Interval<T> yj) {
 }
 
 template<typename T>
-int GPDESolver<T>::SolveFP() {
+int GPE5CSolver<T>::SolveFP() {
 	int i, j, jh, j1, k, kh, l, lh, l1, l2, n1, n2, p, q, rh, st;
 	long double a1f, a2f, h1, k1, h2, k2, hh1, kk1, max, s, tmpP, tmpQ, tmpR,
 			tmpS, tmpT;
@@ -461,7 +461,7 @@ int GPDESolver<T>::SolveFP() {
 }
 
 template<typename T>
-int GPDESolver<T>::SolvePIA() {
+int GPE5CSolver<T>::SolvePIA() {
 //	fstream filestr;
 //	string fname = "tmpLog.txt";
 //	filestr.open(fname.c_str(), fstream::out);
@@ -865,7 +865,7 @@ int GPDESolver<T>::SolvePIA() {
 }
 
 template<typename T>
-int GPDESolver<T>::SolveDIA() {
+int GPE5CSolver<T>::SolveDIA() {
 	if (!_initparams)
 		throw runtime_error("Parameters not initialized!");
 	int st = 0;
@@ -1254,8 +1254,8 @@ int GPDESolver<T>::SolveDIA() {
 }
 
 //The explicit instantiation part
-template class GPDESolver<long double> ;
-//template class GPDESolver<mpreal> ;
+template class GPE5CSolver<long double> ;
+//template class GPE5CSolver<mpreal> ;
 
 }
 /* namespace intervalarth */

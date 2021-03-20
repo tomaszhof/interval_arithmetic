@@ -10,18 +10,18 @@
 namespace interval_arithmetic {
 
 template<typename T>
-GPDESolver<T>::GPDESolver() {
+GPE5CSolver<T>::GPE5CSolver() {
 	// TODO Auto-generated constructor stub
 
 }
 
 template<typename T>
-GPDESolver<T>::~GPDESolver() {
+GPE5CSolver<T>::~GPE5CSolver() {
 	// TODO Auto-generated destructor stub
 }
 
 template<typename T>
-int GPDESolver<T>::SetExample(int eid) {
+int GPE5CSolver<T>::SetExample(int eid) {
 	switch (eid) {
 	case 1:
 		//bc = new Example01();
@@ -67,7 +67,7 @@ int GPDESolver<T>::SetExample(int eid) {
 }
 
 template<typename T>
-int GPDESolver<T>::SolveFP() {
+int GPE5CSolver<T>::SolveFP() {
 	int i, j, jh, j1, k, kh, l, lh, l1, l2, n1, n2, p, q, rh, st;
 	long double af, cf, h1, k1, hh1, kk1, max, s, tmpM, tmpN;
 
@@ -296,7 +296,7 @@ int GPDESolver<T>::SolveFP() {
 }
 
 template<typename T>
-int GPDESolver<T>::SolvePIA() {
+int GPE5CSolver<T>::SolvePIA() {
 //	fstream filestr;
 //	string fname = "tmpLog.txt";
 //	filestr.open(fname.c_str(), fstream::out);
@@ -674,7 +674,7 @@ int GPDESolver<T>::SolvePIA() {
 }
 
 template<typename T>
-int GPDESolver<T>::SolveDIA() {
+int GPE5CSolver<T>::SolveDIA() {
 	if (!_initparams)
 		throw runtime_error("Parameters not initialized!");
 	int st = 0;
@@ -1043,8 +1043,8 @@ int GPDESolver<T>::SolveDIA() {
 
 
 //The explicit instantiation part
-template class GPDESolver<long double> ;
-template class GPDESolver<mpreal> ;
+template class GPE5CSolver<long double> ;
+template class GPE5CSolver<mpreal> ;
 
 }
 /* namespace intervalarth */

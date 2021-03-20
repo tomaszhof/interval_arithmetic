@@ -17,7 +17,7 @@ namespace interval_arithmetic
 {
 //enum IAMode {DINT_MODE, PINT_MODE};
 enum ExperimentMode {CONST_M_EXP, CLASSICAL_EXP, INTERVAL_EXP};
-enum Solvers {GPDE_SOLVER, GPE_SOLVER3C, POISSON, POISSONAM, POISSON4, POISSON4AM, POISSON6};
+enum Solvers {GPE_SOLVER5C, GPE_SOLVER3C};
 
 template<typename T>
 struct Parameters

@@ -33,7 +33,7 @@ ConfigReader<T>::ConfigReader()
 	this->beta2 = 2;
 	this->file_name = "ex04pint.txt";
 	this->print_csv = false;
-	this->solver_id = GPDE_SOLVER;
+	this->solver_id = GPE_SOLVER3C;
 }
 
 template<typename T>
@@ -51,7 +51,7 @@ ConfigReader<T>::ConfigReader(int ac, char* av[])
 	this->beta2 = 2;
 	this->file_name = "ex04pint.txt";
 	this->print_csv = false;
-	this->solver_id = GPDE_SOLVER;
+	this->solver_id = GPE_SOLVER3C;
 	this->parseCommandArgs(ac, av);
 }
 
@@ -192,20 +192,11 @@ void ConfigReader<T>::readConfigFile(string fileName)
 		this->SetExperimentMode(CLASSICAL_EXP);
 	this->SetExampleId(exId);
 
-	if (solver_name == "gpde")
-		this->SetSolverId(GPDE_SOLVER);
+	if (solver_name == "gpe5c")
+		this->SetSolverId(GPE_SOLVER5C);
 	if (solver_name == "gpe3c")
 			this->SetSolverId(GPE_SOLVER3C);
-	if (solver_name == "poisson")
-			this->SetSolverId(POISSON);
-	if (solver_name == "poissonam")
-				this->SetSolverId(POISSONAM);
-	if (solver_name == "poisson4")
-				this->SetSolverId(POISSON4);
-	if (solver_name == "poisson4am")
-					this->SetSolverId(POISSON4AM);
-	if (solver_name == "poisson6")
-					this->SetSolverId(POISSON6);
+
 
 	this->SetFileName(output_file);
 	this->SetAlpha1(alpha1);
@@ -267,8 +258,7 @@ T ConfigReader<T>::GetBeta2()
 template<typename T>
 void ConfigReader<T>::parseCommandArgs(int ac, char* av[])
 {
-	string ia_mode;
-	string ex_mode;
+	string ia_mode, ex_mode, solver;
 
 	//default options values
 	string configFileName, outFileName, programMode;
@@ -287,7 +277,9 @@ void ConfigReader<T>::parseCommandArgs(int ac, char* av[])
 						"print_csv", po::value<bool>(),
 						"print all (warining!) results to csv")(
 			"exp_mode", po::value<string>(),
-			"set experiment mode [c-classic, m-constM]")("e", po::value<int>(),
+			"set experiment mode [c-classic, m-constM]")
+			("solver", po::value<string>(),
+						"set solver [gpe5c, gpe3c]")("e", po::value<int>(),
 			"set example [e=1,2,3,4]")("file", po::value<string>(),
 			"set configuration file name")("out_file", po::value<string>(),
 			"set output file name")("alpha1", po::value<T>(),
@@ -352,6 +344,21 @@ void ConfigReader<T>::parseCommandArgs(int ac, char* av[])
 	{
 		cout << "Arithmetic mode was not set.\n";
 	}
+
+	if (vm.count("solver"))
+		{
+			solver = vm["solver"].as<string>();
+			if (solver == "gpe5c")
+				this->SetSolverId(GPE_SOLVER5C);
+			else
+				this->SetSolverId(GPE_SOLVER3C);
+			cout << "Solver set to " << solver << ".\n";
+		}
+		else
+		{
+			cout << "Solver was not set.\n";
+		}
+
 
 	if (vm.count("exp_mode"))
 	{
@@ -640,7 +647,7 @@ void ConfigReader<T>::SetDefaultParameters()
 	this->beta2 = 2;
 	this->file_name = "ex03dint.txt";
 	this->print_csv = false;
-	this->solver_id = GPDE_SOLVER;
+	this->solver_id = GPE_SOLVER3C;
 }
 
 //The explicit instantiation part

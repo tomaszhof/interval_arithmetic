@@ -63,7 +63,7 @@ template<typename T>
 void Experiment<T>::SetSolver(Parameters<long double> p) {
 	switch (p.selected_solver) {
 	case GPDE_SOLVER:
-		solver = new GPDESolver<T>();
+		solver = new GPE5CSolver<T>();
 		break;
 	case POISSON:
 		solver = new PoissonSolver<T>();

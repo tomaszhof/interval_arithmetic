@@ -71,8 +71,8 @@ Experiment<T>::Experiment(int ac, char* av[]) {
 template<typename T>
 void Experiment<T>::SetSolver(Parameters<long double> p) {
 	switch (p.selected_solver) {
-	case GPDE_SOLVER:
-		solver = new GPDESolver<T>();
+	case GPE_SOLVER5C:
+		solver = new GPE5CSolver<T>();
 		break;
 	case GPE_SOLVER3C:
 		solver = new GPESolver3C<T>();
