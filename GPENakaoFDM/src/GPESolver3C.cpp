@@ -1099,14 +1099,14 @@ int GPESolver3C<T>::SolveDIA() {
 		NN.b = n;
 		MM.a = m;
 		MM.b = m;
-		Pconst.a = -bc->GetConstP();
-		Pconst.b = bc->GetConstP();
-		Qconst.a = -bc->GetConstQ();
-		Qconst.b = bc->GetConstQ();
-		Rconst.a = -bc->GetConstR();
-		Rconst.b = bc->GetConstR();
-		Sconst.a = -bc->GetConstT();
-		Sconst.b = bc->GetConstT();
+		Pconst.a = bc->GetConstP();
+		Pconst.b = -bc->GetConstP();
+		Qconst.a = bc->GetConstQ();
+		Qconst.b = -bc->GetConstQ();
+		Rconst.a = bc->GetConstR();
+		Rconst.b = -bc->GetConstR();
+		Sconst.a = bc->GetConstT();
+		Sconst.b = -bc->GetConstT();
 
 		if ((n < 2) || (m < 2))
 			st = 1;
