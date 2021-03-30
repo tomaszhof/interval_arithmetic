@@ -1205,78 +1205,80 @@ Interval<T> DISin(const Interval<T> &x) {
 
 template<typename T>
 Interval<T> DICos(const Interval<T> &x) {
-	bool is_even, finished;
-	int k, st;
-	Interval<T> d, c, w, w1, x2;
-	if (x.a > x.b)
-		st = 1;
-	else {
-		c.a = 1;
-		c.b = 1;
-		w = c;
-		x2 = DIMul(x, x);
-		k = 1;
-		is_even = true;
-		finished = false;
-		st = 0;
-
-		do {
-			d.a = k * (k + 1);
-			d.b = d.a;
-			c = DIMul(c, DIDiv(x2, d));
-			if (is_even)
-				w1 = DISub(w, c);
-			else
-				w1 = DIAdd(w, c);
-
-			if ((w.a != 0) && (w.b != 0)) {
-				if ((abs(w.a - w1.a) / abs(w.a) < 1e-18)
-						&& (abs(w.b - w1.b) / abs(w.b) < 1e-18))
-					finished = true;
-				else
-					;
-			} else if ((w.a == 0) && (w.b != 0)) {
-				if ((abs(w.a - w1.a) < 1e-18)
-						&& (abs(w.b - w1.b) / abs(w.b) < 1e-18))
-					finished = true;
-				else
-					;
-			}
-
-			else if (w.a != 0) {
-				if ((abs(w.a - w1.a) / abs(w.a) < 1e-18)
-						& (abs(w.b - w1.b) < 1e-18))
-					finished = true;
-				else if ((abs(w.a - w1.a) < 1e-18) & (abs(w.b - w1.b) < 1e-18))
-					finished = true;
-			}
-
-			if (finished) {
-				if (w1.b > 1) {
-					w1.b = 1;
-					if (w1.a > 1)
-						w1.a = 1;
-				}
-				if (w1.a < -1) {
-					w1.a = -1;
-					if (w1.b < -1)
-						w1.b = -1;
-				}
-				return w1;
-			} else {
-				w = w1;
-				k = k + 2;
-				is_even = !is_even;
-			}
-		} while (!(finished || (k > INT_MAX / 2)));
-	}
-	if (!finished)
-		st = 2;
-
-	Interval<T> r;
-	r.a = 0;
-	r.b = 0;
-	return r;
+	Interval<T> itwo(2, 2);
+	return ISin(x - Interval<T>::IPi()/itwo);
+//	bool is_even, finished;
+//	int k, st;
+//	Interval<T> d, c, w, w1, x2;
+//	if (x.a > x.b)
+//		st = 1;
+//	else {
+//		c.a = 1;
+//		c.b = 1;
+//		w = c;
+//		x2 = DIMul(x, x);
+//		k = 1;
+//		is_even = true;
+//		finished = false;
+//		st = 0;
+//
+//		do {
+//			d.a = k * (k + 1);
+//			d.b = d.a;
+//			c = DIMul(c, DIDiv(x2, d));
+//			if (is_even)
+//				w1 = DISub(w, c);
+//			else
+//				w1 = DIAdd(w, c);
+//
+//			if ((w.a != 0) && (w.b != 0)) {
+//				if ((abs(w.a - w1.a) / abs(w.a) < 1e-18)
+//						&& (abs(w.b - w1.b) / abs(w.b) < 1e-18))
+//					finished = true;
+//				else
+//					;
+//			} else if ((w.a == 0) && (w.b != 0)) {
+//				if ((abs(w.a - w1.a) < 1e-18)
+//						&& (abs(w.b - w1.b) / abs(w.b) < 1e-18))
+//					finished = true;
+//				else
+//					;
+//			}
+//
+//			else if (w.a != 0) {
+//				if ((abs(w.a - w1.a) / abs(w.a) < 1e-18)
+//						& (abs(w.b - w1.b) < 1e-18))
+//					finished = true;
+//				else if ((abs(w.a - w1.a) < 1e-18) & (abs(w.b - w1.b) < 1e-18))
+//					finished = true;
+//			}
+//
+//			if (finished) {
+//				if (w1.b > 1) {
+//					w1.b = 1;
+//					if (w1.a > 1)
+//						w1.a = 1;
+//				}
+//				if (w1.a < -1) {
+//					w1.a = -1;
+//					if (w1.b < -1)
+//						w1.b = -1;
+//				}
+//				return w1;
+//			} else {
+//				w = w1;
+//				k = k + 2;
+//				is_even = !is_even;
+//			}
+//		} while (!(finished || (k > INT_MAX / 2)));
+//	}
+//	if (!finished)
+//		st = 2;
+//
+//	Interval<T> r;
+//	r.a = 0;
+//	r.b = 0;
+//	return r;
 }
 
 template<typename T>

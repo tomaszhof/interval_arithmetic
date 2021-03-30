@@ -684,14 +684,14 @@ int GPESolver3C<T>::SolvePIA() {
 	Interval<T> GAMMA = { params.gamma, params.gamma };
 	Interval<T> DELTA = { params.delta, params.delta };
 	long double eps = params.eps;
-	long double sigma = 1e-3;
+	long double sigma = 0.0; 1e-3;
 
 	const Interval<T> izero = { 0, 0 };
 	const Interval<T> ione = { 1, 1 };
 	const Interval<T> itwo = { 2, 2 };
 	const Interval<T> ithree = { 3, 3 };
 	const Interval<T> itwelve = { 12, 12 };
-	const Interval<T> isigma = { -sigma, sigma };
+	//const Interval<T> isigma = { -sigma, sigma };
 
 	Interval<T> tmpi = { 0, 0 };
 	int i, j, jh, j1, k, kh, l, lh, l1, l2, n1, n2, n3, p, q, rh;
@@ -786,6 +786,8 @@ int GPESolver3C<T>::SolvePIA() {
 		K1 = (DELTA - BETA) / MM;
 		HH.a = -H1.b;
 		HH.b = H1.b;
+		sigma = HH.b;
+		const Interval<T> isigma = { -sigma, sigma };
 		H1POW2 = H1 * H1;
 		K1POW2 = K1 * K1;
 		H1POW2K1POW2 = H1POW2 * K1POW2;
@@ -1075,14 +1077,14 @@ int GPESolver3C<T>::SolveDIA() {
 		Interval<T> GAMMA = { params.gamma, params.gamma };
 		Interval<T> DELTA = { params.delta, params.delta };
 		long double eps = params.eps;
-		long double sigma = 0.0; //1e-3;
+		long double sigma = 1e-3;
 
 		const Interval<T> izero = { 0, 0 };
 		const Interval<T> ione = { 1, 1 };
 		const Interval<T> itwo = { 2, 2 };
 		const Interval<T> ithree = { 3, 3 };
 		const Interval<T> itwelve = { 12, 12 };
-		const Interval<T> isigma = { -sigma, sigma };
+		const Interval<T> isigma = { sigma, -sigma };
 
 		Interval<T> tmpi = { 0, 0 };
 		int i, j, jh, j1, k, kh, l, lh, l1, l2, n1, n2, n3, p, q, rh;
@@ -1182,6 +1184,8 @@ int GPESolver3C<T>::SolveDIA() {
 			H1POW2K1POW2 = H1POW2 * K1POW2;
 			KK.a = -K1.b;
 			KK.b = K1.b;
+//			sigma = HH.b;
+
 			n1 = (n - 1) * (m - 1);
 			n2 = n1 + 1;
 			p = n2;
