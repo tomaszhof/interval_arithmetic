@@ -684,7 +684,7 @@ int GPESolver3C<T>::SolvePIA() {
 	Interval<T> GAMMA = { params.gamma, params.gamma };
 	Interval<T> DELTA = { params.delta, params.delta };
 	long double eps = params.eps;
-	long double sigma = 0.0; 1e-3;
+	long double sigma = 1e-3;
 
 	const Interval<T> izero = { 0, 0 };
 	const Interval<T> ione = { 1, 1 };
@@ -1292,7 +1292,7 @@ int GPESolver3C<T>::SolveDIA() {
 														* bc->DA2DY(HH1, KK1, st)
 														/ bc->A2(HH1, KK1, st))
 										* Qconst - bc->A1(HH1, KK1, st) * Sconst);
-				S = S + ERR;
+				S = S + ERR + isigma;
 //				cout << k << "S(not BC)= [" << S.a << " ; " << S.b << "]" << endl;
 
 				if (i == 1) {
@@ -1378,7 +1378,7 @@ int GPESolver3C<T>::SolveDIA() {
 						st = 5;
 					else {
 						tmpi = bm.FromMap(lh - 1);
-						MAX = tmpi.Inverse();//(ione / tmpi);
+						MAX = (ione / tmpi); //tmpi.Inverse();
 						r[jh - 1] = k;
 						for (int i = 1; i <= p; i++) {
 							tmpi = bm.FromMap(i - 1);
